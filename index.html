@@ -30,13 +30,13 @@
 	<body>
 		<div class="navbar navbar-fixed-top">
   			<div class="navbar-inner">
-  				<div class="container">
+  				<div class="container-fluid">
   					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             			<span class="icon-bar"></span>
             			<span class="icon-bar"></span>
             			<span class="icon-bar"></span>
           			</a>
-          			<a class="brand" href="#">Web OPCAT</a>
+          			<a class="brand" href="#">Web OPM</a>
           			<div class="nav-collapse">
           				<ul class="nav">
           					<li class="dropdown">
@@ -92,6 +92,103 @@
           			</div>			
   				</div>
   			</div>
+		</div>
+		
+		<div class="container-fluid" style="margin-top: 60px;">
+			<div class="row-fluid">
+				<div class="span3">
+					<div class="well">
+						<div class="accordion" id="tool-panel" style="background-color: white;">
+							<div class="accordion-group">
+								<div class="accordion-heading">
+									<a class="accordion-toggle" data-toggle="collapse" data-parent="#tool-panel" href="#collapse-one">OPD Tree</a>
+								</div>
+								<div id="collapse-one" class="accordion-body collapse in">
+									<div class="accordion-inner">
+										<p>Here we will have our OPD Tree</p>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-group">
+								<div class="accordion-heading">
+									<a class="accordion-toggle" data-toggle="collapse" data-parent="#tool-panel" href="#collapse-two">Tools</a>
+								</div>
+								<div id="collapse-two" class="accordion-body collapse out">
+									<div class="accordion-inner">
+										<div class="sidebar-nav">
+											<ul class="nav nav-list">
+												<li class="nav-header">Shapes</li>
+												<li><a href="#">Object</a></li>
+												<li><a href="#">Process</a></li>
+												<li><a href="#">State</a></li>
+												<li class="nav-header">Structural Relations</li>
+												<li><a href="#">Aggregation-Participation</a></li>
+												<li><a href="#">Exhibition-Characterization</a></li>
+												<li><a href="#">Generalization-Specialization</a></li>
+												<li><a href="#">Classification-Instantiation</a></li>
+												<li><a href="#">Unidirectional Relation</a></li>
+												<li><a href="#">Bidirectional Relation</a></li>
+												<li class="nav-header">Procedural Links</li>
+												<li><a href="#">Agent Link</a></li>
+												<li><a href="#">Instrument Link</a></li>
+												<li><a href="#">Result/Consumption Link</a></li>
+												<li><a href="#">Effect Link</a></li>
+												<li><a href="#">Instrument Event Link</a></li>
+												<li><a href="#">Consumption Event Link</a></li>
+												<li><a href="#">Condition Link</a></li>
+												<li><a href="#">Execption Link</a></li>
+												<li><a href="#">Invocation Link</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-group">
+								<div class="accordion-heading">
+									<a class="accordion-toggle" data-toggle="collapse" data-parent="#tool-panel" href="#collapse-three">Just in case</a>
+								</div>
+								<div id="collapse-three" class="accordion-body collapse in">
+									<div class="accordion-inner">
+										<p>This one we will use just in case</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="span9">
+					<ul class="nav nav-tabs" id="opds" style="margin-bottom: 0px;">
+						<li class="active"><a href="#model-one" data-toggle="tab"><p>Model One</p></a></li>
+						<li><a href="#model-two" data-toggle="tab"><p>Model Two</p></a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane fade in active" id="model-one">
+							<div class="hero-unit">
+								<h1>Model One</h1>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="model-two">
+							<div class="hero-unit">
+								<h1>Model Two</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="span9">
+					<div class="container-fluid">
+						<h3>OPL Panel</h3>
+						<ul class="unstyled">
+							<li>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</li>
+							<li>Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.</li>
+							<li>Mauris placerat eleifend leo. </li>
+							<li>Aenean ultricies mi vitae est.</li>
+							<li>Donec non enim in turpis pulvinar facilisis.</li>
+							<li> Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</li>
+							<li>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 		</div>
 
 	</body>
