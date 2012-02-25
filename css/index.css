@@ -1,1 +1,7 @@
-.model-name 		{ margin: 40px 40px 10px; padding-top: 20px;  }
+.model-name 								{ margin: 40px 40px 10px; padding-top: 20px;  }
+a 											{ color: LimeGreen; }
+a:hover										{ color: green; }
+
+.dropdown-menu li > a:hover, 
+.dropdown-menu .active > a, 
+.dropdown-menu .active > a:hover 			{ background-color: LimeGreen; }
