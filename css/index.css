@@ -5,3 +5,5 @@ a:hover										{ color: green; }
 .dropdown-menu li > a:hover, 
 .dropdown-menu .active > a, 
 .dropdown-menu .active > a:hover 			{ background-color: LimeGreen; }
+
+.subnav .divider-vertical 					{ height: 35px; width: 1px; margin: 0px 9px; overflow: hidden; background-color: Silver; }
