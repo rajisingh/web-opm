@@ -7,3 +7,6 @@ a:hover										{ color: green; }
 .dropdown-menu .active > a:hover 			{ background-color: LimeGreen; }
 
 .subnav .divider-vertical 					{ height: 35px; width: 1px; margin: 0px 9px; overflow: hidden; background-color: Silver; }
+
+.footer 									{ text-align: center; color: grey; }
+.footer p									{ margin: 0px; }
