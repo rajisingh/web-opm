@@ -4,6 +4,8 @@ $(document).ready(function(){
 	$('a[data-toggle="tab"]').on('shown', function (e) {
 		  e.target // activated tab
 		  e.relatedTarget // previous tab
-	})
+	});
+	$('.drag').draggable();
+	$('.resize').resizable();
 })
 	
