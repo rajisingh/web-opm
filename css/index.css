@@ -17,4 +17,7 @@ a:hover										{ color: green; }
 
 #opl-panel									{ display: none; height: 200px; background-color: whiteSmoke; margin: 0px 60px; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
 .slide										{ margin: 0px 60px; border-top: 3px solid grey; }					
-.btn-slide									{ margin-left: 670px; position: relative; top: -10px; }		
+.btn-slide									{ margin-left: 670px; position: relative; top: -10px; }	
+
+table 										{ margin: 10px; }
+table tr, td								{ padding: 3px; text-align: center; }	
