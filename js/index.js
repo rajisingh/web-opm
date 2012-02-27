@@ -1,3 +1,4 @@
+var objectId = 0;
 $(document).ready(function(){
 	$('.dropdown-toggle').dropdown();
 	$(".collapse").collapse();
@@ -15,6 +16,19 @@ $(document).ready(function(){
 	
 	$(".btn-slide").click(function(){
 		$("#opl-panel").slideToggle("slow");
+	});;
+});
+
+function addObject(){
+	objectId++;
+	$('.row').append("<div id='" + objectId + "' class='span1 object'><p>Object " + objectId + "</p></div>");
+	$('#'+objectId).draggable({
+		containment: "#container-model"
 	});
-})
+	$('#'+objectId).resizable({
+		ghost: true
+	});
+}
+
+
 	

@@ -20,4 +20,6 @@ a:hover										{ color: green; }
 .btn-slide									{ margin-left: 670px; position: relative; top: -10px; }	
 
 table 										{ margin: 10px; }
-table tr, td								{ padding: 3px; text-align: center; }	
+table tr, td								{ padding: 3px; text-align: center; }
+
+.object										{ height: 50px; width: 90px; border: 3px solid #5cb85c; }	
