@@ -79,8 +79,12 @@
   				</div>
   			</div>
 		</div>
+		
+		<header class="header">
+			<h2>Model One</h2>
+		</header>
 
-		<div class="subnav subnav-fixed" style="margin-top: 40px; background-color: whiteSmoke;">
+		<div class="subnav subnav-fixed">
 			<ul class="nav nav-pills">
 				<li><a href="#"><i class="icon-file"></i></a></li>
 				<li><a href="#"><i class="icon-folder-open"></i></a></li>
@@ -98,13 +102,17 @@
 				<li><a href="#"><i class="icon-tint"></i></a></li>
 				<li><a href="#"><i class="icon-comment"></i></a></li>
 				<li><a href="#"><i class="icon-cog"></i></a></li>
-			</ul>
-			
+			</ul>	
 		</div>
 		
-		<div class="container-fluid" style="margin-top: 20px;">
-			<div class="row-fluid">
-				<div class="span1 drag" style="margin-top: 45px;">
+		<div id="opl-panel"></div>
+		<p class="slide">
+			<h6><a href="#" class="btn btn-success btn-slide">OPL <i class="icon-resize-vertical icon-white"></i></a></h6>
+		</p>
+		
+		<div id="container-model" class="container-fluid" style="margin-top: 20px;">
+			<div class="row">
+				<div class="span1 drag">
 					<div class="well sidebar-nav" style="padding: 0px;">
 						<ul class="nav nav-list">
 							<li class="nav-header">Shapes</li>
@@ -131,25 +139,8 @@
 						</ul>
 					</div>
 				</div>
-				<div class="span9 drag">
-					<ul class="nav nav-tabs" id="opds" style="margin-bottom: 0px;">
-						<li class="active"><a href="#model-one" data-toggle="tab"><p>Model One</p></a></li>
-						<li><a href="#model-two" data-toggle="tab"><p>Model Two</p></a></li>
-					</ul>
-					<div class="tab-content resize" style="background-color: whiteSmoke;">
-						<div class="tab-pane fade in active" id="model-one">
-							<div class="hero-unit">
-								<h1>Model One</h1>
-							</div>
-						</div>
-						<div class="tab-pane fade" id="model-two">
-							<div class="hero-unit">
-								<h1>Model Two</h1>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="span2 drag" style="margin-top: 45px;">
+
+				<div class="span2 drag">
 					<div class="well resize">
 						<h3>OPD Tree</h3>
 					</div>

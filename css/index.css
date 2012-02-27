@@ -6,7 +6,15 @@ a:hover										{ color: green; }
 .dropdown-menu .active > a, 
 .dropdown-menu .active > a:hover 			{ background-color: LimeGreen; }
 
-.subnav .divider-vertical 					{ height: 35px; width: 1px; margin: 0px 9px; overflow: hidden; background-color: Silver; }
-
+.subnav										{ border: 1px solid #DDD; margin-top: 10px; background-color: whiteSmoke; }
+.subnav .divider-vertical 					{ height: 35px; width: 1px; margin: 0px 9px; overflow: hidden; background-color: #DDD; }
+.nav-pills									{ margin-bottom: 0px; }
+.header										{ margin-top: 50px; margin-left: 40px; }
 .footer 									{ text-align: center; color: grey; }
 .footer p									{ margin: 0px; }
+.span1										{ margin-left: 0px; position: relative; left: 40px; }
+.span2										{ margin-left: 0px; position: relative; left: 1101px; top: 0px; }
+
+#opl-panel									{ display: none; height: 200px; background-color: whiteSmoke; margin: 0px 60px; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.slide										{ margin: 0px 60px; border-top: 3px solid grey; }					
+.btn-slide									{ margin-left: 670px; position: relative; top: -10px; }		

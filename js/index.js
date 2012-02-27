@@ -5,7 +5,15 @@ $(document).ready(function(){
 		  e.target // activated tab
 		  e.relatedTarget // previous tab
 	});
-	$('.drag').draggable();
-	$('.resize').resizable();
+	$('.drag').draggable({
+		containment: "#container-model"
+	});
+	$('.resize').resizable({
+		ghost: true
+	});
+	
+	$(".btn-slide").click(function(){
+		$("#opl-panel").slideToggle("slow");
+	});
 })
 	
