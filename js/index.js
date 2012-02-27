@@ -8,7 +8,6 @@ $(document).ready(function(){
 	$('.drag').draggable({
 		containment: "#container-model"
 	});
-	$(a).tooltip('show');
 	
 	$('.resize').resizable({
 		ghost: true
