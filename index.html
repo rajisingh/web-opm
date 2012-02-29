@@ -129,12 +129,12 @@
 		
 		<div id="opl-panel"></div>
 		<p class="slide">
-			<h6><a href="#" class="btn btn-success btn-slide">OPL <i class="icon-resize-vertical icon-white"></i></a></h6>
+			<h6><a href="#" class="btn btn-inverse btn-slide">OPL <i class="icon-resize-vertical icon-white"></i></a></h6>
 		</p>
 		
 		<div id="container-model" class="container-fluid" style="margin-top: 20px;">
 			<div class="row" style="height: 500px;">
-				<div class="span1 drag" style="z-index: 1;">
+				<div class="span1 drag">
 					<div class="well sidebar-nav" style="padding: 0px;">
 					<table style="">
 						<tr><th colspan="2"><h6>Things</h6></th></tr>
@@ -185,14 +185,25 @@
 
 				<div class="span2 drag">
 					<div class="well resize">
-						<h3>OPD Tree</h3>
+						<h6>OPD Tree<a href="#" class="close" onclick="$('.span2').css('display', 'none');">&times;</a></h6>
 					</div>
 				</div>
+				
+				<div id="sd" class="canvas" style="height: 500px;"></div>
+				
 			</div>
+			
+			<div class="pagination pagination-centered">
+				<ul>
+					<li><a href="#">&larr; Prev</a></li>
+					<li class="active"><a href="#">SD</a></li>
+					<li><a href="#">Next &rarr;</a></li>
+				</ul>
+			</div>
+			
 			<hr>
 		</div>
 	</div>
-		
 		
 	<footer class="footer">
 		<p>Web-OPM: online case tool for <a href="http://en.wikipedia.org/wiki/Object_Process_Methodology" target="_blank">Object-Process Methodology</a></p>

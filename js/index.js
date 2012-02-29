@@ -10,19 +10,21 @@ $(document).ready(function(){
 	$('.drag').draggable({
 		containment: "#container-model"
 	});
-	
 	$('.resize').resizable({
 		ghost: true
 	});
-	
 	$(".btn-slide").click(function(){
 		$("#opl-panel").slideToggle("slow");
-	});;
+	});
+	$(".header h2").editable({
+		event: "dblclick",
+		tooltip: "Double click to change the name"
+	});
 });
 
 function addObject(){
 	objectId++;
-	$('.row').append("<div id='obj" + objectId + "' class='span1 object'><p>Object " + objectId + "</p></div>");
+	$('.canvas').append("<div id='obj" + objectId + "' class='span1 object'><p>Object " + objectId + "</p></div>");
 	$('#obj'+objectId).draggable({
 		containment: "#container-model"
 	});
@@ -30,15 +32,23 @@ function addObject(){
 		ghost: true
 	});
 	$('#obj'+objectId+' p').editable("", {
-		tooltip: "Click to edit the name"
+		event: "dblclick",
+		tooltip: "Double click to change the name"
 	});
 }
 
 function addProcess(){
 	processId++;
-	$('.row').append("<div id='proc" + processId + "' class='span1 process'><p>Process " + processId + "</p></div>");
+	$('.canvas').append("<div id='proc" + processId + "' class='span1 process'><p>Process " + processId + "</p></div>");
 	$('#proc'+processId).draggable({
 		containment: "#container-model"
+	});
+	$('#proc'+processId).resizable({
+		ghost: true
+	});
+	$('#proc'+processId+' p').editable("", {
+		event: "dblclick",
+		tooltip: "Double click to change the name"
 	});
 }
 

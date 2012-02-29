@@ -288,6 +288,7 @@ p {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 18px;
+  font-weight: bold;
 }
 p small {
   font-size: 11px;
