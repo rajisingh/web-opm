@@ -1,4 +1,5 @@
 .model-name 								{ margin: 40px 40px 10px; padding-top: 20px;  }
+.brand										{ color: LimeGreen; }
 a 											{ color: LimeGreen; }
 a:hover										{ color: green; }
 
