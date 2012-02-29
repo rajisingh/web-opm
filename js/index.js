@@ -16,7 +16,7 @@ $(document).ready(function(){
 	$(".btn-slide").click(function(){
 		$("#opl-panel").slideToggle("slow");
 	});
-	$(".header h2").editable({
+	$(".header h2").editable("", {
 		event: "dblclick",
 		tooltip: "Double click to change the name"
 	});
