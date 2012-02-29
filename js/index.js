@@ -29,6 +29,9 @@ function addObject(){
 	$('#obj'+objectId).resizable({
 		ghost: true
 	});
+	$('#obj'+objectId+' p').editable("", {
+		tooltip: "Click to edit the name"
+	});
 }
 
 function addProcess(){
