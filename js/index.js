@@ -1,4 +1,5 @@
 var objectId = 0;
+var processId = 0;
 $(document).ready(function(){
 	$('.dropdown-toggle').dropdown();
 	$(".collapse").collapse();
@@ -21,14 +22,23 @@ $(document).ready(function(){
 
 function addObject(){
 	objectId++;
-	$('.row').append("<div id='" + objectId + "' class='span1 object'><p>Object " + objectId + "</p></div>");
-	$('#'+objectId).draggable({
+	$('.row').append("<div id='obj" + objectId + "' class='span1 object'><p>Object " + objectId + "</p></div>");
+	$('#obj'+objectId).draggable({
 		containment: "#container-model"
 	});
-	$('#'+objectId).resizable({
+	$('#obj'+objectId).resizable({
 		ghost: true
 	});
 }
 
+function addProcess(){
+	processId++;
+	$('.row').append("<div id='proc" + processId + "' class='span1 process'><p>Process " + processId + "</p></div>");
+	$('#proc'+processId).draggable({
+		containment: "#container-model"
+	});
+}
+
+function addState(){}
 
 	
