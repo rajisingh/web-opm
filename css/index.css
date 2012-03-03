@@ -10,6 +10,7 @@ a:hover										{ color: green; }
 .nav-pills									{ margin-bottom: 0px; }
 
 .header										{ margin-top: 50px; margin-left: 40px; }
+.social	img									{ width: 24px; height: 24px;  }
 
 .footer 									{ text-align: center; color: grey; }
 .footer p									{ margin: 0px; font-weight: normal; }
