@@ -28,7 +28,7 @@ function addObject(){
  *Change divs into table-cell display 
  */
 
-	$('.canvas').append("<div id='obj" + objectId + "' class='span1 object'><p>Object " + objectId + "</p></div>");
+	$('.canvas').append("<div id='obj" + objectId + "' class='span1 object'><div><p>Object " + objectId + "</p></div></div>");
 	$('#obj'+objectId).draggable({
 		containment: "#container-model"
 	});
