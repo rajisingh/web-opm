@@ -24,10 +24,6 @@ $(document).ready(function(){
 
 function addObject(){
 	objectId++;
-/**@FIXME:
- *Change divs into table-cell display 
- */
-
 	$('.canvas').append("<div id='obj" + objectId + "' class='span1 object'><div><p>Object " + objectId + "</p></div></div>");
 	$('#obj'+objectId).draggable({
 		containment: "#container-model"
@@ -43,8 +39,9 @@ function addObject(){
 
 function addProcess(){
 	processId++;
-	$('.canvas').append("<div id='proc" + processId + "' class='span1 process'><p>Process " + processId + "</p></div>");
+	$('.canvas').append("<div id='proc" + processId + "' class='span1 process'><div><p>Process " + processId + "</p></div></div>");
 	$('#proc'+processId).draggable({
+		// FIXME: bug of draggin' to the top
 		containment: "#container-model"
 	});
 	$('#proc'+processId).resizable({
