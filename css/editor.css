@@ -17,6 +17,7 @@ a:hover										{ color: green; }
 .span1										{ margin-left: 0px; position: relative; left: 40px; z-index: 1;}
 .span2										{ margin-left: 0px; position: relative; left: 1080px; top: 0px; z-index: 1; }
 .canvas										{ margin: 0px; position: relative; height: 520px; }
+svg											{ position: absolute; left: 0; }
 
 #opl-panel									{ display: none; height: 200px; background-color: whiteSmoke; margin: 0px 60px; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
 .slide										{ margin: 0px 60px; border-top: 3px solid grey; }					
@@ -24,5 +25,3 @@ a:hover										{ color: green; }
 
 table 										{ margin: 10px; }
 table tr, td								{ padding: 3px; text-align: center; }
-
-svg											{ position: absolute; left: 0 }

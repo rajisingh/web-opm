@@ -22,6 +22,18 @@ function addObject(){
 	ypos = randomFromTo(5, 420);
 	svg.rect($("#obj"+objId), xpos, ypos, 110, 70, {fill: 'none', stroke: 'limeGreen', strokeWidth: '2'});
 	svg.text($("#obj"+objId), xpos+26, ypos+42, "Object "+objId, {fontFamily: 'Helvetica', fontWeight: 'bold', fontSize: '15'});
+	
+/*
+	$("#obj"+objId)
+		.draggable()
+		.bind('mousedown', function(event, ui){
+			$(event.target.parentElement).append(event.target);
+		})
+		.bind('drag', function(event, ui){
+			event.target.setAttribute('x', ui.position.left);
+			event.target.setAttribute('y', ui.position.top);
+		})
+*/
 }
 
 var procId = 0;
