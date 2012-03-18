@@ -22,37 +22,4 @@ $(document).ready(function(){
 	});
 });
 
-function addObject(){
-	objectId++;
-	$('.canvas').append("<div id='obj" + objectId + "' class='span1 object'><div><p>Object " + objectId + "</p></div></div>");
-	$('#obj'+objectId).draggable({
-		containment: "#container-model"
-	});
-	$('#obj'+objectId).resizable({
-		ghost: true
-	});
-	$('#obj'+objectId+' p').editable("", {
-		event: "dblclick",
-		tooltip: "Double click to change the name"
-	});
-}
-
-function addProcess(){
-	processId++;
-	$('.canvas').append("<div id='proc" + processId + "' class='span1 process'><div><p>Process " + processId + "</p></div></div>");
-	$('#proc'+processId).draggable({
-		// FIXME: bug of draggin' to the top
-		containment: "#container-model"
-	});
-	$('#proc'+processId).resizable({
-		ghost: true
-	});
-	$('#proc'+processId+' p').editable("", {
-		event: "dblclick",
-		tooltip: "Double click to change the name"
-	});
-}
-
-function addState(){}
-
 	
