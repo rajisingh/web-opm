@@ -26,8 +26,6 @@ function addObject(){
 	//Binding methods to object
 	$(obj)
 		.mousedown(select)
-		.mousemove(dragging)
-		.mouseup(deselect)
 		.mouseover(pointer);
 }
 
@@ -47,14 +45,16 @@ var currentX = 0;
 var currentY = 0;
 var currentMatrix = 0;
 function select(evt){
+	$(this).bind('mousemove', dragging);
 	selectedElement = evt.target;
 	currentX = evt.pageX;
 	currentY = evt.pageY;
 	currentMatrix = $(this).attr('transform').slice(7, -1).split(' ');
 	for (var i=0; i<currentMatrix.length; i++)	{ currentMatrix[i] = parseFloat(currentMatrix[i]); }
+
 }
 function dragging(evt){
-
+	$(this).bind('mouseup', deselect);
 	dx = evt.pageX - currentX;
 	dy = evt.pageY - currentY;
 	currentMatrix[4] += dx;
@@ -65,7 +65,7 @@ function dragging(evt){
 	currentY = evt.pageY;
 }
 function deselect(evt){
-	$(this).stop();
+	$(this).unbind('mousemove');
 }
 function pointer(){
 	$(this).css('cursor', 'pointer');
