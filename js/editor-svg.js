@@ -3,18 +3,69 @@
  * Copyright © 2012 Israel Institute of Technology - Technion
  * The code is licensed under GNU General Public License, v2
  * 
- * Context: set of functions for work w/ SVG canvas via jQuery SVG library
+ * Context: set of functions for work w/ SVG canvas
  * 
  * Author: Sergey N. Bolshchikov  
  * */
 
-var activeDiagram;
+//TODO: rewrite w/ plain SVG w/o any libraries
+
+var svg = document.getElementsByTagName('svg')[0];
+var svgNS = svg.getAttribute('xmlns');
+
+var activeDiagram = document.getElementById('sd');
+var objId = 0;
+
+function randomFromTo(from, to) {
+	return Math.floor(Math.random() * (to - from + 1) + from);
+}
+function createSVGElement(root, element) {
+	switch (element){
+		case 'object':
+			var element = document.createElementNS(svgNS, 'rect');
+			element.setAttributeNS(null, 'x', randomFromTo(90, 1150));
+			element.setAttributeNS(null, 'y', randomFromTo(5, 420));
+			element.setAttributeNS(null, 'width', '110');
+			element.setAttributeNS(null, 'height', '70');
+			element.setAttributeNS(null, 'fill', 'white');
+			element.setAttributeNS(null, 'stroke', 'limeGreen');
+			element.setAttributeNS(null, 'stroke-width', '2');
+			root.appendChild(element);
+			var elementName = document.createElementNS(svgNS, 'text');
+			elementName.setAttributeNS(null, 'x', element.x.baseVal.value + 26);
+			elementName.setAttributeNS(null, 'y', element.y.baseVal.value + 42);
+			elementName.setAttributeNS(null, 'font-family', 'Helvetica');
+			elementName.setAttributeNS(null, 'font-weight', 'bold');
+			elementName.setAttributeNS(null, 'font-size', '15');	
+			var caption = document.createTextNode('Object ' + objId);
+			elementName.appendChild(caption);
+			root.appendChild(elementName);
+			var grip = document.createElementNS(svgNS, 'image');
+			grip.setAttributeNS(null, 'x', element.x.baseVal.value + 100);
+			grip.setAttributeNS(null, 'y', element.y.baseVal.value + 60);
+			grip.setAttributeNS(null, 'width', '9');
+			grip.setAttributeNS(null, 'height', '9');
+			grip.setAttributeNS(null, 'href', 'img/gripsmall-se.png');
+			root.appendChild(grip);
+
+	}
+	 
+}
+function addSVGObject() {
+	objId++;
+	var obj = document.createElementNS(svgNS, 'g');
+	obj.setAttributeNS(null, 'id', 'obj' + objId);
+	activeDiagram.appendChild(obj);
+	createSVGElement(obj, 'object');
+}
+
+/*
 function randomFromTo(from, to) {
 	return Math.floor(Math.random() * (to - from + 1) + from);
 }
 function init(svg) {
 	/*Initial actions to be done
-	 * right after the svg canvas is created*/
+	 * right after the svg canvas is created
 	var diagram = svg.group("sd");
 	activeDiagram = "sd";
 }
@@ -45,6 +96,9 @@ function addObject() {
 	$('#obj' + objId + ' image')
 		.mousedown(resizingStart)
 		.mouseover(cursorResizing);
+	$('#obj' + objId + ' text').editable("", {
+		event: 'dblclick'
+	})
 }
 
 var prcId = 0;
@@ -103,3 +157,4 @@ function cursorDragging() {
 function cursorResizing() {
 	$(this).css('cursor', 'se-resize');
 }
+*/
