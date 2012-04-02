@@ -1,10 +1,11 @@
 /*	
- * 	Web OPM: online case tool for Object-Process Methodology
- * 	Copyright © 2012 Israel Institute of Technology - Technion
- * 	The code is licensed under GNU General Public License, v2
+ * Web OPM: online case tool for Object-Process Methodology
+ * Copyright © 2012 Israel Institute of Technology - Technion
+ * The code is licensed under GNU General Public License, v2
  * 
- * 	File context description:
- * 	File contains binding of initial events for interactive GUI 
+ * Context:bindings of initial events for interactive GUI
+ *
+ * Author: Sergey N. Bolshchikov
  * */
 
 $(document).ready(function(){
