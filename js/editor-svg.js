@@ -13,6 +13,10 @@ var svgNS = svg.getAttribute('xmlns');
 var xlinkNS = svg.getAttribute('xmlns:xlink');
 
 var activeDiagram = document.getElementById('sd');
+var activeElement = null;
+var currentX = 0;
+var currentY = 0;
+var currentMatrix = 0;
 var objId = 0;
 
 function randomFromTo(from, to) {
@@ -56,8 +60,40 @@ function addSVGObject() {
 	objId++;
 	var obj = document.createElementNS(svgNS, 'g');
 	obj.setAttributeNS(null, 'id', 'obj' + objId);
+	obj.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	obj.setAttributeNS(null, 'onmousedown', 'select(evt)');
 	activeDiagram.appendChild(obj);
 	createSVGElement(obj, 'object');
+}
+
+function select(evt) {
+	activeElement = evt.currentTarget;
+	if (activeElement) {
+		activeElement.firstChild.setAttributeNS(null, 'fill', 'whiteSmoke');
+		activeElement.setAttributeNS(null, 'onmousemove', 'dragging(evt)');
+		currentX = evt.clientX;
+		currentY = evt.clientY;
+		currentMatrix = activeElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
+		for (var i = 0; i < currentMatrix.length; i++) { currentMatrix[i] = parseFloat(currentMatrix[i]); }
+	}
+	else {
+		alert('Error: Element is not selected');
+	}
+}
+function dragging(evt) {
+	activeElement.setAttributeNS(null, 'onmouseup', 'drop(evt)');
+	dx = evt.clientX - currentX;
+	dy = evt.clientY - currentY;
+	currentMatrix[4] += dx;
+	currentMatrix[5] += dy;
+	var newMatrix = "matrix(" + currentMatrix.join(' ') + ")";
+	activeElement.setAttributeNS(null, 'transform', newMatrix);
+	currentX = evt.clientX;
+	currentY = evt.clientY;
+}
+function drop(evt) {
+	activeElement.firstChild.setAttributeNS(null, 'fill', 'white');
+	activeElement.setAttributeNS(null, 'onmousemove', null);
 }
 
 function cursorChange(evt) {
