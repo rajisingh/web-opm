@@ -8,10 +8,9 @@
  * Author: Sergey N. Bolshchikov  
  * */
 
-//TODO: rewrite w/ plain SVG w/o any libraries
-
 var svg = document.getElementsByTagName('svg')[0];
 var svgNS = svg.getAttribute('xmlns');
+var xlinkNS = svg.getAttribute('xmlns:xlink');
 
 var activeDiagram = document.getElementById('sd');
 var objId = 0;
@@ -30,6 +29,7 @@ function createSVGElement(root, element) {
 			element.setAttributeNS(null, 'fill', 'white');
 			element.setAttributeNS(null, 'stroke', 'limeGreen');
 			element.setAttributeNS(null, 'stroke-width', '2');
+			element.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
 			root.appendChild(element);
 			var elementName = document.createElementNS(svgNS, 'text');
 			elementName.setAttributeNS(null, 'x', element.x.baseVal.value + 26);
@@ -37,6 +37,7 @@ function createSVGElement(root, element) {
 			elementName.setAttributeNS(null, 'font-family', 'Helvetica');
 			elementName.setAttributeNS(null, 'font-weight', 'bold');
 			elementName.setAttributeNS(null, 'font-size', '15');	
+			elementName.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
 			var caption = document.createTextNode('Object ' + objId);
 			elementName.appendChild(caption);
 			root.appendChild(elementName);
@@ -45,18 +46,33 @@ function createSVGElement(root, element) {
 			grip.setAttributeNS(null, 'y', element.y.baseVal.value + 60);
 			grip.setAttributeNS(null, 'width', '9');
 			grip.setAttributeNS(null, 'height', '9');
-			grip.setAttributeNS(null, 'href', 'img/gripsmall-se.png');
+			grip.setAttributeNS(xlinkNS, 'xlink:href', 'img/gripsmall-se.png');
+			grip.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
 			root.appendChild(grip);
-
-	}
-	 
-}
+			break;
+	}	 
+}	
 function addSVGObject() {
 	objId++;
 	var obj = document.createElementNS(svgNS, 'g');
 	obj.setAttributeNS(null, 'id', 'obj' + objId);
 	activeDiagram.appendChild(obj);
 	createSVGElement(obj, 'object');
+}
+
+function cursorChange(evt) {
+	var element = evt.target;
+	switch (element.nodeName) {
+		case 'rect':
+			element.setAttributeNS(null, 'style', 'cursor: move');
+			break;
+		case 'image':
+			element.setAttributeNS(null, 'style', 'cursor: se-resize');
+			break;
+		case 'text':
+			element.setAttributeNS(null, 'style', 'cursor: pointer');
+			break;
+	}
 }
 
 /*
