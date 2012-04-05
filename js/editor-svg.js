@@ -13,15 +13,10 @@ var svgNS = svg.getAttribute('xmlns');
 var xlinkNS = svg.getAttribute('xmlns:xlink');
 
 var activeDiagram = document.getElementById('sd');
-var activeElement = null;
-var currentX = 0;
-var currentY = 0;
-var currentMatrix = 0;
+var pt = svg.createSVGPoint();
 var objId = 0;
 
-function randomFromTo(from, to) {
-	return Math.floor(Math.random() * (to - from + 1) + from);
-}
+/*
 function createSVGElement(root, element) {
 	switch (element){
 		case 'object':
@@ -55,32 +50,97 @@ function createSVGElement(root, element) {
 			root.appendChild(grip);
 			break;
 	}	 
-}	
-function addSVGObject() {
-	objId++;
-	var obj = document.createElementNS(svgNS, 'g');
-	obj.setAttributeNS(null, 'id', 'obj' + objId);
-	obj.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
-	obj.setAttributeNS(null, 'onmousedown', 'select(evt)');
-	activeDiagram.appendChild(obj);
-	createSVGElement(obj, 'object');
+}
+*/
+function SVGDraggable(element) {
+	var onmove = null;
+	element.addEventListener('mousedown', function(evt) {
+		element.parentNode.appendChild(element);
+		var x = 'x';
+		var y = 'y';
+		var mouseStart = cursorPoint(evt);
+		var elementStart = { x: element[x].animVal.value, y: element[y].animVal.value };
+		onmove = function(evt) {
+			var current = cursorPoint(evt);
+			pt.x = current.x - mouseStart.x;
+			pt.y = current.y - mouseStart.y;
+			var m = element.getTransformToElement(svg).inverse();
+			m.e = m.f = 0;
+			pt = pt.matrixTransform(m);
+			element.setAttributeNS(null, 'x', elementStart.x + pt.x);
+			element.setAttributeNS(null, 'y', elementStart.y + pt.y);
+			var dragEvent = document.createEvent('Event');
+			dragEvent.initEvent('dragged', true, true);
+			element.dispatchEvent(dragEvent);
+		};
+		document.body.addEventListener('mousemove',onmove,false);
+	}, false);
+	document.body.addEventListener('mouseup',function(){
+        document.body.removeEventListener('mousemove',onmove,false);
+    },false);
 }
 
+function SVGResizable(rect) {
+	//Create and append grip
+	var grip = document.createElementNS(svgNS, 'image');
+	grip.setAttributeNS(null, 'x', 0);
+	grip.setAttributeNS(null, 'y', 0);
+	grip.setAttributeNS(null, 'width', '9');
+	grip.setAttributeNS(null, 'height', '9');
+	grip.setAttributeNS(xlinkNS, 'xlink:href', 'img/gripsmall-se.png');
+	activeDiagram.appendChild(grip);
+	SVGDraggable(grip);
+	var moveGripToRect = function() {
+		var corner = rectCorner(rect);
+		grip.setAttributeNS(null, 'x', corner.x);
+		grip.setAttributeNS(null, 'y', corner.y);
+	}
+	moveGripToRect();
+	rect.addEventListener('dragged', moveGripToRect, false);
+	grip.addEventListener('dragged', function() {
+		var rectXY = pointIn(rect, grip.x.animVal.value, grip.y.animVal.value);
+		var w = Math.max(rectXY.x - rect.x.animVal.value, 1);
+		var h = Math.max(rectXY.y - rect.y.animVal.value, 1);
+		rect.setAttributeNS(null, 'width', w);
+		rect.setAttributeNS(null, 'height', h);
+	}, false);
+}
+
+function addSVGObject() {
+	objId++;
+	var obj = document.createElementNS(svgNS, 'rect');
+	obj.setAttributeNS(null, 'id', 'obj' + objId);
+	obj.setAttributeNS(null, 'class', 'drag resize');
+	obj.setAttributeNS(null, 'x', randomFromTo(90, 1150));
+	obj.setAttributeNS(null, 'y', randomFromTo(5, 420));
+	obj.setAttributeNS(null, 'width', '110');
+	obj.setAttributeNS(null, 'height', '70');
+	obj.setAttributeNS(null, 'fill', 'whiteSmoke');
+	obj.setAttributeNS(null, 'stroke', 'limeGreen');
+	obj.setAttributeNS(null, 'stroke-width', '2');
+	activeDiagram.appendChild(obj);
+	
+	SVGResizable(obj);
+	SVGDraggable(obj);
+}
+/*
 function select(evt) {
-	activeElement = evt.currentTarget;
-	if (activeElement) {
-		activeElement.firstChild.setAttributeNS(null, 'fill', 'whiteSmoke');
-		activeElement.setAttributeNS(null, 'onmousemove', 'dragging(evt)');
-		currentX = evt.clientX;
-		currentY = evt.clientY;
-		currentMatrix = activeElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
-		for (var i = 0; i < currentMatrix.length; i++) { currentMatrix[i] = parseFloat(currentMatrix[i]); }
+	currentX = evt.clientX;
+	currentY = evt.clientY;
+	activeElement = evt.target.parentNode;
+	currentWidth = activeElement.firstChild.width.baseVal.value;
+	currentHeight = activeElement.firstChild.height.baseVal.value;
+	activeElement.firstChild.setAttributeNS(null, 'fill', 'whiteSmoke');
+	currentMatrix = activeElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
+	for (var i = 0; i < currentMatrix.length; i++) { currentMatrix[i] = parseFloat(currentMatrix[i]); }
+	if (evt.target.nodeName == 'image') {
+		activeElement.setAttributeNS(null, 'onmousemove', 'resize(evt)');
 	}
 	else {
-		alert('Error: Element is not selected');
+		activeElement.setAttributeNS(null, 'onmousemove', 'drag(evt)');
 	}
 }
-function dragging(evt) {
+function drag(evt) {
 	activeElement.setAttributeNS(null, 'onmouseup', 'drop(evt)');
 	dx = evt.clientX - currentX;
 	dy = evt.clientY - currentY;
@@ -90,6 +150,21 @@ function dragging(evt) {
 	activeElement.setAttributeNS(null, 'transform', newMatrix);
 	currentX = evt.clientX;
 	currentY = evt.clientY;
+}
+function resize(evt) {
+	activeElement.setAttributeNS(null, 'onmouseup', 'drop(evt)');
+	sx = (evt.clientX - currentX) / currentWidth;
+	sy = (evt.clientY - currentY) / currentHeight;
+	for (var i = 0; i < currentMatrix.length; i+2) {
+		currentMatrix[i] *= sx;
+	}
+	for (var j = 1; j < currentMatrix.length; i+2) {
+		currentMatrix[j] *= sy;
+	}
+	currentMatrix[4] += (1 - sx)*currentWidth/2;
+	currentMatrix[5] += (1 - sy)*currentHeight/2;
+	var newMatrix = 'matrix(' + currentMatrix.join(' ') + ')';
+	activeElement.setAttributeNS(null, 'transform', newMatrix);
 }
 function drop(evt) {
 	activeElement.firstChild.setAttributeNS(null, 'fill', 'white');
@@ -110,7 +185,7 @@ function cursorChange(evt) {
 			break;
 	}
 }
-
+*/
 /*
 function randomFromTo(from, to) {
 	return Math.floor(Math.random() * (to - from + 1) + from);

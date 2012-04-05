@@ -12,16 +12,20 @@ a:hover										{ color: green; }
 .header										{ margin-top: 50px; margin-left: 40px; }
 .social	img									{ width: 24px; height: 24px; opacity: 0.4; }
 
-.footer 									{ text-align: center; color: grey; }
-.footer p									{ margin: 0px; font-weight: normal; }
-.span1										{ margin-left: 0px; position: relative; left: 40px; z-index: 1;}
-.span2										{ margin-left: 0px; position: relative; left: 1080px; top: 0px; z-index: 1; }
-.canvas										{ margin: 0px; position: relative; height: 520px; }
-svg											{ position: absolute; left: 0; }
+table 										{ margin: 10px; }
+table tr, td								{ padding: 3px; text-align: center; }
 
 #opl-panel									{ display: none; height: 200px; background-color: whiteSmoke; margin: 0px 60px; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
 .slide										{ margin: 0px 60px; border-top: 3px solid grey; }					
 .btn-slide									{ margin-left: 670px; position: relative; top: -10px; }	
 
-table 										{ margin: 10px; }
-table tr, td								{ padding: 3px; text-align: center; }
+.span1										{ margin-left: 0px; position: relative; left: 40px; z-index: 1;}
+.span2										{ margin-left: 0px; position: relative; left: 1080px; top: 0px; z-index: 1; }
+.canvas										{ margin: 0px; position: relative; height: 520px; }
+svg											{ position: absolute; left: 0; }
+svg .drag									{ cursor: move; }
+
+.footer 									{ text-align: center; color: grey; }
+.footer p									{ margin: 0px; font-weight: normal; }
+
+
