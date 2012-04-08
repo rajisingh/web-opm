@@ -11,18 +11,3 @@
 function randomFromTo(from, to) {
 	return Math.floor(Math.random() * (to - from + 1) + from);
 }
-
-function cursorChange(evt) {
-	var element = evt.target;
-	switch (element.nodeName) {
-		case 'rect':
-			element.setAttributeNS(null, 'style', 'cursor: move');
-			break;
-		case 'image':
-			element.setAttributeNS(null, 'style', 'cursor: se-resize');
-			break;
-		case 'text':
-			element.setAttributeNS(null, 'style', 'cursor: pointer');
-			break;
-	}
-}

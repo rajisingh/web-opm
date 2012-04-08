@@ -18,7 +18,10 @@ a:hover										{ color: green; }
 .span2										{ margin-left: 0px; position: relative; left: 1080px; top: 0px; z-index: 1; }
 .canvas										{ margin: 0px; position: relative; height: 520px; }
 svg											{ position: absolute; left: 0; }
-
+svg ellipse, rect							{ cursor: move; }
+svg text									{ cursor: pointer; }
+svg image									{ cursor: se-resize; }
+	
 #opl-panel									{ display: none; height: 200px; background-color: whiteSmoke; margin: 0px 60px; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
 .slide										{ margin: 0px 60px; border-top: 3px solid grey; }					
 .btn-slide									{ margin-left: 670px; position: relative; top: -10px; }	
