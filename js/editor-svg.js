@@ -32,7 +32,6 @@ function createSVGElement(root, element) {
 			rect.setAttributeNS(null, 'fill', 'white');
 			rect.setAttributeNS(null, 'stroke', 'limeGreen');
 			rect.setAttributeNS(null, 'stroke-width', '2');
-			rect.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
 			root.appendChild(rect);
 			var rectName = document.createElementNS(svgNS, 'text');
 			rectName.setAttributeNS(null, 'x', rect.x.baseVal.value + 26);
@@ -40,7 +39,6 @@ function createSVGElement(root, element) {
 			rectName.setAttributeNS(null, 'font-family', 'Helvetica');
 			rectName.setAttributeNS(null, 'font-weight', 'bold');
 			rectName.setAttributeNS(null, 'font-size', '15');	
-			rectName.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
 			var caption = document.createTextNode('Object ' + objId);
 			rectName.appendChild(caption);
 			root.appendChild(rectName);
@@ -50,7 +48,7 @@ function createSVGElement(root, element) {
 			grip.setAttributeNS(null, 'width', '9');
 			grip.setAttributeNS(null, 'height', '9');
 			grip.setAttributeNS(xlinkNS, 'xlink:href', 'img/gripsmall-se.png');
-			grip.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
+			grip.setAttributeNS(null, 'visibility', 'hidden');
 			root.appendChild(grip);
 			break;
 		case 'process':
@@ -62,7 +60,6 @@ function createSVGElement(root, element) {
 			ellipse.setAttributeNS(null, 'fill', 'white');
 			ellipse.setAttributeNS(null, 'stroke', 'RoyalBlue');
 			ellipse.setAttributeNS(null, 'stroke-width', '2');
-			ellipse.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
 			root.appendChild(ellipse);
 			var elName = document.createElementNS(svgNS, 'text');
 			elName.setAttributeNS(null, 'x', ellipse.cx.baseVal.value - 33);
@@ -70,7 +67,6 @@ function createSVGElement(root, element) {
 			elName.setAttributeNS(null, 'font-family', 'Helvetica');
 			elName.setAttributeNS(null, 'font-weight', 'bold');
 			elName.setAttributeNS(null, 'font-size', '15');	
-			elName.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
 			var caption = document.createTextNode('Process ' + prcId);
 			elName.appendChild(caption);
 			root.appendChild(elName);
@@ -80,7 +76,7 @@ function createSVGElement(root, element) {
 			grip.setAttributeNS(null, 'width', '9');
 			grip.setAttributeNS(null, 'height', '9');
 			grip.setAttributeNS(xlinkNS, 'xlink:href', 'img/gripsmall-se.png');
-			grip.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
+			grip.setAttributeNS(null, 'visibility', 'hidden');
 			root.appendChild(grip);
 			break;
 	}	 
@@ -117,6 +113,8 @@ function select(evt) {
 	}
 	if (activeElement) {
 		activeElement.firstChild.setAttributeNS(null, 'fill', 'whiteSmoke');
+		var grip = activeElement.getElementsByTagNameNS(svgNS, 'image').item(0);
+		grip.setAttributeNS(null, 'visibility', 'visable');
 		activeElement.setAttributeNS(null, 'onmousedown', 'pick(evt)');
 	}
 	else {
@@ -125,6 +123,8 @@ function select(evt) {
 }
 function deselect(evt) {
 	activeElement.firstChild.setAttributeNS(null, 'fill', 'white');
+	var grip = activeElement.getElementsByTagNameNS(svgNS, 'image').item(0);
+	grip.setAttributeNS(null, 'visibility', 'hidden');
 	activeElement.setAttributeNS(null, 'onmousedown', null);
 	activeElement.setAttributeNS(null, 'onmousemove', null);
 	activeElement = null;
