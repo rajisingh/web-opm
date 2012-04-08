@@ -55,15 +55,33 @@ function createSVGElement(root, element) {
 			break;
 		case 'process':
 			var ellipse = document.createElementNS(svgNS, 'ellipse');
-			ellipse.setAttributeNS(null, 'x', randomFromTo(90, 1150));
-			ellipse.setAttributeNS(null, 'y', randomFromTo(5, 420));
-			ellipse.setAttributeNS(null, 'width', '60');
-			ellipse.setAttributeNS(null, 'height', '40');
+			ellipse.setAttributeNS(null, 'cx', randomFromTo(90, 1150));
+			ellipse.setAttributeNS(null, 'cy', randomFromTo(5, 420));
+			ellipse.setAttributeNS(null, 'rx', '60');
+			ellipse.setAttributeNS(null, 'ry', '40');
 			ellipse.setAttributeNS(null, 'fill', 'white');
 			ellipse.setAttributeNS(null, 'stroke', 'RoyalBlue');
 			ellipse.setAttributeNS(null, 'stroke-width', '2');
 			ellipse.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
 			root.appendChild(ellipse);
+			var elName = document.createElementNS(svgNS, 'text');
+			elName.setAttributeNS(null, 'x', ellipse.cx.baseVal.value - 33);
+			elName.setAttributeNS(null, 'y', ellipse.cy.baseVal.value + 6);
+			elName.setAttributeNS(null, 'font-family', 'Helvetica');
+			elName.setAttributeNS(null, 'font-weight', 'bold');
+			elName.setAttributeNS(null, 'font-size', '15');	
+			elName.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
+			var caption = document.createTextNode('Process ' + prcId);
+			elName.appendChild(caption);
+			root.appendChild(elName);
+			var grip = document.createElementNS(svgNS, 'image');
+			grip.setAttributeNS(null, 'x', ellipse.cx.baseVal.value + 51);
+			grip.setAttributeNS(null, 'y', ellipse.cy.baseVal.value + 31);
+			grip.setAttributeNS(null, 'width', '9');
+			grip.setAttributeNS(null, 'height', '9');
+			grip.setAttributeNS(xlinkNS, 'xlink:href', 'img/gripsmall-se.png');
+			grip.setAttributeNS(null, 'onmouseover', 'cursorChange(evt)');
+			root.appendChild(grip);
 			break;
 	}	 
 }	
