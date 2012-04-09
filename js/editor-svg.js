@@ -122,12 +122,14 @@ function select(evt) {
 	}
 }
 function deselect(evt) {
-	activeElement.firstChild.setAttributeNS(null, 'fill', 'white');
-	var grip = activeElement.getElementsByTagNameNS(svgNS, 'image').item(0);
-	grip.setAttributeNS(null, 'visibility', 'hidden');
-	activeElement.setAttributeNS(null, 'onmousedown', null);
-	activeElement.setAttributeNS(null, 'onmousemove', null);
-	activeElement = null;
+	if (activeElement !== null) {
+		activeElement.firstChild.setAttributeNS(null, 'fill', 'white');
+		var grip = activeElement.getElementsByTagNameNS(svgNS, 'image').item(0);
+		grip.setAttributeNS(null, 'visibility', 'hidden');
+		activeElement.setAttributeNS(null, 'onmousedown', null);
+		activeElement.setAttributeNS(null, 'onmousemove', null);
+		activeElement = null;
+	}
 }
 function pick(evt) {
 	activeElement.setAttributeNS(null, 'onmousemove', 'dragging(evt)');
@@ -149,4 +151,16 @@ function dragging(evt) {
 }
 function drop(evt) {
 	return deselect()
+}
+function diagramSVGzoom(scale) {
+	deselect();
+	var diagramWidth = activeDiagram.getBBox().width + 2;
+	var diagramHeight = activeDiagram.getBBox().height + 2;
+	var scaleMatrix = activeDiagram.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
+	for (var i = 0; i < scaleMatrix.length; i++) { scaleMatrix[i] = parseFloat(scaleMatrix[i]); }
+	for (var i = 0; i < scaleMatrix.length; i++) { scaleMatrix[i] *= scale; }
+	scaleMatrix[4] += (1 - scale) * diagramWidth / 2;
+	scaleMatrix[5] += (1 - scale) * diagramHeight / 2;
+	var newMatrix = "matrix(" + scaleMatrix.join(' ') + ")";
+	activeDiagram.setAttributeNS(null, 'transform', newMatrix);
 }
