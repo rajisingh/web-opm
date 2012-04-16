@@ -8,6 +8,11 @@
  * Author: Sergey N. Bolshchikov  
  * */
 
+/*FIXME:
+ * 1. Rewrite function addSVG... w/ try and catch()
+ * 2. Create basic OPM classes
+ * 3. Finish function addSVGState()*/
+
 var svg = document.getElementsByTagName('svg')[0];
 var svgNS = svg.getAttribute('xmlns');
 var xlinkNS = svg.getAttribute('xmlns:xlink');
@@ -19,9 +24,11 @@ var currentY = 0;
 var currentMatrix = 0;
 var objId = 0;
 var prcId = 0;
+var sttId = 0;
 
 
 function createSVGElement(root, element) {
+	if (activeElement !== null) { deselect(); }
 	switch (element){
 		case 'object':
 			var rect = document.createElementNS(svgNS, 'rect');
@@ -79,12 +86,38 @@ function createSVGElement(root, element) {
 			grip.setAttributeNS(null, 'visibility', 'hidden');
 			root.appendChild(grip);
 			break;
+		case 'state':
+			var paddingX = 10;
+			var paddingY = 5
+			var state = document.createElementNS(svgNS, 'rect');
+			var x = activeElement.x.baseVal.value + paddingX;
+			var y = activeElement.y.baseVal.value + activeElement.height.baseVal.value - paddingY;
+			state.setAttributeNS(null, 'x', x);
+			state.setAttributeNS(null, 'y', y);
+			state.setAttributeNS(null, 'width', '85');
+			state.setAttributeNS(null, 'height', '25');
+			state.setAttributeNS(null, 'fill', 'white');
+			state.setAttributeNS(null, 'stroke', 'limeGreen');
+			state.setAttributeNS(null, 'stroke-width', '1');
+			root.appendChild(state);
+			var stateName = document.createElementNS(svgNS, 'text');
+			stateName.setAttributeNS(null, 'x', state.x.baseVal.value + 6);
+			stateName.setAttributeNS(null, 'y', state.y.baseVal.value + 3);
+			stateName.setAttributeNS(null, 'font-family', 'Helvetica');
+			stateName.setAttributeNS(null, 'font-weight', 'bold');
+			stateName.setAttributeNS(null, 'font-size', '15');	
+			var caption = document.createTextNode('State ' + sttId);
+			stateName.appendChild(caption);
+			root.appendChild(stateName);
+			
+			break;
 	}	 
 }	
 function addSVGObject() {
 	objId++;
 	var obj = document.createElementNS(svgNS, 'g');
 	obj.setAttributeNS(null, 'id', 'obj' + objId);
+	obj.setAttributeNS(null, 'type', 'object');
 	obj.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	obj.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeDiagram.appendChild(obj);
@@ -95,11 +128,49 @@ function addSVGProcess() {
 	prcId++;
 	var prc = document.createElementNS(svgNS, 'g');
 	prc.setAttributeNS(null, 'id', 'prc' + prcId);
+	prc.setAttributeNS(null, 'type', 'process');
 	prc.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	prc.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeDiagram.appendChild(prc);
 	createSVGElement(prc, 'process');
 }
+
+function addSVGState() {
+	try {
+		//Check
+		if (activeElement === null) {
+			var msg = "Please, click on the relevant object first";
+			var err = new Error(msg);
+			if (!err.message) {
+				err.message = msg;
+			}
+			throw err;
+		}
+		else {
+			var type = activeElement.getAttributeNS(null, 'type');
+			if (type == 'process') {
+				var msg = "Process cannot have a state";
+				var err = new Error(msg);
+				if (!err.message) {
+					err.message = msg;
+				}
+				throw err;
+			}
+			
+			//Execute this if error are caught
+			sttId++;
+			var stt = document.createElementNS(svgNS, 'g');
+			stt.setAttributeNS(null, 'id', 'stt' + sttId);
+			stt.setAttributeNS(null, 'type', 'state');
+			activeElement.appendChild(stt);
+			createSVGElement(stt, 'state');
+		}		
+		
+	}
+	catch(e) {
+		alert(e.message);
+	}
+} 
 
 function select(evt) {
 	if (evt.currentTarget !== activeElement) {
@@ -159,8 +230,8 @@ function diagramSVGzoom(scale) {
 	var scaleMatrix = activeDiagram.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
 	for (var i = 0; i < scaleMatrix.length; i++) { scaleMatrix[i] = parseFloat(scaleMatrix[i]); }
 	for (var i = 0; i < scaleMatrix.length; i++) { scaleMatrix[i] *= scale; }
-	scaleMatrix[4] += (1 - scale) * diagramWidth / 2;
-	scaleMatrix[5] += (1 - scale) * diagramHeight / 2;
+	scaleMatrix[4] += (1 - scale) * diagramWidth/2;
+	scaleMatrix[5] += (1 - scale) * diagramHeight/2;
 	var newMatrix = "matrix(" + scaleMatrix.join(' ') + ")";
 	activeDiagram.setAttributeNS(null, 'transform', newMatrix);
 }
