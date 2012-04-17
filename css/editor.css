@@ -11,6 +11,9 @@ a:hover										{ color: green; }
 
 .header										{ margin-top: 50px; margin-left: 40px; }
 .social	img									{ width: 24px; height: 24px; opacity: 0.4; }
+.model-body									{ padding: 15px; }
+#model-name									{ cursor: pointer; color: black; padding: 3px; }
+#model-name:hover							{ text-decoration: none; background-color: #EEE; }
 
 .footer 									{ text-align: center; color: grey; }
 .footer p									{ margin: 0px; font-weight: normal; }
