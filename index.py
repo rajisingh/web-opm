@@ -1,3 +1,14 @@
+'''
+ Web OPM: online case tool for Object-Process Methodology
+ Copyright © 2012 Israel Institute of Technology - Technion
+ The code is licensed under GNU General Public License, v2
+  
+ File context description:
+ Main handlers URI handlers
+ 
+ Author: Sergey N. Bolshchikov
+'''
+
 import webapp2
 import jinja2
 

@@ -3,7 +3,8 @@
  * Copyright © 2012 Israel Institute of Technology - Technion
  * The code is licensed under GNU General Public License, v2
  * 
- * Context:bindings of initial events for interactive GUI
+ * File context description:
+ * Bindings of initial events for interactive GUI
  *
  * Author: Sergey N. Bolshchikov
  * */
@@ -22,6 +23,7 @@ $(document).ready(function(){
 });
 
 function rename() {
+	//Rename Model
 	$('#model-rename').modal('show');
 }
 
