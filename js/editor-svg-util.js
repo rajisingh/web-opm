@@ -3,7 +3,8 @@
  * Copyright © 2012 Israel Institute of Technology - Technion
  * The code is licensed under GNU General Public License, v2
  * 
- * Context: set of util functions for work w/ SVG canvas
+ * File context description:
+ * Set of util functions for work w/ SVG canvas
  * 
  * Author: Sergey N. Bolshchikov  
  * */
