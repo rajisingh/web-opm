@@ -28,7 +28,6 @@ var sttId = 0;
 
 
 function createSVGElement(root, element) {
-	if (activeElement !== null) { deselect(); }
 	switch (element){
 		case 'object':
 			var rect = document.createElementNS(svgNS, 'rect');
@@ -87,33 +86,38 @@ function createSVGElement(root, element) {
 			root.appendChild(grip);
 			break;
 		case 'state':
+			//Draw state
 			var paddingX = 10;
 			var paddingY = 5
 			var state = document.createElementNS(svgNS, 'rect');
-			var x = activeElement.x.baseVal.value + paddingX;
-			var y = activeElement.y.baseVal.value + activeElement.height.baseVal.value - paddingY;
+			var x = activeElement.firstChild.x.baseVal.value + paddingX;
+			var y = activeElement.firstChild.y.baseVal.value + activeElement.firstChild.height.baseVal.value - paddingY;
 			state.setAttributeNS(null, 'x', x);
 			state.setAttributeNS(null, 'y', y);
-			state.setAttributeNS(null, 'width', '85');
+			state.setAttributeNS(null, 'rx', '6');
+			state.setAttributeNS(null, 'ry', '6')
+			state.setAttributeNS(null, 'width', '70');
 			state.setAttributeNS(null, 'height', '25');
 			state.setAttributeNS(null, 'fill', 'white');
-			state.setAttributeNS(null, 'stroke', 'limeGreen');
+			state.setAttributeNS(null, 'stroke', '#002e00');
 			state.setAttributeNS(null, 'stroke-width', '1');
 			root.appendChild(state);
 			var stateName = document.createElementNS(svgNS, 'text');
-			stateName.setAttributeNS(null, 'x', state.x.baseVal.value + 6);
-			stateName.setAttributeNS(null, 'y', state.y.baseVal.value + 3);
+			stateName.setAttributeNS(null, 'x', state.x.baseVal.value + 12);
+			stateName.setAttributeNS(null, 'y', state.y.baseVal.value + 17);
 			stateName.setAttributeNS(null, 'font-family', 'Helvetica');
 			stateName.setAttributeNS(null, 'font-weight', 'bold');
-			stateName.setAttributeNS(null, 'font-size', '15');	
+			stateName.setAttributeNS(null, 'font-size', '13');	
 			var caption = document.createTextNode('State ' + sttId);
 			stateName.appendChild(caption);
 			root.appendChild(stateName);
 			
+			//Resize the rect
 			break;
 	}	 
 }	
 function addSVGObject() {
+	if (activeElement !== null) { deselect(); }
 	objId++;
 	var obj = document.createElementNS(svgNS, 'g');
 	obj.setAttributeNS(null, 'id', 'obj' + objId);
@@ -125,6 +129,7 @@ function addSVGObject() {
 }
 
 function addSVGProcess() {
+	if (activeElement !== null) { deselect(); }
 	prcId++;
 	var prc = document.createElementNS(svgNS, 'g');
 	prc.setAttributeNS(null, 'id', 'prc' + prcId);
@@ -164,8 +169,7 @@ function addSVGState() {
 			stt.setAttributeNS(null, 'type', 'state');
 			activeElement.appendChild(stt);
 			createSVGElement(stt, 'state');
-		}		
-		
+		}			
 	}
 	catch(e) {
 		alert(e.message);
