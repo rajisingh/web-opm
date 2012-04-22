@@ -9,6 +9,8 @@
  *  Author: Sergey N. Bolshchikov
  * */
 
+//FIXME: Extract common methods into one function and inherit from her
+
 function UIDiagram(id) {
 	this.id = id;
 	this.width = null;
@@ -59,7 +61,92 @@ UIName.prototype.updateSize = function(newSize) {
 	this.fontSize = newSize;
 }
  
-function UIObject(x, y) {}
-function UIProcess(cx, cy, rx, ry) {}
-function UIState() {}
-function UILink() {}
+function UIObject(x, y) {
+	this.x = x;
+	this.y = y;
+	this.width = 110;
+	this.height = 70;
+	this.fill = 'white';
+	this.stroke = 'limeGreen';
+	this.strokeWidth = 2;
+}
+UIObject.prototype.updateLocation = function(newX, newY) {
+	this.x = newX;
+	this.y = newY;
+}
+UIObject.prototype.updateSize = function(newWidth, newHeight) {
+	this.width = newWidth;
+	this.height = newHeight;
+}
+UIObject.prototype.updateColor = function(color) {
+	this.fill = color
+}
+UIObject.prototype.updateBorder = function(newStroke, newStrokeWidth) {
+	this.stroke = newStroke;
+	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
+}
+
+function UIProcess(cx, cy) {
+	this.cx = cx;
+	this.cy = cy;
+	this.rx = 60;
+	this.ry = 40;
+	this.fill = 'white';
+	this.stroke = 'RoyalBlue';
+	this.strokeWidth = 2
+}
+UIProcess.prototype.updateLocation = function(newX, newY) {
+	this.cx = newX;
+	this.cy = newY;
+}
+UIProcess.prototype.updateSize = function(newRx, newRy) {
+	this.rx = newRx;
+	this.ry = newRy;
+}
+UIProcess.prototype.updateColor = function(color) {
+	this.fill = color
+}
+UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
+	this.stroke = newStroke;
+	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
+}
+function UIState(x, y) {
+	this.x = x;
+	this.y = y;
+	this.rx = null;			//Change
+	this.ry = null;			//Change
+	this.width = null;		//Change to real digits
+	this.height = null; 	//Change to real digits
+	this.fill = 'white';
+	this.stroke = null;
+	this.strokeWidth = 2
+}
+UIState.prototype.updateLocation = function(newX, newY) {
+	this.x = newX;
+	this.y = newY;
+}
+UIState.prototype.updateSize = function(newRx, newRy, newWidth, newHeight) {
+	this.rx = newRx;
+	this.ry = newRy;
+	this.width = newWidth;
+	this.height = newHeight;
+}
+UIState.prototype.updateColor = function(color) {
+	this.fill = color;
+}
+UIState.prototype.updateBorder = function(newStroke, newStrokeWidth) {
+	this.stroke = newStroke;
+	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
+}
+function UILink(d) {
+	this.d = d;
+	this.fill = 'none';
+	this.stroke = 'black';
+	this.strokeWidth = 3;
+}
+UILink.prototype.updateLink = function(newD) {
+	this.d = newD;
+}
+UILink.prototype.updateColor = function(color) {
+	this.stroke = color;
+}
