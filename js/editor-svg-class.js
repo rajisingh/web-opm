@@ -37,15 +37,24 @@ UIGroup.prototype.setName = function(name) {
 	this.name = name;
 }
 
-function UIName(x, y) {
+function UIName(obj) {
 	//Class holding the name of any element
-	this.x = x;
-	this.y = y;
-	this.fill = black;
+	this.x = obj.x + 26;
+	this.y = obj.y + 42;
+	this.fill = 'black';
 	this.fontFamily = 'Helvetica';
 	this.fontWeight = 'bold';
 	this.fontSize = '15';
-	this.value = null;
+	switch(obj.id.slice(0, 3)){
+	case 'obj':
+		this.value = 'Object ' + obj.id.slice(3);
+		break;
+	case 'prc':
+		this.value = 'Process ' + obj.id.slice(3);
+		break;
+	case 'stt':
+		this.value = 'State ' + obj.id.slice(3);
+	}
 }
 UIName.prototype.rename = function(newName) {
 	this.value = newName;
@@ -61,15 +70,58 @@ UIName.prototype.updateSize = function(newSize) {
 	this.fontSize = newSize;
 }
  
-function UIObject(x, y) {
-	this.x = x;
-	this.y = y;
+function UIObject(id) {
+	this.id = 'obj' + id;
+	this.x = randomFromTo(90, 1150);
+	this.y = randomFromTo(5, 420);
 	this.width = 110;
 	this.height = 70;
 	this.fill = 'white';
 	this.stroke = 'limeGreen';
 	this.strokeWidth = 2;
+	this.name = new UIName(this);
 }
+UIObject.prototype.draw = function() {
+	//Draw a group first
+	var group = document.createElementNS(svgNS, 'g');
+	group.setAttributeNS(null, 'id', 'obj' + objId);
+	group.setAttributeNS(null, 'type', 'object');
+	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	group.setAttributeNS(null, 'onclick', 'select(evt)');
+	activeDiagram.appendChild(group);
+	//Draw rectangle, appended to the group
+	var rect = document.createElementNS(svgNS, 'rect');
+	rect.setAttributeNS(null, 'x', this.x);
+	rect.setAttributeNS(null, 'y', this.y);
+	rect.setAttributeNS(null, 'width', this.width);
+	rect.setAttributeNS(null, 'height', this.height);
+	rect.setAttributeNS(null, 'fill', this.fill);
+	rect.setAttributeNS(null, 'stroke', this.stroke);
+	rect.setAttributeNS(null, 'stroke-width', this.strokeWidth);
+	group.appendChild(rect);
+	//Draw grip
+	var grip = document.createElementNS(svgNS, 'image');
+	grip.setAttributeNS(null, 'x', this.x + 100);
+	grip.setAttributeNS(null, 'y', this.y + 60);
+	grip.setAttributeNS(null, 'width', '9');
+	grip.setAttributeNS(null, 'height', '9');
+	grip.setAttributeNS(xlinkNS, 'xlink:href', 'img/gripsmall-se.png');
+	grip.setAttributeNS(null, 'visibility', 'hidden');
+	group.appendChild(grip);
+	//Draw name
+	var rectName = document.createElementNS(svgNS, 'text');
+	rectName.setAttributeNS(null, 'x', this.name.x);
+	rectName.setAttributeNS(null, 'y', this.name.y);
+	rectName.setAttributeNS(null, 'font-family', this.name.fontFamily);
+	rectName.setAttributeNS(null, 'font-weight', this.name.fontWeight);
+	rectName.setAttributeNS(null, 'font-size', this.name.fontSize);	
+	var caption = document.createTextNode(this.name.value);
+	rectName.appendChild(caption);
+	group.appendChild(rectName);
+	
+}
+
+
 UIObject.prototype.updateLocation = function(newX, newY) {
 	this.x = newX;
 	this.y = newY;
