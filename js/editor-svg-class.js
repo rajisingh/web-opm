@@ -9,18 +9,19 @@
  *  Author: Sergey N. Bolshchikov
  * */
 
-var UIDiagramList = new Object();
-//Hash Table to keep all diagrams
-UIDiagramList.addDiagram = function(diagram) {
-	this[diagram.id] = diagram;
-}
 
 function UIDiagram(id) {
 	this.id = id;
-	this.width = null;
-	this.height = null;
-	this.transform = null;
+	this.transform = 'matrix(1 0 0 1 0 0)';
+	this.active = true;
 	this.elements = { };
+}
+UIDiagram.prototype.draw = function() {
+	var group = document.createElementNS(svgNS, 'g');
+	group.setAttributeNS(null, 'id', this.id);
+	group.setAttributeNS(null, 'type', 'diagram');
+	group.setAttributeNS(null, 'transform', this.transform);
+	svg.appendChild(group);
 }
 UIDiagram.prototype.addElement = function(element) {
 	this.elements[element.id] = element;
@@ -81,7 +82,7 @@ UIObject.prototype.draw = function() {
 	group.setAttributeNS(null, 'type', 'object');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
-	activeDiagram.appendChild(group);
+	activeSVGDiagram.appendChild(group);
 	//Draw rectangle, appended to the group
 	var rect = document.createElementNS(svgNS, 'rect');
 	rect.setAttributeNS(null, 'x', this.x);
@@ -146,7 +147,7 @@ UIProcess.prototype.draw = function() {
 	group.setAttributeNS(null, 'type', 'process');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
-	activeDiagram.appendChild(group);
+	activeSVGDiagram.appendChild(group);
 	var ellipse = document.createElementNS(svgNS, 'ellipse');
 	ellipse.setAttributeNS(null, 'cx', this.x);
 	ellipse.setAttributeNS(null, 'cy', this.y);
@@ -191,7 +192,8 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-function UIState(x, y) {
+function UIState(id) {
+	this.id = 'stt' + id;
 	this.x = x;
 	this.y = y;
 	this.rx = null;			//Change
@@ -231,3 +233,19 @@ UILink.prototype.updateLink = function(newD) {
 UILink.prototype.updateColor = function(color) {
 	this.stroke = color;
 }
+
+//Data Structure Implementation
+//Data Structure 
+var UIDiagramList = { };
+//Data Structure Methods
+UIDiagramList.addDiagram = function(diagram) {	
+	this[diagram.id] = diagram;
+}
+UIDiagramList.returnActive = function() {
+	for (d in this) {
+		if (this[d].active === true) { return this[d]; }
+	}
+}
+// Data Structure Initialization
+var diag = new UIDiagram('sd');
+UIDiagramList[diag.id] = diag;
