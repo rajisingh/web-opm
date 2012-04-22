@@ -26,7 +26,6 @@ var objId = 0;
 var prcId = 0;
 var sttId = 0;
 
-
 function createSVGElement(root, element) {
 	switch (element){
 		case 'object':
@@ -126,18 +125,19 @@ function addSVGObject() {
 	catch(e) {
 		alert(e.message);
 	}
-/*	
-	var obj = document.createElementNS(svgNS, 'g');
-	obj.setAttributeNS(null, 'id', 'obj' + objId);
-	obj.setAttributeNS(null, 'type', 'object');
-	obj.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
-	obj.setAttributeNS(null, 'onclick', 'select(evt)');
-	activeDiagram.appendChild(obj);
-	createSVGElement(obj, 'object');
-*/
 }
 
 function addSVGProcess() {
+	try {
+		if (activeElement !== null) { deselect(); }
+		prcId++;
+		var prc = new UIProcess(prcId);
+		prc.draw();
+	}
+	catch(e) {
+		alert(e.message);
+	}
+/*
 	if (activeElement !== null) { deselect(); }
 	prcId++;
 	var prc = document.createElementNS(svgNS, 'g');
@@ -147,6 +147,7 @@ function addSVGProcess() {
 	prc.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeDiagram.appendChild(prc);
 	createSVGElement(prc, 'process');
+*/
 }
 
 function addSVGState() {

@@ -9,7 +9,11 @@
  *  Author: Sergey N. Bolshchikov
  * */
 
-//FIXME: Extract common methods into one function and inherit from her
+var UIDiagramList = new Object();
+//Hash Table to keep all diagrams
+UIDiagramList.addDiagram = function(diagram) {
+	this[diagram.id] = diagram;
+}
 
 function UIDiagram(id) {
 	this.id = id;
@@ -22,38 +26,23 @@ UIDiagram.prototype.addElement = function(element) {
 	this.elements[element.id] = element;
 }
 
-function UIGroup(id) {
-	//Group consist of 3 elements: shape(obj, prc, stt), name and grip icon
-	this.id = id;
-	this.tranform = null;
-	this.shape = null;
-	this.name = null;
-	this.grip = 'img/gripsmall-se.png';
-}
-UIGroup.prototype.setShape = function(shape) {
-	this.shape = shape;
-}
-UIGroup.prototype.setName = function(name) {
-	this.name = name;
-}
-
-function UIName(obj) {
+function UIName(el) {
 	//Class holding the name of any element
-	this.x = obj.x + 26;
-	this.y = obj.y + 42;
+	this.x = null;
+	this.y = null;
 	this.fill = 'black';
 	this.fontFamily = 'Helvetica';
 	this.fontWeight = 'bold';
 	this.fontSize = '15';
-	switch(obj.id.slice(0, 3)){
+	switch(el.id.slice(0, 3)){
 	case 'obj':
-		this.value = 'Object ' + obj.id.slice(3);
+		this.value = 'Object ' + el.id.slice(3);
 		break;
 	case 'prc':
-		this.value = 'Process ' + obj.id.slice(3);
+		this.value = 'Process ' + el.id.slice(3);
 		break;
 	case 'stt':
-		this.value = 'State ' + obj.id.slice(3);
+		this.value = 'State ' + el.id.slice(3);
 	}
 }
 UIName.prototype.rename = function(newName) {
@@ -80,11 +69,15 @@ function UIObject(id) {
 	this.stroke = 'limeGreen';
 	this.strokeWidth = 2;
 	this.name = new UIName(this);
+	this.states = { }
+}
+UIObject.prototype.addState = function(state) {
+	this.states[state.id] = state;
 }
 UIObject.prototype.draw = function() {
 	//Draw a group first
 	var group = document.createElementNS(svgNS, 'g');
-	group.setAttributeNS(null, 'id', 'obj' + objId);
+	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'type', 'object');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
@@ -109,6 +102,7 @@ UIObject.prototype.draw = function() {
 	grip.setAttributeNS(null, 'visibility', 'hidden');
 	group.appendChild(grip);
 	//Draw name
+	this.name.updateLocation(this.x + 26, this.y + 42);
 	var rectName = document.createElementNS(svgNS, 'text');
 	rectName.setAttributeNS(null, 'x', this.name.x);
 	rectName.setAttributeNS(null, 'y', this.name.y);
@@ -118,10 +112,7 @@ UIObject.prototype.draw = function() {
 	var caption = document.createTextNode(this.name.value);
 	rectName.appendChild(caption);
 	group.appendChild(rectName);
-	
 }
-
-
 UIObject.prototype.updateLocation = function(newX, newY) {
 	this.x = newX;
 	this.y = newY;
@@ -138,14 +129,51 @@ UIObject.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-function UIProcess(cx, cy) {
-	this.cx = cx;
-	this.cy = cy;
+function UIProcess(id) {
+	this.id = 'prc'+ id;
+	this.x = randomFromTo(90, 1150);
+	this.y = randomFromTo(5, 420);
 	this.rx = 60;
 	this.ry = 40;
 	this.fill = 'white';
 	this.stroke = 'RoyalBlue';
-	this.strokeWidth = 2
+	this.strokeWidth = 2;
+	this.name = new UIName(this);
+}
+UIProcess.prototype.draw = function() {
+	var group = document.createElementNS(svgNS, 'g');
+	group.setAttributeNS(null, 'id', this.id);
+	group.setAttributeNS(null, 'type', 'process');
+	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	group.setAttributeNS(null, 'onclick', 'select(evt)');
+	activeDiagram.appendChild(group);
+	var ellipse = document.createElementNS(svgNS, 'ellipse');
+	ellipse.setAttributeNS(null, 'cx', this.x);
+	ellipse.setAttributeNS(null, 'cy', this.y);
+	ellipse.setAttributeNS(null, 'rx', this.rx);
+	ellipse.setAttributeNS(null, 'ry', this.ry);
+	ellipse.setAttributeNS(null, 'fill', this.fill);
+	ellipse.setAttributeNS(null, 'stroke', this.stroke);
+	ellipse.setAttributeNS(null, 'stroke-width', this.strokeWidth);
+	group.appendChild(ellipse);
+	var grip = document.createElementNS(svgNS, 'image');
+	grip.setAttributeNS(null, 'x', this.x + 51);
+	grip.setAttributeNS(null, 'y', this.y + 31);
+	grip.setAttributeNS(null, 'width', '9');
+	grip.setAttributeNS(null, 'height', '9');
+	grip.setAttributeNS(xlinkNS, 'xlink:href', 'img/gripsmall-se.png');
+	grip.setAttributeNS(null, 'visibility', 'hidden');
+	group.appendChild(grip);
+	this.name.updateLocation(this.x - 33, this.y + 6);
+	var elName = document.createElementNS(svgNS, 'text');
+	elName.setAttributeNS(null, 'x', this.name.x);
+	elName.setAttributeNS(null, 'y', this.name.y);
+	elName.setAttributeNS(null, 'font-family', this.name.fontFamily);
+	elName.setAttributeNS(null, 'font-weight', this.name.fontWeight);
+	elName.setAttributeNS(null, 'font-size', this.name.fontSize);	
+	var caption = document.createTextNode(this.name.value);
+	elName.appendChild(caption);
+	group.appendChild(elName);
 }
 UIProcess.prototype.updateLocation = function(newX, newY) {
 	this.cx = newX;
@@ -162,6 +190,7 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	this.stroke = newStroke;
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
+
 function UIState(x, y) {
 	this.x = x;
 	this.y = y;
