@@ -117,8 +117,16 @@ function createSVGElement(root, element) {
 	}	 
 }	
 function addSVGObject() {
-	if (activeElement !== null) { deselect(); }
-	objId++;
+	try {
+		if (activeElement !== null) { deselect(); }
+		objId++;
+		var obj = new UIObject(objId);
+		obj.draw();
+	}
+	catch(e) {
+		alert(e.message);
+	}
+/*	
 	var obj = document.createElementNS(svgNS, 'g');
 	obj.setAttributeNS(null, 'id', 'obj' + objId);
 	obj.setAttributeNS(null, 'type', 'object');
@@ -126,6 +134,7 @@ function addSVGObject() {
 	obj.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeDiagram.appendChild(obj);
 	createSVGElement(obj, 'object');
+*/
 }
 
 function addSVGProcess() {
@@ -176,57 +185,7 @@ function addSVGState() {
 	}
 } 
 
-function select(evt) {
-	if (evt.currentTarget !== activeElement) {
-		if (activeElement == null) {
-			activeElement = evt.currentTarget;
-		}
-		else {
-			deselect();
-			activeElement = evt.currentTarget;
-		}
-	}
-	if (activeElement) {
-		activeElement.firstChild.setAttributeNS(null, 'fill', 'whiteSmoke');
-		var grip = activeElement.getElementsByTagNameNS(svgNS, 'image').item(0);
-		grip.setAttributeNS(null, 'visibility', 'visable');
-		activeElement.setAttributeNS(null, 'onmousedown', 'pick(evt)');
-	}
-	else {
-		alert('Error: Element is not selected');
-	}
-}
-function deselect(evt) {
-	if (activeElement !== null) {
-		activeElement.firstChild.setAttributeNS(null, 'fill', 'white');
-		var grip = activeElement.getElementsByTagNameNS(svgNS, 'image').item(0);
-		grip.setAttributeNS(null, 'visibility', 'hidden');
-		activeElement.setAttributeNS(null, 'onmousedown', null);
-		activeElement.setAttributeNS(null, 'onmousemove', null);
-		activeElement = null;
-	}
-}
-function pick(evt) {
-	activeElement.setAttributeNS(null, 'onmousemove', 'dragging(evt)');
-	currentX = evt.clientX;
-	currentY = evt.clientY;
-	currentMatrix = activeElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
-	for (var i = 0; i < currentMatrix.length; i++) { currentMatrix[i] = parseFloat(currentMatrix[i]); }
-}
-function dragging(evt) {
-	activeElement.setAttributeNS(null, 'onmouseup', 'drop(evt)');
-	dx = evt.clientX - currentX;
-	dy = evt.clientY - currentY;
-	currentMatrix[4] += dx;
-	currentMatrix[5] += dy;
-	var newMatrix = "matrix(" + currentMatrix.join(' ') + ")";
-	activeElement.setAttributeNS(null, 'transform', newMatrix);
-	currentX = evt.clientX;
-	currentY = evt.clientY;
-}
-function drop(evt) {
-	return deselect()
-}
+
 function diagramSVGzoom(scale) {
 	deselect();
 	var diagramWidth = activeDiagram.getBBox().width + 2;
