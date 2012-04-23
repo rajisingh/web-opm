@@ -26,6 +26,12 @@ UIDiagram.prototype.draw = function() {
 UIDiagram.prototype.addElement = function(element) {
 	this.elements[element.id] = element;
 }
+UIDiagram.prototype.returnActive = function(id) {
+	for (el in this.elements) {
+		if (this.elements[el].id === id) { return this.elements[el]; }
+		else { alert('The active object is not found!'); }
+	}
+}
 
 function UIName(el) {
 	//Class holding the name of any element
@@ -71,9 +77,11 @@ function UIObject(id) {
 	this.strokeWidth = 2;
 	this.name = new UIName(this);
 	this.states = { }
+	this.statesAmount = 0;
 }
 UIObject.prototype.addState = function(state) {
 	this.states[state.id] = state;
+	this.statesAmount++;
 }
 UIObject.prototype.draw = function() {
 	//Draw a group first
@@ -115,19 +123,19 @@ UIObject.prototype.draw = function() {
 	group.appendChild(rectName);
 }
 UIObject.prototype.updateLocation = function(newX, newY) {
-	this.x = newX;
-	this.y = newY;
+	if (newX) { this.x = newX; }
+	if (newY) { this.y = newY; }
 }
 UIObject.prototype.updateSize = function(newWidth, newHeight) {
-	this.width = newWidth;
-	this.height = newHeight;
+	if (newWidth) { this.width = newWidth; }
+	if (newHeight) { this.height = newHeight; }
 }
 UIObject.prototype.updateColor = function(color) {
 	this.fill = color
 }
 UIObject.prototype.updateBorder = function(newStroke, newStrokeWidth) {
-	this.stroke = newStroke;
-	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
+	if (newStroke) { this.stroke = newStroke; }
+	if (newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
 function UIProcess(id) {
@@ -177,32 +185,79 @@ UIProcess.prototype.draw = function() {
 	group.appendChild(elName);
 }
 UIProcess.prototype.updateLocation = function(newX, newY) {
-	this.cx = newX;
-	this.cy = newY;
+	if (newX) { this.cx = newX; }
+	if (newY) { this.cy = newY; }
 }
 UIProcess.prototype.updateSize = function(newRx, newRy) {
-	this.rx = newRx;
-	this.ry = newRy;
+	if (newRx) { this.rx = newRx; }
+	if (newRy) { this.ry = newRy; }
 }
 UIProcess.prototype.updateColor = function(color) {
 	this.fill = color
 }
 UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
-	this.stroke = newStroke;
+	if (newStroke) { this.stroke = newStroke; }
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-function UIState(id) {
+var padding = 94;
+function UIState(id, parent) {
 	this.id = 'stt' + id;
-	this.x = x;
-	this.y = y;
-	this.rx = null;			//Change
-	this.ry = null;			//Change
-	this.width = null;		//Change to real digits
-	this.height = null; 	//Change to real digits
+	this.x = parent.x + 20;
+	this.y = parent.y + 55;
+	this.rx = 6;			
+	this.ry = 6;			
+	this.width = 70;	
+	this.height = 25; 	
 	this.fill = 'white';
-	this.stroke = null;
-	this.strokeWidth = 2
+	this.stroke = '#002e00';
+	this.strokeWidth = 1;
+	this.name = new UIName(this);
+	this.parent = parent;
+}
+UIState.prototype.draw = function(){
+	var group = document.createElementNS(svgNS, 'g');
+	group.setAttributeNS(null, 'id', this.id);
+	group.setAttributeNS(null, 'type', 'state');
+	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	activeSVGElement.appendChild(group);
+	
+	//Create place for the state rect in obj rect
+	var oldHeight = this.parent.height;
+	var newHeight = this.parent.statesAmount * padding;
+	activeSVGElement.firstChild.setAttributeNS(null, 'height', newHeight);
+	this.parent.updateSize(null, newHeight);
+	var grip = activeSVGElement.getElementsByTagNameNS(svgNS, 'image').item(0);
+	var gripY = grip.y.baseVal.value;
+	grip.setAttributeNS(null, 'y', gripY + (newHeight - oldHeight));
+	
+
+	//FIXME: Update and y coordinate of state rect
+	
+	
+	var rect = document.createElementNS(svgNS, 'rect');
+	rect.setAttributeNS(null, 'x', this.x);
+	rect.setAttributeNS(null, 'y', this.y);
+	rect.setAttributeNS(null, 'rx', this.rx);
+	rect.setAttributeNS(null, 'ry', this.ry)
+	rect.setAttributeNS(null, 'width', this.width);
+	rect.setAttributeNS(null, 'height', this.height);
+	rect.setAttributeNS(null, 'fill', this.fill);
+	rect.setAttributeNS(null, 'stroke', this.stroke);
+	rect.setAttributeNS(null, 'stroke-width', this.strokeWidth);
+	group.appendChild(rect);
+	//FIXME: update the rect of object
+	this.name.updateLocation(this.x + 14, this.y + 17);
+	this.name.updateSize(13);
+	var rectName = document.createElementNS(svgNS, 'text');
+	rectName.setAttributeNS(null, 'x', this.name.x);
+	rectName.setAttributeNS(null, 'y', this.name.y);
+	rectName.setAttributeNS(null, 'font-family', this.name.fontFamily);
+	rectName.setAttributeNS(null, 'font-weight', this.name.fontWeight);
+	rectName.setAttributeNS(null, 'font-size', this.name.fontSize);	
+	var caption = document.createTextNode(this.name.value);
+	rectName.appendChild(caption);
+	group.appendChild(rectName);
 }
 UIState.prototype.updateLocation = function(newX, newY) {
 	this.x = newX;

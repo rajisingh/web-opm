@@ -64,8 +64,8 @@ function addObject() {
 		objId++;
 		var obj = new UIObject(objId);
 		obj.draw();
-		var diag = UIDiagramList.returnActive();
-		diag.addElement(obj);
+		var activeUIDiagram = UIDiagramList.returnActive();
+		activeUIDiagram.addElement(obj);
 	}
 	catch(e) {
 		alert(e.message);
@@ -78,6 +78,8 @@ function addProcess() {
 		prcId++;
 		var prc = new UIProcess(prcId);
 		prc.draw();
+		var activeUIDiagram = UIDiagramList.returnActive();
+		activeUIDiagram.addElement(prc);
 	}
 	catch(e) {
 		alert(e.message);
@@ -108,13 +110,11 @@ function addState() {
 			
 			//Execute this if error are caught
 			sttId++;
-/*
-			var stt = document.createElementNS(svgNS, 'g');
-			stt.setAttributeNS(null, 'id', 'stt' + sttId);
-			stt.setAttributeNS(null, 'type', 'state');
-			activeSVGElement.appendChild(stt);
-			createSVGElement(stt, 'state');
-*/
+			var activeUIDiagram = UIDiagramList.returnActive();
+			var activeUIObject = activeUIDiagram.returnActive(activeSVGElement.id);
+			var stt = new UIState(sttId, activeUIObject);
+			activeUIObject.addState(stt);
+			stt.draw();
 		}			
 	}
 	catch(e) {
