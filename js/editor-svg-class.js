@@ -28,8 +28,7 @@ UIDiagram.prototype.addElement = function(element) {
 }
 UIDiagram.prototype.returnActive = function(id) {
 	for (el in this.elements) {
-		if (this.elements[el].id === id) { return this.elements[el]; }
-		else { alert('The active object is not found!'); }
+		if (this.elements[el].id == id) { return this.elements[el]; }
 	}
 }
 
@@ -200,9 +199,10 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-var padding = 94;
-function UIState(id, parent) {
-	this.id = 'stt' + id;
+var objHeightStep = 35;
+var stateYDelta = 10;
+function UIState(parent) {
+	this.id = 'stt' + (parent.statesAmount + 1).toString() ;
 	this.x = parent.x + 20;
 	this.y = parent.y + 55;
 	this.rx = 6;			
@@ -224,7 +224,7 @@ UIState.prototype.draw = function(){
 	
 	//Create place for the state rect in obj rect
 	var oldHeight = this.parent.height;
-	var newHeight = this.parent.statesAmount * padding;
+	var newHeight = oldHeight + objHeightStep;
 	activeSVGElement.firstChild.setAttributeNS(null, 'height', newHeight);
 	this.parent.updateSize(null, newHeight);
 	var grip = activeSVGElement.getElementsByTagNameNS(svgNS, 'image').item(0);
@@ -233,6 +233,7 @@ UIState.prototype.draw = function(){
 	
 
 	//FIXME: Update and y coordinate of state rect
+	this.y = this.y + (this.parent.statesAmount - 1) * this.height + (this.parent.statesAmount - 1) * stateYDelta;
 	
 	
 	var rect = document.createElementNS(svgNS, 'rect');
