@@ -73,7 +73,7 @@ function addState() {
 			
 			//Execute this if error are caught
 			var activeUIDiagram = UIDiagramList.returnActive();
-			var activeUIObject = activeUIDiagram.returnActive(activeSVGElement.id);
+			var activeUIObject = activeUIDiagram.returnElement(activeSVGElement.id);
 			var stt = new UIState(activeUIObject);
 			activeUIObject.addState(stt);
 			stt.draw();

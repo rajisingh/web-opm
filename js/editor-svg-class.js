@@ -26,7 +26,7 @@ UIDiagram.prototype.draw = function() {
 UIDiagram.prototype.addElement = function(element) {
 	this.elements[element.id] = element;
 }
-UIDiagram.prototype.returnActive = function(id) {
+UIDiagram.prototype.returnElement = function(id) {
 	for (el in this.elements) {
 		if (this.elements[el].id == id) { return this.elements[el]; }
 	}
