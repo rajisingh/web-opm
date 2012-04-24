@@ -109,10 +109,9 @@ function addState() {
 			}
 			
 			//Execute this if error are caught
-			sttId++;
 			var activeUIDiagram = UIDiagramList.returnActive();
 			var activeUIObject = activeUIDiagram.returnActive(activeSVGElement.id);
-			var stt = new UIState(sttId, activeUIObject);
+			var stt = new UIState(activeUIObject);
 			activeUIObject.addState(stt);
 			stt.draw();
 		}			
