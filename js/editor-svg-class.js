@@ -222,7 +222,7 @@ UIState.prototype.draw = function(){
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	activeSVGElement.appendChild(group);
 	
-	//Create place for the state rect in obj rect
+	//Increase height of parent rect
 	var oldHeight = this.parent.height;
 	var newHeight = oldHeight + objHeightStep;
 	activeSVGElement.firstChild.setAttributeNS(null, 'height', newHeight);
@@ -231,11 +231,10 @@ UIState.prototype.draw = function(){
 	var gripY = grip.y.baseVal.value;
 	grip.setAttributeNS(null, 'y', gripY + (newHeight - oldHeight));
 	
-
-	//FIXME: Update and y coordinate of state rect
+	//Update and y coordinate of state rect
 	this.y = this.y + (this.parent.statesAmount - 1) * this.height + (this.parent.statesAmount - 1) * stateYDelta;
 	
-	
+	//Drawing	
 	var rect = document.createElementNS(svgNS, 'rect');
 	rect.setAttributeNS(null, 'x', this.x);
 	rect.setAttributeNS(null, 'y', this.y);
@@ -247,7 +246,7 @@ UIState.prototype.draw = function(){
 	rect.setAttributeNS(null, 'stroke', this.stroke);
 	rect.setAttributeNS(null, 'stroke-width', this.strokeWidth);
 	group.appendChild(rect);
-	//FIXME: update the rect of object
+
 	this.name.updateLocation(this.x + 14, this.y + 17);
 	this.name.updateSize(13);
 	var rectName = document.createElementNS(svgNS, 'text');

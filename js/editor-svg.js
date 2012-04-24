@@ -19,44 +19,7 @@ var currentY = 0;
 var currentMatrix = 0;
 var objId = 0;
 var prcId = 0;
-var sttId = 0;
 
-
-/*
-function createSVGElement(root, element) {
-	switch (element){
-		case 'state':
-			//Draw state
-			var paddingX = 10;
-			var paddingY = 5
-			var state = document.createElementNS(svgNS, 'rect');
-			var x = activeElement.firstChild.x.baseVal.value + paddingX;
-			var y = activeElement.firstChild.y.baseVal.value + activeElement.firstChild.height.baseVal.value - paddingY;
-			state.setAttributeNS(null, 'x', x);
-			state.setAttributeNS(null, 'y', y);
-			state.setAttributeNS(null, 'rx', '6');
-			state.setAttributeNS(null, 'ry', '6')
-			state.setAttributeNS(null, 'width', '70');
-			state.setAttributeNS(null, 'height', '25');
-			state.setAttributeNS(null, 'fill', 'white');
-			state.setAttributeNS(null, 'stroke', '#002e00');
-			state.setAttributeNS(null, 'stroke-width', '1');
-			root.appendChild(state);
-			var stateName = document.createElementNS(svgNS, 'text');
-			stateName.setAttributeNS(null, 'x', state.x.baseVal.value + 12);
-			stateName.setAttributeNS(null, 'y', state.y.baseVal.value + 17);
-			stateName.setAttributeNS(null, 'font-family', 'Helvetica');
-			stateName.setAttributeNS(null, 'font-weight', 'bold');
-			stateName.setAttributeNS(null, 'font-size', '13');	
-			var caption = document.createTextNode('State ' + sttId);
-			stateName.appendChild(caption);
-			root.appendChild(stateName);
-			
-			//Resize the rect
-			break;
-	}	 
-}
-*/
 
 function addObject() {
 	try {
