@@ -9,7 +9,31 @@
  *  Author: Sergey N. Bolshchikov
  * */
 
-function OPMModel() {}
+function OPMModel() {
+	var modelID;
+	var name;
+	var type;
+	var creatorID;
+	var participants[];
+	var sd[];
+	var lastUpdateDate;
+	var creationDate;
+	
+	function construct( modelID , creatorID ){
+		this.modelID = modelID;
+		this.creatorID = creatorID;
+	}
+	
+	function getID(){
+		return this.modelID;
+	}
+	
+	function share( participants[] ){
+		this.participants.push(participants[]);
+	}
+	
+	function unShare( participant )
+}
 function OPMDiagram() {}
 function OPMElement() {}
 function OPMEntity() {}
