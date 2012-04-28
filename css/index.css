@@ -1,0 +1,4 @@
+#splash 				{ position: absolute; top: 170px; opacity: 1; z-index: 10; background-color: #002E00; width: 97%; height: 270px; }
+.span4 h2				{ color: whiteSmoke; text-align: center; margin-bottom: 35px; }
+.span4 p 				{ color: whiteSmoke; font-size: 14px; text-align: justify; margin-bottom: 25px;}
+.span4 a				{ position: relative; left: 42%; }
