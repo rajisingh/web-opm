@@ -84,6 +84,15 @@ function addState() {
 	}
 } 
 
+function addLink(type) {
+	try {
+		if(activeSVGElement) { deselect(); }
+		alert(type;)
+	}
+	catch(e) {
+		alert(e.message);
+	}
+}
 
 function diagramZoom(scale) {
 	deselect();

@@ -276,8 +276,10 @@ UIState.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	this.stroke = newStroke;
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
-function UILink(d) {
-	this.d = d;
+
+function UILink(id) {
+	this.id = id;
+	this.d = null;
 	this.fill = 'none';
 	this.stroke = 'black';
 	this.strokeWidth = 3;
@@ -287,6 +289,9 @@ UILink.prototype.updateLink = function(newD) {
 }
 UILink.prototype.updateColor = function(color) {
 	this.stroke = color;
+}
+UILink.prototype.check = function(src, dest) {
+	
 }
 
 //Data Structure Implementation
