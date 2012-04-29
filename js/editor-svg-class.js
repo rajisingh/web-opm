@@ -88,6 +88,8 @@ UIObject.prototype.draw = function() {
 	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'type', 'object');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	group.setAttributeNS(null, 'onmousedown', 'returnSrc(evt)');
+	group.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeSVGDiagram.appendChild(group);
 	//Draw rectangle, appended to the group
@@ -292,6 +294,9 @@ UILink.prototype.updateColor = function(color) {
 }
 UILink.prototype.check = function(src, dest) {
 	
+}
+UILink.prototype.draw = function() {
+	alert('Class created');
 }
 
 //Data Structure Implementation

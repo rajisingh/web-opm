@@ -19,6 +19,7 @@ var currentY = 0;
 var currentMatrix = 0;
 var objId = 0;
 var prcId = 0;
+var lnkId = 0;
 
 
 function addObject() {
@@ -82,12 +83,31 @@ function addState() {
 	catch(e) {
 		alert(e.message);
 	}
-} 
+}
 
+var src = null;
+var dest = null;
 function addLink(type) {
 	try {
 		if(activeSVGElement) { deselect(); }
-		alert(type;)
+		lnkId++;
+		var lnk = new UILink(type + lnkId);
+				
+		//Call the check whether the link is possible
+		if (lnk.check(src, dest)) {
+			lnk.draw()
+			var activeUIDiagram = UIDiagramList.returnActive();
+			activeUIDiagram.addElement(lnk);
+		}
+		else {
+			delete lnk;
+			var msg = "This link can't be created";
+			var err = new Error(msg);
+			if (!err.message) {
+				err.message = msg;
+			}
+			throw err
+		}
 	}
 	catch(e) {
 		alert(e.message);
