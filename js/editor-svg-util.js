@@ -12,6 +12,16 @@
 function randomFromTo(from, to) {
 	return Math.floor(Math.random() * (to - from + 1) + from);
 }
+
+function returnSrc(evt) {
+	var activeUIDiagram = UIDiagramList.returnActive();
+	src = activeUIDiagram.returnElement(evt.currentTarget.id);
+}
+function returnDest(evt) {
+	var activeUIDiagram = UIDiagramList.returnActive();
+	dest = activeUIDiagram.returnElement(evt.currentTarget.id);
+}
+
 function select(evt) {
 	if (evt.currentTarget !== activeSVGElement) {
 		if (activeSVGElement == null) {
@@ -37,7 +47,7 @@ function deselect(evt) {
 		activeSVGElement.firstChild.setAttributeNS(null, 'fill', 'white');
 		var grip = activeSVGElement.getElementsByTagNameNS(svgNS, 'image').item(0);
 		grip.setAttributeNS(null, 'visibility', 'hidden');
-		activeSVGElement.setAttributeNS(null, 'onmousedown', null);
+		activeSVGElement.setAttributeNS(null, 'onmousedown', 'returnSrc(evt)');
 		activeSVGElement.setAttributeNS(null, 'onmousemove', null);
 		activeSVGElement = null;
 	}
@@ -61,5 +71,6 @@ function dragging(evt) {
 	currentY = evt.clientY;
 }
 function drop(evt) {
+	activeSVGElement.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
 	return deselect()
 }
