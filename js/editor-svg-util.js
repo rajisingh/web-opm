@@ -9,20 +9,27 @@
  * Author: Sergey N. Bolshchikov  
  * */
 
-function randomFromTo(from, to) {
+var randomFromTo =  function(from, to) {
 	return Math.floor(Math.random() * (to - from + 1) + from);
 }
 
-function returnSrc(evt) {
-	var activeUIDiagram = UIDiagramList.returnActive();
-	src = activeUIDiagram.returnElement(evt.currentTarget.id);
+var returnSrc = function(evt) {
+	if (linkOn.status) {
+		src = null;
+		var activeUIDiagram = UIDiagramList.returnActive();
+		src = activeUIDiagram.returnElement(evt.currentTarget.id);
+	}
 }
-function returnDest(evt) {
-	var activeUIDiagram = UIDiagramList.returnActive();
-	dest = activeUIDiagram.returnElement(evt.currentTarget.id);
+var returnDest = function(evt) {
+	if (linkOn.status) {
+		dest = null;
+		var activeUIDiagram = UIDiagramList.returnActive();
+		dest = activeUIDiagram.returnElement(evt.currentTarget.id);
+		addLink(src, dest);
+	}
 }
 
-function select(evt) {
+var select = function(evt) {
 	if (evt.currentTarget !== activeSVGElement) {
 		if (activeSVGElement == null) {
 			activeSVGElement = evt.currentTarget;
@@ -42,7 +49,7 @@ function select(evt) {
 		alert('Error: Element is not selected');
 	}
 }
-function deselect(evt) {
+var deselect =  function(evt) {
 	if (activeSVGElement !== null) {
 		activeSVGElement.firstChild.setAttributeNS(null, 'fill', 'white');
 		var grip = activeSVGElement.getElementsByTagNameNS(svgNS, 'image').item(0);
@@ -52,14 +59,14 @@ function deselect(evt) {
 		activeSVGElement = null;
 	}
 }
-function pick(evt) {
+var pick = function(evt) {
 	activeSVGElement.setAttributeNS(null, 'onmousemove', 'dragging(evt)');
 	currentX = evt.clientX;
 	currentY = evt.clientY;
 	currentMatrix = activeSVGElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
 	for (var i = 0; i < currentMatrix.length; i++) { currentMatrix[i] = parseFloat(currentMatrix[i]); }
 }
-function dragging(evt) {
+var dragging = function(evt) {
 	activeSVGElement.setAttributeNS(null, 'onmouseup', 'drop(evt)');
 	dx = evt.clientX - currentX;
 	dy = evt.clientY - currentY;
@@ -70,7 +77,7 @@ function dragging(evt) {
 	currentX = evt.clientX;
 	currentY = evt.clientY;
 }
-function drop(evt) {
+var drop = function(evt) {
 	activeSVGElement.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
 	return deselect()
 }

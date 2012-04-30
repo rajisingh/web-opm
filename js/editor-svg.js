@@ -22,7 +22,7 @@ var prcId = 0;
 var lnkId = 0;
 
 
-function addObject() {
+var addObject = function() {
 	try {
 		if (activeSVGElement !== null) { deselect(); }
 		objId++;
@@ -36,7 +36,7 @@ function addObject() {
 	}
 }
 
-function addProcess() {
+var addProcess = function() {
 	try {
 		if (activeSVGElement !== null) { deselect(); }
 		prcId++;
@@ -50,7 +50,7 @@ function addProcess() {
 	}
 }
 
-function addState() {
+var addState = function() {
 	try {
 		//Check
 		if (activeSVGElement === null) {
@@ -85,23 +85,33 @@ function addState() {
 	}
 }
 
+/*Source and Destination are determined according to 
+ * events of the mouse on elements*/
 var src = null;
 var dest = null;
-function addLink(type) {
+
+//Flag that the link is on/off and its type
+var linkOn = {
+		status: false,
+		type: null
+}; 			
+var turnLinkOn = function(type) {
+	if(activeSVGElement) { deselect(); }
+	linkOn.status = true;
+	linkOn.type = type;
+}
+var addLink = function(src, dest) {
 	try {
-		if(activeSVGElement) { deselect(); }
 		lnkId++;
-		var lnk = new UILink(type + lnkId);
-				
-		//Call the check whether the link is possible
-		if (lnk.check(src, dest)) {
+		var lnk = new UILink(linkOn.type + lnkId);		
+		if (lnk.check(src, dest) === true) {
 			lnk.draw()
 			var activeUIDiagram = UIDiagramList.returnActive();
 			activeUIDiagram.addElement(lnk);
 		}
 		else {
 			delete lnk;
-			var msg = "This link can't be created";
+			var msg = lnk.check(src, dest);
 			var err = new Error(msg);
 			if (!err.message) {
 				err.message = msg;
@@ -113,8 +123,42 @@ function addLink(type) {
 		alert(e.message);
 	}
 }
+/*
+	try {
+		
+		
+		var lnk = new UILink(type + lnkId);
+		
+		while (src == null) {
+			src = null;
+		}
+		while (dest == null) {
+			dest = null;
+		}
+		alert (src.id + " " + dest.id);
+		
+		if (lnk.check(src, dest) === true) {
+			lnk.draw()
+			var activeUIDiagram = UIDiagramList.returnActive();
+			activeUIDiagram.addElement(lnk);
+		}
+		else {
+			delete lnk;
+			var msg = lnk.check(src, dest);
+			var err = new Error(msg);
+			if (!err.message) {
+				err.message = msg;
+			}
+			throw err
+		}
+	}
+	catch(e) {
+		alert(e.message);
+	}
+*/
 
-function diagramZoom(scale) {
+
+var diagramZoom = function(scale) {
 	deselect();
 	var diagramWidth = activeSVGDiagram.getBBox().width + 2;
 	var diagramHeight = activeSVGDiagram.getBBox().height + 2;
