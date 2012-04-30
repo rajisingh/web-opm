@@ -10,6 +10,7 @@
  * */
 <script>
 
+// OPM Model Class
 function OPMModel( modelIDVal , creatorIDVal ) {
   if ( ( typeof modelIDVal !== int ) && ( typeof creatorIDVal !== int ) ){
     throw "invalid input type. check modelIDVal and creatorIDVal";
@@ -58,19 +59,20 @@ function OPMModel( modelIDVal , creatorIDVal ) {
   }
 	
   function getName(){
-	  
+	  return this.name;	  
   }
 	
   function setName( name ){
-	  
+	  this.name=name;
   }
 	
   function getType(){
+	  return this.type;
 	  
   }
 	
   function setType( type ){
-	  
+	  this.type=type;
   }
 	
   function destructor(){
@@ -83,14 +85,176 @@ function OPMModel( modelIDVal , creatorIDVal ) {
   }
 }
 
-function OPMDiagram() {}
+
+// OPM Diagram Class
+function OPMDiagram() {
+	
+	
+	var predecessor;
+	var successors;
+	var elements;
+	var diagramName;
+	var OPL;
+	var number;
+	
+	
+	function getOPD(){
+		//
+	}
+	
+	function print(){
+		//need implementation of print procedure.
+	}
+	
+	function renumber(number){
+		try{
+			if(typeof name !== int){
+				throw "invalid input type, please insert a number.";
+			}
+		}
+		this.number=number;
+	}
+	
+	function getOPL(){
+		if (this.OPL === null){
+			return "Empty";
+		}
+		return this.OPL;
+	}
+	
+	function writeOPL(text){
+		this.OPL=text;
+	}
+	
+	function destructor(){
+		//need procedure for deleting Model from database, including all children.
+	    try {
+	      if (anything_wrong === true){
+	      throw "unable to delete model, please try again";
+	      }
+	    }	
+	}
+}
+
+
+// OPM Element Class
 function OPMElement() {}
+
+
+// OPM Entity Class
 function OPMEntity() {}
+
+// OPM thing Class
 function OPMThing(){}
+
+// OPM Object Class
 function OPMObject() {}
+
+// OPM Process Class
 function OPMProcess() {}
+
+// OPM Link Class
 function OPMLink() {}
-function OPMProcedural_Link() {}
-function OPMStructural_Link() {}
+
+// OPM procedural Link Class
+function OPMProcedural_Link() {
+	
+	var source;
+	var destination;
+	var description;
+	var originType;
+	
+	
+	function getDest() {}
+	
+	function setDest() {}
+	
+	function getSource() {}
+	
+	function setSource() {}
+	
+	function getOriginType(){
+		return this.originType;
+	}
+	
+	function setOriginType(bool){
+		this.originType = bool;
+	}
+	
+	function destructor() {
+		//need procedure for deleting Model from database, including all children.
+	    try {
+	      if (anything_wrong === true){
+	      throw "unable to delete model, please try again";
+	      }
+	    }	
+	}
+}
+
+// OPM Structural Link Class
+function OPMStructural_Link() {
+	
+	var source;
+	var destination;
+	var participationConst;
+	var participationVal;
+	var cardinality;
+	var tag;
+	
+	function getTag(){
+		if (this.tag===null){
+			return "Empty";
+		}
+		retun this.tag;
+	}
+	
+	function setTag(text){
+		this.tag=text;
+	}
+	
+	function getParticipationConst(){
+		if (this.participationConst===null){
+			return "Empty";
+		}
+		return this.participationConst;
+	}
+	
+	function setParticipationConst(){}
+	
+	function getParticipationVal(){
+		if (this.participationVal===null){
+			return "Empty";
+		}
+		return this.participationVal;
+	}
+	
+	function setParticipationVal(){}
+	
+	function getCardinality(){
+		return this.cardinality;
+	}
+	
+	function setCardinality(){}
+	
+	function getDestination(){}
+	
+	function setDestination(){}
+	
+	function getSource(){}
+	
+	function setSource(){}
+	
+	function destructor() {
+		//need procedure for deleting Model from database, including all children.
+	    try {
+	      if (anything_wrong === true){
+	      throw "unable to delete model, please try again";
+	      }
+	    }	
+	
+	}
+	
+}
+
 
 </script>
