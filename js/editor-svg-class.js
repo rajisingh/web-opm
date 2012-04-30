@@ -155,6 +155,8 @@ UIProcess.prototype.draw = function() {
 	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'type', 'process');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	group.setAttributeNS(null, 'onmousedown', 'returnSrc(evt)');
+	group.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeSVGDiagram.appendChild(group);
 	var ellipse = document.createElementNS(svgNS, 'ellipse');
@@ -201,8 +203,8 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-var objHeightStep = 35;
-var stateYDelta = 10;
+var objHeightStep = 35;					//Amount of pixels to enlarge the object height when a new state is added
+var stateYDelta = 10;					//Distance between states
 function UIState(parent) {
 	this.id = 'stt' + (parent.statesAmount + 1).toString() ;
 	this.x = parent.x + 20;
@@ -293,6 +295,25 @@ UILink.prototype.updateColor = function(color) {
 	this.stroke = color;
 }
 UILink.prototype.check = function(src, dest) {
+	if (src.id === dest.id) {
+		return 'Ups, you are trying to perform something impossible'
+	}
+	var lnkType = this.id.slice(0, 3);
+	var srcType = src.id.slice(0, 3);
+	var destType = dest.id.slice(0, 3);
+	switch(lnkType) {
+	//Unidirectional Relation
+	case 'udr':
+		if (srcType === 'obj' && destType === 'obj') {
+			return true
+		}
+		else if (srcType === 'prc' || destType === 'prc') {
+			return "Ups, the Object can't  be connected with the Process via Structural Link"
+		}
+		else {
+			return 'Ups, you are trying to perform something impossible'
+		}
+	}
 	
 }
 UILink.prototype.draw = function() {
