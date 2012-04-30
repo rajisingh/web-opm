@@ -85,6 +85,7 @@ var addState = function() {
 	}
 }
 
+
 /*Source and Destination are determined according to 
  * events of the mouse on elements*/
 var src = null;
@@ -93,7 +94,11 @@ var dest = null;
 //Flag that the link is on/off and its type
 var linkOn = {
 		status: false,
-		type: null
+		type: null,
+		off: function() {
+			this.status = false;
+			this.type = null;
+			}
 }; 			
 var turnLinkOn = function(type) {
 	if(activeSVGElement) { deselect(); }
@@ -118,45 +123,12 @@ var addLink = function(src, dest) {
 			}
 			throw err
 		}
+		linkOn.off();
 	}
 	catch(e) {
 		alert(e.message);
 	}
 }
-/*
-	try {
-		
-		
-		var lnk = new UILink(type + lnkId);
-		
-		while (src == null) {
-			src = null;
-		}
-		while (dest == null) {
-			dest = null;
-		}
-		alert (src.id + " " + dest.id);
-		
-		if (lnk.check(src, dest) === true) {
-			lnk.draw()
-			var activeUIDiagram = UIDiagramList.returnActive();
-			activeUIDiagram.addElement(lnk);
-		}
-		else {
-			delete lnk;
-			var msg = lnk.check(src, dest);
-			var err = new Error(msg);
-			if (!err.message) {
-				err.message = msg;
-			}
-			throw err
-		}
-	}
-	catch(e) {
-		alert(e.message);
-	}
-*/
-
 
 var diagramZoom = function(scale) {
 	deselect();

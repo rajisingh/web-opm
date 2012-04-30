@@ -19,7 +19,6 @@ function UIDiagram(id) {
 UIDiagram.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
-	group.setAttributeNS(null, 'type', 'diagram');
 	group.setAttributeNS(null, 'transform', this.transform);
 	svg.appendChild(group);
 }
@@ -86,7 +85,6 @@ UIObject.prototype.draw = function() {
 	//Draw a group first
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
-	group.setAttributeNS(null, 'type', 'object');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	group.setAttributeNS(null, 'onmousedown', 'returnSrc(evt)');
 	group.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
@@ -153,7 +151,6 @@ function UIProcess(id) {
 UIProcess.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
-	group.setAttributeNS(null, 'type', 'process');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	group.setAttributeNS(null, 'onmousedown', 'returnSrc(evt)');
 	group.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
@@ -222,7 +219,6 @@ function UIState(parent) {
 UIState.prototype.draw = function(){
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
-	group.setAttributeNS(null, 'type', 'state');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	activeSVGElement.appendChild(group);
 	
@@ -313,11 +309,14 @@ UILink.prototype.check = function(src, dest) {
 		else {
 			return 'Ups, you are trying to perform something impossible'
 		}
+		//FIXME: perform the check whether the link between src and dest already exist
 	}
 	
 }
 UILink.prototype.draw = function() {
-	alert('Class created');
+	var group = document.createElementNS(svgNS, 'g');
+	group.setAttributeNS(null, 'id', this.id);
+	activeSVGDiagram.appendChild(group);
 }
 
 //Data Structure Implementation
