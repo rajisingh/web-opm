@@ -25,8 +25,6 @@ function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
   this.sd = null;
   this.lastUpdateDate = null;
   this.creationDate = creationDate;
-  this.modelID = modelIDVal;
-  this.creatorID = creatorIDVal;
 }
 
 OPMModel.prototype.getID = function(){
