@@ -25,17 +25,20 @@ function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
   this.sd = null;
   this.lastUpdateDate = null;
   this.creationDate = creationDate;
+  
+  //TODO: call JSON function for updating new details on new model in DB
 }
 
-OPMModel.prototype.getID = function(){
+OPMModel.prototype.getID = function(){ //return the modelID of specific ID
   return this.modelID;
 }
 	
-OPMModel.prototype.share = function( participants[] ){
+OPMModel.prototype.share = function( participants[] ){ //share model with additional Web-OPM users
   if ( participants === null ){
     participants = new Array();
   }
   this.participants.push(participants[]);
+                                      //TODO: add call to JSON function to send to server
   return;
 }
   
@@ -47,14 +50,15 @@ OPMModel.prototype.getParticipants = function(){
 }
   
 OPMModel.prototype.unShare = function( p ){
-  var x = participants.indexOf( p );
+  var x = this.participants.indexOf( p );
   if ( x === -1 ){
     throw "cannot find collaborator ID. please try again.";
   }
-  var temp = participants[ ( participants.length() ) - 1 ];
+  var temp = participants[ ( participants.length() ) - 1 ]; // Swap-n-Pop the userID from the participant list
   participants[ ( participants.length() ) - 1 ] = participants [ x ];
   participants[ x ] = temp;
   var garbage = participants.pop();
+  delete garbage;
 }
 	
 OPMModel.prototype.getName = function(){
@@ -63,6 +67,7 @@ OPMModel.prototype.getName = function(){
 	
 OPMModel.prototype.setName = function( name ){
 	this.name = name;
+  //TODO: add JSON function for setting new model Name in DB
 }
 	
 OPMModel.prototype.getType = function(){
@@ -70,7 +75,8 @@ OPMModel.prototype.getType = function(){
 }
 	
 OPMModel.prototype.setType = function( type ){
-	this.type=type;
+	this.type = type;
+  //TODO: add JSON function for setting model Type in DB
 }
 	
 OPMModel.prototype.destructor = function(){
@@ -79,6 +85,7 @@ OPMModel.prototype.destructor = function(){
     if (anything_wrong === true){
     throw "unable to delete model, please try again";
     }
+    delete this; //TODO: is this expression true??
   }
 }
 
