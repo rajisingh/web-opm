@@ -6,81 +6,80 @@
  * 	File context description:
  * 	File contains classes description used for OPM
  * 
- *  Author: Rochai Ben-Mordechai & Sameer Makladeh
+ *  Author: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
 <script>
 
 // OPM Model Class
-function OPMModel( modelIDVal , creatorIDVal ) {
-  if ( ( typeof modelIDVal !== int ) && ( typeof creatorIDVal !== int ) ){
-    throw "invalid input type. check modelIDVal and creatorIDVal";
-  }
+function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
   
-  var modelID;
-  var name;
-  var type;
-  var creatorID;
-  var participants;
-  var sd;
-  var lastUpdateDate;
-  var creationDate;
+  if ( ( typeof modelIDVal !== int ) && ( typeof creatorIDVal !== int ) ){
+    throw "invalid input type. check modelIDVal and creatorIDVal"; //Throw exception if data type is incorrect
+  }
   
   this.modelID = modelIDVal;
   this.creatorID = creatorIDVal;
+  this.name = 'Model Name';
+  this.type = null;
+  this.participants = null;
+  this.sd = null;
+  this.lastUpdateDate = null;
+  this.creationDate = creationDate;
+  this.modelID = modelIDVal;
+  this.creatorID = creatorIDVal;
+}
 
-  function getID(){
-    return this.modelID;
-  }
+OPMModel.prototype.getID = function(){
+  return this.modelID;
+}
 	
-  function share( participants[] ){
-    if ( participants === null ){
-      participants = new Array();
-    }
-    this.participants.push(participants[]);
-    return;
+OPMModel.prototype.share = function( participants[] ){
+  if ( participants === null ){
+    participants = new Array();
   }
+  this.participants.push(participants[]);
+  return;
+}
   
-  function getParticipantList(){
-    if ( this.participants === null ){
-      return "no participating users";
-    }
-    return this.participatns;
+OPMModel.prototype.getParticipants = function(){
+  if ( this.participants === null ){
+    return "no participating users";
   }
+  return this.participatns;
+}
   
-  function unShare( p ){
-    var x = participants.indexOf( p );
-    if ( x === -1 ){
-      throw "cannot find collaborator ID. please try again.";
-    }
-      var temp = participants[ ( participants.length() ) - 1 ];
-      participants[ ( participants.length() ) - 1 ] = participants [ x ];
-      participants[ x ] = temp;
-      var garbage = participants.pop();
+OPMModel.prototype.unShare = function( p ){
+  var x = participants.indexOf( p );
+  if ( x === -1 ){
+    throw "cannot find collaborator ID. please try again.";
   }
+  var temp = participants[ ( participants.length() ) - 1 ];
+  participants[ ( participants.length() ) - 1 ] = participants [ x ];
+  participants[ x ] = temp;
+  var garbage = participants.pop();
+}
 	
-  function getName(){
-	  return this.name;	  
-  }
+OPMModel.prototype.getName = function(){
+	return this.name;	  
+}
 	
-  function setName( name ){
-	  this.name=name;
-  }
+OPMModel.prototype.setName = function( name ){
+	this.name = name;
+}
 	
-  function getType(){
-	  return this.type;
-	  
-  }
+OPMModel.prototype.getType = function(){
+	return this.type;
+}
 	
-  function setType( type ){
-	  this.type=type;
-  }
+OPMModel.prototype.setType = function( type ){
+	this.type=type;
+}
 	
-  function destructor(){
+OPMModel.prototype.destructor = function(){
     //need procedure for deleting Model from database, including all children.
-    try {
-      if (anything_wrong === true){
-      throw "unable to delete model, please try again";
-      }
+  try {
+    if (anything_wrong === true){
+    throw "unable to delete model, please try again";
     }
   }
 }
