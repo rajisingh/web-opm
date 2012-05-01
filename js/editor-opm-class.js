@@ -6,11 +6,11 @@
  * 	File context description:
  * 	File contains classes description used for OPM
  * 
- *  Author: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
+ *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
 <script>
 
-// OPM Model Class
+//START OF OPMModel CLASS//
 function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
   
   if ( ( typeof modelIDVal !== int ) && ( typeof creatorIDVal !== int ) ){
@@ -19,7 +19,7 @@ function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
   
   this.modelID = modelIDVal;
   this.creatorID = creatorIDVal;
-  this.name = 'Model Name';
+  this.name = 'Model Name'; //default value
   this.type = null;
   this.participants = null;
   this.sd = null;
@@ -29,26 +29,30 @@ function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
   //TODO: call JSON function for updating new details on new model in DB
 }
 
-OPMModel.prototype.getID = function(){ //return the modelID of specific ID
+//return the modelID of specific ID
+OPMModel.prototype.getID = function(){ 
   return this.modelID;
 }
-	
-OPMModel.prototype.share = function( participants[] ){ //share model with additional Web-OPM users
+ 
+//share model with additional Web-OPM users
+OPMModel.prototype.share = function( participants[] ){ 
   if ( participants === null ){
     participants = new Array();
   }
   this.participants.push(participants[]);
-                                      //TODO: add call to JSON function to send to server
+  //TODO: add call to JSON function to send to server
   return;
 }
-  
+
+//returns a list of users with permissions to edit this Model
 OPMModel.prototype.getParticipants = function(){
   if ( this.participants === null ){
     return "no participating users";
   }
   return this.participatns;
 }
-  
+
+//removes a specific user from the participants list
 OPMModel.prototype.unShare = function( p ){
   var x = this.participants.indexOf( p );
   if ( x === -1 ){
@@ -60,50 +64,59 @@ OPMModel.prototype.unShare = function( p ){
   var garbage = participants.pop();
   delete garbage;
 }
-	
+ 
+//returns the Model's name
 OPMModel.prototype.getName = function(){
 	return this.name;	  
 }
-	
+ 
+//sets the Model's name in the GUI and the DB
 OPMModel.prototype.setName = function( name ){
 	this.name = name;
   //TODO: add JSON function for setting new model Name in DB
 }
-	
+ 
+//returns Model's Type
 OPMModel.prototype.getType = function(){
 	return this.type;
 }
 	
+//sets Model's Type in the GUI and DB
 OPMModel.prototype.setType = function( type ){
 	this.type = type;
   //TODO: add JSON function for setting model Type in DB
 }
-	
+ 
+//remove model from user's model list including all siblings in the GUI and DB
 OPMModel.prototype.destructor = function(){
     //need procedure for deleting Model from database, including all children.
-  try {
-    if (anything_wrong === true){
-    throw "unable to delete model, please try again";
+  var answer = confirm ("You are about to Completely remove\n all Model diagrams. Are you sure you wish to continue?")
+  if (answer){
+    try {
+      if (anything_wrong === true){
+        throw "unable to delete model, please try again";
+      }
+      delete this; //TODO: is this expression true??
     }
-    delete this; //TODO: is this expression true??
+  }
+  else{
+    return;
   }
 }
+//END OF OPMModel CLASS//
 
-
-// OPM Diagram Class
-function OPMDiagram() {
+//START OF OPMDiagram CLASS//
+function OPMDiagram(){
 	
-	
-	var predecessor;
-	var successors;
-	var elements;
-	var diagramName;
-	var OPL;
-	var number;
-	
+	this.predecessor;
+	this.successors;
+	this.elements;
+	this.diagramName = 'Diagram Name';//default value
+	this.OPL;
+	this.number;
 	
 	function getOPD(){
-		//
+	  
 	}
 	
 	function print(){
@@ -139,28 +152,33 @@ function OPMDiagram() {
 	    }	
 	}
 }
+//END OF OPMDiagram CLASS//
 
-
-// OPM Element Class
+//START OF OPMElement CLASS//
 function OPMElement() {}
+//END OF OPMElement CLASS//
 
-
-// OPM Entity Class
+//START OF OPMEntity CLASS//
 function OPMEntity() {}
+//END OF OPMEntity CLASS//
 
-// OPM thing Class
+//START OF OPMThing CLASS//
 function OPMThing(){}
+//END OF OPMThing CLASS//
 
-// OPM Object Class
+//START OF OPMObject CLASS//
 function OPMObject() {}
+//END OF OPMObject CLASS//
 
-// OPM Process Class
+//START OF OPMProcess CLASS//
 function OPMProcess() {}
+//END OF OPMProcess CLASS//
 
-// OPM Link Class
+//START OF OPMLink CLASS//
 function OPMLink() {}
+//END OF OPMLink CLASS//
 
-// OPM procedural Link Class
+//START OF OPMProcedural_Link CLASS//
 function OPMProcedural_Link() {
 	
 	var source;
@@ -194,6 +212,7 @@ function OPMProcedural_Link() {
 	    }	
 	}
 }
+//END OF OPMProcedural_Link CLASS//
 
 // OPM Structural Link Class
 function OPMStructural_Link() {
