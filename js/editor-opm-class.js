@@ -158,11 +158,41 @@ OPMDiagram.prototype.destructor = function(){
 //END OF OPMDiagram CLASS//
 
 //START OF OPMElement CLASS//
-function OPMElement() {}
+function OPMElement() {
+  this.elementID;
+}
+
+OPMElement.prototype.getID = function(){
+  return this.elementID;
+}
 //END OF OPMElement CLASS//
 
 //START OF OPMEntity CLASS//
-function OPMEntity() {}
+OPMEntity.prototype = new OPMElement(); //inheriting from OPMElement
+function OPMEntity() {
+  this.name = null;
+  this.inLinks = {};
+  this.outLinks = {};
+  this.description = null;
+}
+
+OPMEntity.prototype.getName = function(){
+  return this.name;
+}
+
+OPMEntity.prototype.setName = function( name ){
+  this.name = name;
+  return;
+}
+
+OPMEntity.prototype.getDescription = function(){
+  return this.description;
+}
+
+OPMEntity.prototype.setDescription = function( description ){
+  this.description = description;
+  return;
+}
 //END OF OPMEntity CLASS//
 
 //START OF OPMThing CLASS//
