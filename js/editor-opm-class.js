@@ -21,7 +21,7 @@ function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
   this.creatorID = creatorIDVal;
   this.name = 'Model Name'; //default value
   this.type = null;
-  this.participants = null;
+  this.participants = {};
   this.sd = null;
   this.lastUpdateDate = null;
   this.creationDate = creationDate;
@@ -34,12 +34,12 @@ OPMModel.prototype.getID = function(){
   return this.modelID;
 }
  
-//share model with additional Web-OPM users
-OPMModel.prototype.share = function( participants[] ){ 
-  if ( participants === null ){
-    participants = new Array();
+//share model with additional users
+OPMModel.prototype.share = function( user ){ 
+  if ( this.participants === null ){
+    this.participants = new Array();
   }
-  this.participants.push(participants[]);
+  this.participants.push( user );
   //TODO: add call to JSON function to send to server
   return;
 }
