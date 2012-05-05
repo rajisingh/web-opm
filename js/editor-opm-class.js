@@ -35,11 +35,8 @@ OPMModel.prototype.getID = function(){
 }
  
 //share model with additional users
-OPMModel.prototype.share = function( user ){ 
-  if ( this.participants === null ){
-    this.participants = new Array();
-  }
-  this.participants.push( user );
+OPMModel.prototype.share = function( newUser ){ 
+  this.participants[ newUser.ID ] = newUser;
   //TODO: add call to JSON function to send to server
   return;
 }
@@ -49,7 +46,7 @@ OPMModel.prototype.getParticipants = function(){
   if ( this.participants === null ){
     return "no participating users";
   }
-  return this.participatns;
+  return this.participants;
 }
 
 //removes a specific user from the participants list
@@ -108,50 +105,56 @@ OPMModel.prototype.destructor = function(){
 //START OF OPMDiagram CLASS//
 function OPMDiagram(){
 	
-	this.predecessor;
-	this.successors;
-	this.elements;
+  this.predecessor = {};
+  this.successors = {};
+  this.elements = {};
 	this.diagramName = 'Diagram Name';//default value
-	this.OPL;
-	this.number;
+	this.OPL = null;
+  this.number = {}; //need a default definition here.
+}
+ 
+OPMDiagram.prototype.addElement = function( element ){
+  this.elements[ element.ID ] = element;
+  return;
+}
+ 
+OPMDiagram.prototype.getElements = function(){
+	return this.elements;
+ }
 	
-	function getOPD(){
-	  
-	}
-	
-	function print(){
+OPMDiagram.prototype.print = function(){
 		//need implementation of print procedure.
-	}
+ }
 	
-	function renumber(number){
-		try{
-			if(typeof name !== int){
-				throw "invalid input type, please insert a number.";
-			}
-		}
-		this.number=number;
-	}
+ OPMDiagram.prototype.renumber = function( number ){
+	 try{
+		 if(typeof number !== int){
+			throw "invalid input type, please insert a number.";
+		 }
+	 }
+	this.number = number;
+ }
 	
-	function getOPL(){
+ OPMDiagram.prototype.getOPL = function(){
 		if (this.OPL === null){
 			return "Empty";
 		}
 		return this.OPL;
 	}
 	
-	function writeOPL(text){
-		this.OPL=text;
-	}
+OPMDiagram.prototype.writeOPL = function( text ){
+	 this.OPL = text;
+ }
 	
-	function destructor(){
-		//need procedure for deleting Model from database, including all children.
-	    try {
-	      if (anything_wrong === true){
-	      throw "unable to delete model, please try again";
-	      }
-	    }	
-	}
-}
+OPMDiagram.prototype.destructor = function(){
+	 //need procedure for deleting Model from database, including all children.
+	  try {
+	    if (anything_wrong === true){
+	    throw "unable to delete model, please try again";
+	    }
+	  }	
+ }
+
 //END OF OPMDiagram CLASS//
 
 //START OF OPMElement CLASS//
