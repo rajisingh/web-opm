@@ -196,7 +196,52 @@ OPMEntity.prototype.setDescription = function( description ){
 //END OF OPMEntity CLASS//
 
 //START OF OPMThing CLASS//
-function OPMThing(){}
+OPMThing.prototype = new OPMEntity();
+OPMThing = function(){
+  this.essence = null;
+  this.affiliation = null;
+  this.scope = null;
+  this.unfoldDiag {};
+  this.inzoomDiag = {};
+}
+
+OPMThing.prototype.getEssence = function(){
+  return this.essence;
+}
+
+OPMThing.prototype.setEssence = function( ess ){
+  this.Essence = ess;
+  return;
+    //TODO: send data through JSON to DB and server
+}
+
+OPMThing.prototype.getAffiliation = function(){
+  return this.affiliation;
+}
+
+OPMThing.prototype.setAffiliation = function( affil ){
+  this.affiliation = affil;
+  return;
+  //TODO: send data through JSON to DB and server
+}
+
+OPMThing.prototype.getScope = function(){
+  return this.scope;
+}
+
+OPMThing.prototype.setScope = function( scope ){
+  this.scope = scope;
+  return;
+  //TODO: send data through JSON to DB and server
+}
+
+OPMThing.prototype.unfold = function(){
+  
+}
+
+OPMThing.prototype.inzoom = function(){
+
+}
 //END OF OPMThing CLASS//
 
 //START OF OPMObject CLASS//
