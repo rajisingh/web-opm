@@ -321,7 +321,7 @@ OPMProcess.prototype.getDescription = function(){
   return.this.description;
 }
 
-OPMProcess.prototype.setDescription = functino (desc){
+OPMProcess.prototype.setDescription = function (desc){
   this.description = desc;
   return;
 }
