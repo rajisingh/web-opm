@@ -330,8 +330,8 @@ OPMProcess.prototype.getMinActivationTime = function(){
   return.this.minActivationTime;
 }
 
-OPMProcess.prototype.setMinActivationTime = function(minTime){
-    if (typeof(minTime) !== int){ //or should it be float?
+OPMProcess.prototype.setMinActivationTime = function( minTime ){
+    if ( typeof( minTime ) !== float ){ //or should it be float?
       throw "invalid input, please enter a number.";
     }
     this.minActivationTime = minTime;
@@ -343,7 +343,7 @@ OPMProcess.prototype.getMaxActivationTime = function(){
 }
 
 OPMProcess.prototype.setMaxActivationTime = function(maxTime){
-  if (typeof(maxTime) !== int){ //or should it be float?
+  if (typeof(maxTime) !== float){ //or should it be float?
       throw "invalid input, please enter a number.";
     }
     this.maxActivationTime = maxTime;
