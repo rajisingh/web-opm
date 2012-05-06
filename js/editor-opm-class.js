@@ -83,7 +83,18 @@ OPMModel.prototype.setType = function( type ){
 	this.type = type;
   //TODO: add JSON function for setting model Type in DB
 }
- 
+OPMModel.prototype.print = function (){
+ // need procedure for printing a model 
+}
+
+OPMMOdel.prototype.save = function (){
+  // need procedure for saving a model to DB
+}
+
+OPMModel.prototype.load = function (){
+  //need procedure from loading a model from DB
+}
+
 //remove model from user's model list including all siblings in the GUI and DB
 OPMModel.prototype.destructor = function(){
     //need procedure for deleting Model from database, including all children.
@@ -196,8 +207,8 @@ OPMEntity.prototype.setDescription = function( description ){
 //END OF OPMEntity CLASS//
 
 //START OF OPMThing CLASS//
-OPMThing.prototype = new OPMEntity();
-OPMThing = function(){
+OPMThing.prototype = new OPMEntity(); // inhereting from OPMEntity 
+function OPMThing(){
   this.essence = null;
   this.affiliation = null;
   this.scope = null;
@@ -245,12 +256,118 @@ OPMThing.prototype.inzoom = function(){
 //END OF OPMThing CLASS//
 
 //START OF OPMObject CLASS//
-function OPMObject() {}
+OPMObject.prototype = new OPMThing();
+function OPMObject() {
+  this.states = {};
+  this.initValue = null;
+  this.obejctType = null;
+}
+
+OPMObject.prototype.getName = function(){
+  return.this.name;
+}
+
+OPMObject.prototype.getDescription = function(){
+  return.this.description;
+}
+
+OPMObject.prototype.setDescription = function( description ){
+  this.description = description;
+  return;
+}
+
+OPMObject.prototype.addState = function( state){
+  this.states[ state.ID ] = state; //not too sure how to reference or add another object here..
+}
+
+OPMObject.prototype.removeState = function(state){
+  var x = this.states.indexOf( state );
+  if ( x === -1 ){
+    throw "cannot find state ID. please try again.";
+  }
+  var temp = states[ ( states.length() ) - 1 ]; // Swap-n-Pop the state ID from the state list
+  states[ ( states.length() ) - 1 ] = states [ x ];
+  states[ x ] = temp;
+  var garbage = states.pop();
+  delete garbage;
+}
+
+OPMObject.prototype.destructor = function(){
+//needs the procedure of deletion
+}
 //END OF OPMObject CLASS//
 
+
 //START OF OPMProcess CLASS//
-function OPMProcess() {}
+OPMProcess.prototype = new OPMThing();
+function OPMProcess() {
+  this.name = null;
+  this.minActivationTime = null;
+  this.maxActivationTime = null;
+  this.inProcedualLinksRelationMatrix = null;
+  this.things = {};
+}
+
+OPMProcess.prototype.getName = function(){
+  return.this.name;
+}
+
+OPMProcess.prototype.setName = function (name){
+  this.name = name;
+  return;
+}
+
+OPMProcess.prototype.getDescription = function(){
+  return.this.description;
+}
+
+OPMProcess.prototype.setDescription = functino (desc){
+  this.description = desc;
+  return;
+}
+
+OPMProcess.prototype.getMinActivationTime = function(){
+  return.this.minActivationTime;
+}
+
+OPMProcess.prototype.setMinActivationTime = function(minTime){
+    if (typeof(minTime) !== int){ //or should it be float?
+      throw "invalid input, please enter a number.";
+    }
+    this.minActivationTime = minTime;
+    return;
+}
+
+OPMProcess.prototype.getMaxActivationTime = function(){
+  return.this.maxActivationTime;
+}
+
+OPMProcess.prototype.setMaxActivationTime = function(maxTime){
+  if (typeof(maxTime) !== int){ //or should it be float?
+      throw "invalid input, please enter a number.";
+    }
+    this.maxActivationTime = maxTime;
+    return;
+}
+
+OPMProcess.prototype.getInProcedualLinksRelationMatrix = function(){
+  return.this.inProcedualLinksRelationMatrix;
+}
+
+//not too sure about the implimentation of this function, check the class diagram.
+OPMProcess.prototype.setInProcedualLinksRelationMatrix = function(matrix){
+  this.inProcedualLinksRelationMatrix = matrix;
+  return;
+}
+
+OPMProcess.prototype.destructor = function(){
+  //need destructor procedure
+}   
 //END OF OPMProcess CLASS//
+
+//START OF OPMState CLASS//
+
+//END OF OPMState CLASS//
 
 //START OF OPMLink CLASS//
 function OPMLink() {}
