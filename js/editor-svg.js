@@ -28,7 +28,7 @@ var addObject = function() {
 		objId++;
 		var obj = new UIObject(objId);
 		obj.draw();
-		var activeUIDiagram = UIDiagramList.returnActive();
+		activeUIDiagram = UIDiagramList.returnActive();
 		activeUIDiagram.addElement(obj);
 	}
 	catch(e) {
@@ -42,7 +42,7 @@ var addProcess = function() {
 		prcId++;
 		var prc = new UIProcess(prcId);
 		prc.draw();
-		var activeUIDiagram = UIDiagramList.returnActive();
+		activeUIDiagram = UIDiagramList.returnActive();
 		activeUIDiagram.addElement(prc);
 	}
 	catch(e) {
@@ -62,8 +62,8 @@ var addState = function() {
 			throw err;
 		}
 		else {
-			var type = activeSVGElement.getAttributeNS(null, 'type');
-			if (type == 'process') {
+			var type = activeSVGElement.getAttributeNS(null, 'id').slice(0,3);
+			if (type == 'prc') {
 				var msg = "Process cannot have a state";
 				var err = new Error(msg);
 				if (!err.message) {
@@ -110,7 +110,7 @@ var addLink = function(src, dest) {
 		lnkId++;
 		var lnk = new UILink(linkOn.type + lnkId);		
 		if (lnk.check(src, dest) === true) {
-			lnk.draw()
+			lnk.draw(src, dest)
 			var activeUIDiagram = UIDiagramList.returnActive();
 			activeUIDiagram.addElement(lnk);
 		}

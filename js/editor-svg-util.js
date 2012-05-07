@@ -78,6 +78,9 @@ var dragging = function(evt) {
 	currentY = evt.clientY;
 }
 var drop = function(evt) {
+	var activeUIDiagram = UIDiagramList.returnActive();
+	var activeUIObject = activeUIDiagram.returnElement(activeSVGElement.id);
+	//Update element coordinates after dragging
 	activeSVGElement.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
 	return deselect()
 }
