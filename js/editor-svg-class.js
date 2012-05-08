@@ -354,6 +354,7 @@ UILink.prototype.draw = function(src, dest) {
 	
 	//Drawing a link
 	var path = document.createElementNS(svgNS, 'path');
+	path.setAttributeNS(null, 'marker-end', 'url(#udr)');
 	path.setAttributeNS(null, 'd', this.d);
 	path.setAttributeNS(null, 'stroke', this.stroke);
 	path.setAttributeNS(null, 'stroke-width', this.strokeWidth);
