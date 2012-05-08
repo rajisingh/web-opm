@@ -75,8 +75,8 @@ var addState = function() {
 			}
 			
 			//Execute this if error are caught
-			var stt = new UIState(activeUIObject);
-			activeUIObject.addState(stt);
+			var stt = new UIState(activeUIElement);
+			activeUIElement.addState(stt);
 			stt.draw();
 		}			
 	}

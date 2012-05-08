@@ -185,8 +185,8 @@ UIProcess.prototype.draw = function() {
 	group.appendChild(elName);
 }
 UIProcess.prototype.updateLocation = function(newX, newY) {
-	if (newX) { this.cx = newX; }
-	if (newY) { this.cy = newY; }
+	if (newX) { this.x = newX; }
+	if (newY) { this.y = newY; }
 }
 UIProcess.prototype.updateSize = function(newRx, newRy) {
 	if (newRx) { this.rx = newRx; }
@@ -203,9 +203,10 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 var objHeightStep = 35;					//Amount of pixels to enlarge the object height when a new state is added
 var stateYDelta = 10;					//Distance between states
 function UIState(parent) {
+
 	this.id = 'stt' + (parent.statesAmount + 1).toString() ;
-	this.x = parent.x + 20;
-	this.y = parent.y + 55;
+	this.x = activeSVGElement.firstChild.x.baseVal.value + 20;
+	this.y = activeSVGElement.firstChild.y.baseVal.value + 55;
 	this.rx = 6;			
 	this.ry = 6;			
 	this.width = 70;	
@@ -281,7 +282,7 @@ function UILink(id) {
 	this.id = id;
 	this.d = null;
 	this.fill = 'none';
-	this.stroke = 'grey';
+	this.stroke = 'black';
 	this.strokeWidth = 2;
 }
 UILink.prototype.updateLink = function(newD) {
