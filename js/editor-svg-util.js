@@ -82,10 +82,12 @@ var drop = function(evt) {
 	/* Update element coordinates of UI Element
 	 * Algorithm:
 	 * 1. Extract matrix transformation from SVG Element
-	 * 2. Get UI class element
-	 * 3. Update XY coordinates*/
+	 * 2. Update element XY coordinates
+	 * 3. Update element name XY coordinates*/
 	
-	alert(activeUIElement.id);
+	var coord_change = activeSVGElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
+	activeUIElement.updateLocation(parseInt(activeUIElement.x) + parseInt(coord_change[4]), parseInt(activeUIElement.y) + parseInt(coord_change[5]));
+	activeUIElement.name.updateLocation(parseInt(activeUIElement.name.x) + parseInt(coord_change[4]), parseInt(activeUIElement.name.y) + parseInt(coord_change[5]));
 	activeSVGElement.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
-	return deselect()
+	deselect()
 }
