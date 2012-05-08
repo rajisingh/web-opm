@@ -13,17 +13,15 @@ var randomFromTo =  function(from, to) {
 	return Math.floor(Math.random() * (to - from + 1) + from);
 }
 
-var returnSrc = function(evt) {
+var setSrc = function(evt) {
 	if (linkOn.status) {
-		src = null;
-		var activeUIDiagram = UIDiagramList.returnActive();
+		src = null;							//Make it null if it wasn't
 		src = activeUIDiagram.returnElement(evt.currentTarget.id);
 	}
 }
-var returnDest = function(evt) {
+var setDest = function(evt) {
 	if (linkOn.status) {
 		dest = null;
-		var activeUIDiagram = UIDiagramList.returnActive();
 		dest = activeUIDiagram.returnElement(evt.currentTarget.id);
 		addLink(src, dest);
 	}
@@ -33,10 +31,12 @@ var select = function(evt) {
 	if (evt.currentTarget !== activeSVGElement) {
 		if (activeSVGElement == null) {
 			activeSVGElement = evt.currentTarget;
+			activeUIElement = activeUIDiagram.returnElement(evt.currentTarget.id);
 		}
 		else {
 			deselect();
 			activeSVGElement = evt.currentTarget;
+			activeUIElement = activeUIDiagram.returnElement(evt.currentTarget.id);
 		}
 	}
 	if (activeSVGElement) {
@@ -54,9 +54,10 @@ var deselect =  function(evt) {
 		activeSVGElement.firstChild.setAttributeNS(null, 'fill', 'white');
 		var grip = activeSVGElement.getElementsByTagNameNS(svgNS, 'image').item(0);
 		grip.setAttributeNS(null, 'visibility', 'hidden');
-		activeSVGElement.setAttributeNS(null, 'onmousedown', 'returnSrc(evt)');
+		activeSVGElement.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
 		activeSVGElement.setAttributeNS(null, 'onmousemove', null);
 		activeSVGElement = null;
+		activeUIElement = null;
 	}
 }
 var pick = function(evt) {
@@ -78,9 +79,13 @@ var dragging = function(evt) {
 	currentY = evt.clientY;
 }
 var drop = function(evt) {
-	var activeUIDiagram = UIDiagramList.returnActive();
-	var activeUIObject = activeUIDiagram.returnElement(activeSVGElement.id);
-	//Update element coordinates after dragging
-	activeSVGElement.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
+	/* Update element coordinates of UI Element
+	 * Algorithm:
+	 * 1. Extract matrix transformation from SVG Element
+	 * 2. Get UI class element
+	 * 3. Update XY coordinates*/
+	
+	alert(activeUIElement.id);
+	activeSVGElement.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	return deselect()
 }

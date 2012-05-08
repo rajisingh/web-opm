@@ -14,6 +14,10 @@ var xlinkNS = svg.getAttribute('xmlns:xlink');
 
 var activeSVGDiagram = document.getElementById('sd');
 var activeSVGElement = null;
+
+var activeUIDiagram = UIDiagramList.returnActive();
+var activeUIElement = null;
+
 var currentX = 0;
 var currentY = 0;
 var currentMatrix = 0;
@@ -28,7 +32,6 @@ var addObject = function() {
 		objId++;
 		var obj = new UIObject(objId);
 		obj.draw();
-		activeUIDiagram = UIDiagramList.returnActive();
 		activeUIDiagram.addElement(obj);
 	}
 	catch(e) {
@@ -42,7 +45,6 @@ var addProcess = function() {
 		prcId++;
 		var prc = new UIProcess(prcId);
 		prc.draw();
-		activeUIDiagram = UIDiagramList.returnActive();
 		activeUIDiagram.addElement(prc);
 	}
 	catch(e) {
@@ -73,8 +75,6 @@ var addState = function() {
 			}
 			
 			//Execute this if error are caught
-			var activeUIDiagram = UIDiagramList.returnActive();
-			var activeUIObject = activeUIDiagram.returnElement(activeSVGElement.id);
 			var stt = new UIState(activeUIObject);
 			activeUIObject.addState(stt);
 			stt.draw();
@@ -111,7 +111,6 @@ var addLink = function(src, dest) {
 		var lnk = new UILink(linkOn.type + lnkId);		
 		if (lnk.check(src, dest) === true) {
 			lnk.draw(src, dest)
-			var activeUIDiagram = UIDiagramList.returnActive();
 			activeUIDiagram.addElement(lnk);
 		}
 		else {
