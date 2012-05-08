@@ -86,8 +86,8 @@ UIObject.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
-	group.setAttributeNS(null, 'onmousedown', 'returnSrc(evt)');
-	group.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
+	group.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
+	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeSVGDiagram.appendChild(group);
 	//Draw rectangle, appended to the group
@@ -152,8 +152,8 @@ UIProcess.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
-	group.setAttributeNS(null, 'onmousedown', 'returnSrc(evt)');
-	group.setAttributeNS(null, 'onmouseup', 'returnDest(evt)');
+	group.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
+	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeSVGDiagram.appendChild(group);
 	var ellipse = document.createElementNS(svgNS, 'ellipse');
