@@ -182,10 +182,8 @@ OPMElement.prototype.getID = function(){
 OPMEntity.prototype = new OPMElement(); //inheriting from OPMElement
 function OPMEntity() {
   this.name = null;
-  this.inProLinks = {};
-  this.inStructLinks = {};
-  this.outProLinks = {};
-  this.outStructLinks = {};
+  this.inLinks = {};
+  this.outLinks = {};
   this.description = null;
 }
 
@@ -207,25 +205,18 @@ OPMEntity.prototype.setDescription = function( description ){
   return;
 }
 
-OPMEntity.prototype.setInProceduralLink = function( inLink ){
-  this.inProLinks[ inLink.Source ] = inLink;
+OPMEntity.prototype.setLink = function( link ){
+  switch( link.type ){
+    case "Procedural":
+      //TODO: VERIFY OPM LOGIC HERE
+    case "Structural":
+      //TODO: VERIFY OPM LOGIC HERE
+  this.outStructLinks[ outLink.Destination ] = outLink;
   return;
   //TODO: DB update function needed
 }
 
-OPMEntity.prototype.setInStructuralLink = function( inLink ){
-  this.inStructLinks[ inLink.Source ] = inLink;
-  return;
-  //TODO: DB update function needed
-}
-
-OPMEntity.prototype.setOutProceduralLink = function( outLink ){
-  this.outProLinks[ outLink.Destination ] = outLink;
-  return;
-  //TODO: DB update function needed
-}
-
-OPMEntity.prototype.setOutStructuralLink = function( outLink ){
+OPMEntity.prototype.removeLink = function( link ){
   this.outStructLinks[ outLink.Destination ] = outLink;
   return;
   //TODO: DB update function needed
@@ -461,7 +452,7 @@ OPMLink.prototype.getType = function(){
   return this.type;
 }
 
-OPMLink.prototype.setType = function(type){
+OPMLink.prototype.setType = function( type ){
   this.type = type;
   return;
 }
@@ -479,8 +470,8 @@ OPMLink.prototype.getCategory = function(){
 OPMProceduralLink.prototype = new OPMLink();
 function OPMProceduralLink() {
 	
-	this.source;
-	this.destination;
+  this.source = {};
+  this.destination = {};
 	this.description = null;
 	this.originType = null;
  }
