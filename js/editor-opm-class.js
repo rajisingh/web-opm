@@ -207,10 +207,30 @@ OPMEntity.prototype.setDescription = function( description ){
   return;
 }
 
-OPMEntity.prototype.setInProceduralLink = function( link ){
-  this.inLinks[ 
-
+OPMEntity.prototype.setInProceduralLink = function( inLink ){
+  this.inProLinks[ inLink.Source ] = inLink;
+  return;
+  //TODO: DB update function needed
 }
+
+OPMEntity.prototype.setInStructuralLink = function( inLink ){
+  this.inStructLinks[ inLink.Source ] = inLink;
+  return;
+  //TODO: DB update function needed
+}
+
+OPMEntity.prototype.setOutProceduralLink = function( outLink ){
+  this.outProLinks[ outLink.Destination ] = outLink;
+  return;
+  //TODO: DB update function needed
+}
+
+OPMEntity.prototype.setOutStructuralLink = function( outLink ){
+  this.outStructLinks[ outLink.Destination ] = outLink;
+  return;
+  //TODO: DB update function needed
+}
+
 //END OF OPMEntity CLASS//
 
 //START OF OPMThing CLASS//
