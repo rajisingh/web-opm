@@ -8,17 +8,16 @@
  * 
  *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
-<script>
 
 //START OF OPMModel CLASS//
 function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
   
-  if ( ( typeof modelIDVal !== int ) && ( typeof creatorIDVal !== int ) ){
+  if ( ( typeof modelIDVal !== string ) && ( typeof creatorIDVal !== string ) ){
     throw "invalid input type. check modelIDVal and creatorIDVal"; //Throw exception if data type is incorrect
   }
   
-  this.modelID = modelIDVal;
-  this.creatorID = creatorIDVal;
+  this.modelId = modelIdVal;
+  this.creatorId = creatorIDVal;
   this.name = 'Model Name'; //default value
   this.type = null;
   this.participants = {};
@@ -30,13 +29,13 @@ function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
 }
 
 //return the modelID of specific ID
-OPMModel.prototype.getID = function(){ 
-  return this.modelID;
+OPMModel.prototype.getId = function(){ 
+  return this.modelId;
 }
  
 //share model with additional users
 OPMModel.prototype.share = function( newUser ){ 
-  this.participants[ newUser.ID ] = newUser;
+  this.participants[ newUser.Id ] = newUser;
   //TODO: add call to JSON function to send to server
   return;
 }
@@ -154,7 +153,7 @@ OPMDiagram.prototype.print = function(){
 	}
 	
 OPMDiagram.prototype.writeOPL = function( text ){
-	 this.OPL = text;
+	 this.OPL = this.OPL+text;
  }
 	
 OPMDiagram.prototype.destructor = function(){
