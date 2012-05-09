@@ -9,18 +9,23 @@
  *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
 
+/*TODO:
+ADD USER CLASS
+*/
+
+
 //START OF OPMModel CLASS//
-function OPMModel( modelIDVal , creatorIDVal , creationDate ) {
+function OPMModel( modelIdVal , creatorIdVal , creationDate ) {
   
   if ( ( typeof modelIDVal !== string ) && ( typeof creatorIDVal !== string ) ){
     throw "invalid input type. check modelIDVal and creatorIDVal"; //Throw exception if data type is incorrect
   }
   
   this.modelId = modelIdVal;
-  this.creatorId = creatorIDVal;
+  this.creatorId = creatorIdVal;
   this.name = 'Model Name'; //default value
   this.type = null;
-  this.participants = {};
+  this.participants = { };
   this.sd = null;
   this.lastUpdateDate = null;
   this.creationDate = creationDate;
@@ -42,6 +47,10 @@ OPMModel.prototype.share = function( newUser ){
 
 //returns a list of users with permissions to edit this Model
 OPMModel.prototype.getParticipants = function(){
+/*Write this better
+  try {}
+  catch(e) {}
+ */
   if ( this.participants === null ){
     return "no participating users";
   }
@@ -50,8 +59,9 @@ OPMModel.prototype.getParticipants = function(){
 
 //removes a specific user from the participants list
 OPMModel.prototype.unShare = function( p ){
-  var x = this.participants.indexOf( p );
+  if(this.participants[ p.userId ]) { del  };//TODO: Rewrite using Hash table
   if ( x === -1 ){
+  
     throw "cannot find collaborator ID. please try again.";
   }
   var temp = participants[ ( participants.length() ) - 1 ]; // Swap-n-Pop the userID from the participant list
@@ -115,17 +125,16 @@ OPMModel.prototype.destructor = function(){
 //START OF OPMDiagram CLASS//
 function OPMDiagram(){
 	
-  this.predecessor = {};
-  this.successors = {};
-  this.elements = {};
+  this.predecessor = { };
+  this.successors = { };
+  this.elements = { };
 	this.diagramName = 'Diagram Name';//default value
 	this.OPL = null;
-  this.number = {}; //need a default definition here.
+  this.number = { }; //need a default definition here.
 }
  
-OPMDiagram.prototype.addElement = function( element ){
-  this.elements[ element.ID ] = element;
-  return;
+OPMDiagram.prototype.addElement = function( element ) {
+  this.elements[ element.Id ] = element;
 }
  
 OPMDiagram.prototype.getElements = function(){
@@ -137,7 +146,7 @@ OPMDiagram.prototype.print = function(){
       //including XML function
  }
 	
- OPMDiagram.prototype.renumber = function( number ){
+  OPMDiagram.prototype.renumber = function( number ){//TODO: add procedure to renumber entire tree
 	 try{
 		 if(typeof number !== int){
 			throw "invalid input type, please insert a number.";
@@ -169,12 +178,12 @@ OPMDiagram.prototype.destructor = function(){
 //END OF OPMDiagram CLASS//
 
 //START OF OPMElement CLASS//
-function OPMElement() {
-  this.elementID;
+function OPMElement(id) {
+  this.id = id;
 }
 
-OPMElement.prototype.getID = function(){
-  return this.elementID;
+OPMElement.prototype.getId = function(){
+  return this.id;
 }
 //END OF OPMElement CLASS//
 
@@ -182,8 +191,8 @@ OPMElement.prototype.getID = function(){
 OPMEntity.prototype = new OPMElement(); //inheriting from OPMElement
 function OPMEntity() {
   this.name = null;
-  this.inLinks = {};
-  this.outLinks = {};
+  this.inLinks = { };
+  this.outLinks = { };
   this.description = null;
 }
 
@@ -193,7 +202,6 @@ OPMEntity.prototype.getName = function(){
 
 OPMEntity.prototype.setName = function( name ){
   this.name = name;
-  return;
 }
 
 OPMEntity.prototype.getDescription = function(){
@@ -202,7 +210,6 @@ OPMEntity.prototype.getDescription = function(){
 
 OPMEntity.prototype.setDescription = function( description ){
   this.description = description;
-  return;
 }
 
 OPMEntity.prototype.addLink = function( link ){
@@ -212,7 +219,6 @@ OPMEntity.prototype.addLink = function( link ){
     case "Structural":
       //TODO: VERIFY OPM LOGIC HERE
   this.links[ outLink.Destination ] = outLink;
-  return;
   //TODO: DB update function needed
 }
 
@@ -230,7 +236,7 @@ function OPMThing(){
   this.essence = null;
   this.affiliation = null;
   this.scope = null;
-  this.unfoldDiag {};
+  this.unfoldDiag = {};
   this.inzoomDiag = {};
 }
 
@@ -239,8 +245,7 @@ OPMThing.prototype.getEssence = function(){
 }
 
 OPMThing.prototype.setEssence = function( ess ){
-  this.Essence = ess;
-  return;
+  this.essence = ess;
     //TODO: send data through JSON to DB and server
 }
 
@@ -250,7 +255,7 @@ OPMThing.prototype.getAffiliation = function(){
 
 OPMThing.prototype.setAffiliation = function( affil ){
   this.affiliation = affil;
-  return;
+
   //TODO: send data through JSON to DB and server
 }
 
@@ -276,7 +281,7 @@ OPMThing.prototype.inzoom = function(){
 //START OF OPMObject CLASS//
 OPMObject.prototype = new OPMThing();
 function OPMObject() {
-  this.states = {};
+  this.states = { };
   this.initValue = null;
   this.obejctType = null;
 }
@@ -295,10 +300,10 @@ OPMObject.prototype.setDescription = function( description ){
 }
 
 OPMObject.prototype.addState = function( state){
-  this.states[ state.ID ] = state; //not too sure how to reference or add another object here..
+  this.states[ state.Id ] = state; 
 }
 
-OPMObject.prototype.removeState = function(state){
+  OPMObject.prototype.removeState = function(state){//TODO: change to Hash table procedure
   var x = this.states.indexOf( state );
   if ( x === -1 ){
     throw "cannot find state ID. please try again.";
@@ -322,8 +327,8 @@ function OPMProcess() {
   this.name = null;
   this.minActivationTime = null;
   this.maxActivationTime = null;
-  this.inProcedualLinksRelationMatrix = null;
-  this.things = {};
+  this.inProcedualLinksRelationMatrix = null; //?
+  this.things = {};//?
 }
 
 OPMProcess.prototype.getName = function(){
@@ -430,7 +435,7 @@ OPMState.prototype.getMaxActivationTime = function(){
 }
 
 OPMState.prototype.setMaxActivationTime = function(maxTime){
-  if (typeof(maxTime) !== float){ //or should it be float?
+  if (typeof(maxTime) !== float){ 
       throw "invalid input, please enter a number.";
     }
     this.maxActivationTime = maxTime;
