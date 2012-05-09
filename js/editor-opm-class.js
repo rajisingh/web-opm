@@ -182,8 +182,10 @@ OPMElement.prototype.getID = function(){
 OPMEntity.prototype = new OPMElement(); //inheriting from OPMElement
 function OPMEntity() {
   this.name = null;
-  this.inLinks = {};
-  this.outLinks = {};
+  this.inProLinks = {};
+  this.inStructLinks = {};
+  this.outProLinks = {};
+  this.outStructLinks = {};
   this.description = null;
 }
 
@@ -203,6 +205,11 @@ OPMEntity.prototype.getDescription = function(){
 OPMEntity.prototype.setDescription = function( description ){
   this.description = description;
   return;
+}
+
+OPMEntity.prototype.setInProceduralLink = function( link ){
+  this.inLinks[ 
+
 }
 //END OF OPMEntity CLASS//
 
