@@ -13,6 +13,7 @@ var randomFromTo =  function(from, to) {
 	return Math.floor(Math.random() * (to - from + 1) + from);
 }
 
+//Set of utility function to identify source and destination elements to draw the link
 var setSrc = function(evt) {
 	if (linkOn.status) {
 		src = null;							//Make it null if it wasn't
@@ -26,6 +27,7 @@ var setDest = function(evt) {
 		addLink(src, dest);
 	}
 }
+//End
 
 var select = function(evt) {
 	if (evt.currentTarget !== activeSVGElement) {
@@ -60,6 +62,8 @@ var deselect =  function(evt) {
 		activeUIElement = null;
 	}
 }
+
+//Set of utility function for dragging mechanism
 var pick = function(evt) {
 	activeSVGElement.setAttributeNS(null, 'onmousemove', 'dragging(evt)');
 	currentX = evt.clientX;
@@ -99,4 +103,41 @@ var drop = function(evt) {
 	}
 	activeSVGElement.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	deselect()
+}
+//End
+
+//LSSB algorithm for line segment clipping
+//Function is needed in order to connect nearest borders of objects instead of centers
+var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
+	//Utility function for LSSB alg to identify code of code of quadrant
+	var c = 0;
+	var code = function(point) {
+		if (point[0] < rectSizeMin[0]) { c = 1; }
+		else if (point[0] > rectSizeMax[0]) { c = 2; }
+		if (point[1] < rectSizeMin[1]) { c += 4; }
+		else if (point[1] > rectSizeMax[1]) { c += 8; }
+		return c
+	}
+	var ca = code(srcCenter);
+	var cb = code(destCenter);
+	var dx = destCenter[0] - srcCenter[0];
+	var dy = destCenter[1] - srcCenter[1];
+	switch(ca + cb) {
+	case 1: 
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+	case 14:
+	case 15:
+	}
+
 }
