@@ -83,11 +83,20 @@ var drop = function(evt) {
 	 * Algorithm:
 	 * 1. Extract matrix transformation from SVG Element
 	 * 2. Update element XY coordinates
-	 * 3. Update element name XY coordinates*/
+	 * 3. Update element name XY coordinates
+	 * 4. If type is object and statesAmount is not 0
+	 * 5. 	Run the loop over all states
+	 * 6. 		Change XY of states*/
 	
 	var coord_change = activeSVGElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
 	activeUIElement.updateLocation(parseInt(activeUIElement.x) + parseInt(coord_change[4]), parseInt(activeUIElement.y) + parseInt(coord_change[5]));
 	activeUIElement.name.updateLocation(parseInt(activeUIElement.name.x) + parseInt(coord_change[4]), parseInt(activeUIElement.name.y) + parseInt(coord_change[5]));
+
+	if (activeUIElement.statesAmount !== 0 && activeUIElement.id.slice(0,3) === 'obj' ) {
+		for (var i in activeUIElement.states) {
+			activeUIElement.states[i].updateLocation(parseInt(activeUIElement.states[i].x) + parseInt(coord_change[4]), parseInt(activeUIElement.states[i].y) + parseInt(coord_change[5]))
+		}
+	}
 	activeSVGElement.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	deselect()
 }
