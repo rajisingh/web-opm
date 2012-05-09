@@ -282,8 +282,9 @@ function UILink(id) {
 	this.id = id;
 	this.d = null;
 	this.fill = 'none';
-	this.stroke = 'black';
+	this.stroke = 'DimGrey';
 	this.strokeWidth = 2;
+	this.name = null;
 }
 UILink.prototype.updateLink = function(newD) {
 	this.d = newD;
@@ -319,48 +320,44 @@ UILink.prototype.check = function(src, dest) {
 UILink.prototype.draw = function(src, dest) {
 	//Calculating coordinates of connection point
 	try {
-		var srcCenter = new Array();
-		var destCenter = new Array();
 		var srcType = src.id.slice(0, 3);
 		var destType = src.id.slice(0, 3);
-		if (srcType === 'prc') {
-			srcCenter[0] = src.x;
-			srcCenter[1] = src.y;
-		}
-		else {
-			srcCenter[0] = src.x + src.width / 2;
-			srcCenter[1] = src.y + src.height / 2;
-		}
-		if (destType === 'prc') {
-			destCenter[0] = dest.x;
-			destCenter[1] = dest.y;
-		}
-		else {
-			destCenter[0] = dest.x + dest.width / 2;
-			destCenter[1] = dest.y + dest.height / 2;
-		}
-		
+		if (srcType === 'prc') { var srcCenter = [src.x, src.y] }
+		else { var srcCenter = [src.x + src.width / 2, src.y + src.height / 2] }
+		if (destType === 'prc') { var destCenter = [dest.x, dest.y] } 
+		else { var destCenter = [dest.x + dest.width / 2, dest.y + dest.height / 2] }		
 	}
 	catch(e) {
 		alert(e.message);
 	}
+	
+	//Call LSSB alg here for two rectangulars
+	var srcSizeMin = [src.x, src.y];
+	var srcSizeMax = [src.x + src.width, src.y + src.height];
+	var destSizeMin = [dest.x, dest.y];
+	var destSizeMax = [dest.x + dest.width, dest.y + dest.height];
+	var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
+//	var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
 	
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
 	activeSVGDiagram.appendChild(group);
 	
 	//Build a path
-	var newD = 'M ' + srcCenter.join(',') + ' L ' + destCenter.join(',');
-	this.updateLink(newD);
-	
-	//Drawing a link
-	var path = document.createElementNS(svgNS, 'path');
-	path.setAttributeNS(null, 'marker-end', 'url(#udr)');
-	path.setAttributeNS(null, 'd', this.d);
-	path.setAttributeNS(null, 'stroke', this.stroke);
-	path.setAttributeNS(null, 'stroke-width', this.strokeWidth);
-	path.setAttributeNS(null, 'fill', this.fill);
-	group.appendChild(path);
+	switch(this.id.slice(0,3)){
+	case 'udr':
+		var newD = 'M ' + srcCenter.join(',') + ' L ' + destCenter.join(',');
+		this.updateLink(newD);
+		//Drawing a link
+		var path = document.createElementNS(svgNS, 'path');
+		path.setAttributeNS(null, 'marker-end', 'url(#udr)');
+		path.setAttributeNS(null, 'd', this.d);
+		path.setAttributeNS(null, 'stroke', this.stroke);
+		path.setAttributeNS(null, 'stroke-width', this.strokeWidth);
+		path.setAttributeNS(null, 'fill', this.fill);
+		group.appendChild(path);
+		break;
+	}
 	
 }
 
