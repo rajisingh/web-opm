@@ -13,6 +13,45 @@
 ADD USER CLASS
 */
 
+function OPMUser( id , username , alienLogin , email , firstName , lastName , password ){
+  this.id = id;
+  this.username = username;
+  this.alienLogin = alienLogin;
+  this.email = email;
+  this.firstName = firstName;
+  this.lastName = lastName;
+  this.password = password;
+  this.lastLogin = null; //timestamp
+  this.loginStatus = null; //boolean
+}
+
+  //retrieve list of models by user's ID
+OPMUser.prototype.getModels = function( userId ){
+  //use JSON function return params by user ID
+}
+
+OPMUser.prototype.getModels = function( userId ){
+  //use JSON function return params by user ID
+}
+
+OPMUser.prototype.login = function( userId, pass , loginProvider ){
+  //call FB/Google/LinkedIn/Twitter login algorithm and process via Python?
+}
+
+OPMUser.prototype.logout = function(){
+  this.loginStatus = 0;
+  //TODO: perform save on working model
+}
+
+OPMUser.prototype.changeName = function ( newFirstName , newLastName ){
+  this.firstName = newFirstName;
+  this.lastName = newLastName;
+}
+
+OPMUser.prototype.changeEmail = function( newEmail ){
+  this.email = newEmail;
+}
+
 
 //START OF OPMModel CLASS//
 function OPMModel( modelIdVal , creatorIdVal , creationDate ) {
