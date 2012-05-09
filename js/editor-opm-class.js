@@ -205,13 +205,13 @@ OPMEntity.prototype.setDescription = function( description ){
   return;
 }
 
-OPMEntity.prototype.setLink = function( link ){
+OPMEntity.prototype.addLink = function( link ){
   switch( link.type ){
     case "Procedural":
       //TODO: VERIFY OPM LOGIC HERE
     case "Structural":
       //TODO: VERIFY OPM LOGIC HERE
-  this.outStructLinks[ outLink.Destination ] = outLink;
+  this.links[ outLink.Destination ] = outLink;
   return;
   //TODO: DB update function needed
 }
