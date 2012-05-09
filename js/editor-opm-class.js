@@ -263,11 +263,11 @@ function OPMObject() {
 }
 
 OPMObject.prototype.getName = function(){
-  return.this.name;
+  return this.name;
 }
 
 OPMObject.prototype.getDescription = function(){
-  return.this.description;
+  return this.description;
 }
 
 OPMObject.prototype.setDescription = function( description ){
@@ -308,7 +308,7 @@ function OPMProcess() {
 }
 
 OPMProcess.prototype.getName = function(){
-  return.this.name;
+  return this.name;
 }
 
 OPMProcess.prototype.setName = function (name){
@@ -317,7 +317,7 @@ OPMProcess.prototype.setName = function (name){
 }
 
 OPMProcess.prototype.getDescription = function(){
-  return.this.description;
+  return this.description;
 }
 
 OPMProcess.prototype.setDescription = function (desc){
@@ -326,7 +326,7 @@ OPMProcess.prototype.setDescription = function (desc){
 }
 
 OPMProcess.prototype.getMinActivationTime = function(){
-  return.this.minActivationTime;
+  return this.minActivationTime;
 }
 
 OPMProcess.prototype.setMinActivationTime = function( minTime ){
@@ -338,7 +338,7 @@ OPMProcess.prototype.setMinActivationTime = function( minTime ){
 }
 
 OPMProcess.prototype.getMaxActivationTime = function(){
-  return.this.maxActivationTime;
+  return this.maxActivationTime;
 }
 
 OPMProcess.prototype.setMaxActivationTime = function(maxTime){
@@ -350,7 +350,7 @@ OPMProcess.prototype.setMaxActivationTime = function(maxTime){
 }
 
 OPMProcess.prototype.getInProcedualLinksRelationMatrix = function(){
-  return.this.inProcedualLinksRelationMatrix;
+  return this.inProcedualLinksRelationMatrix;
 }
 
 //not too sure about the implimentation of this function, check the class diagram.
@@ -366,112 +366,202 @@ OPMProcess.prototype.destructor = function(){
 
 //START OF OPMState CLASS//
 
+OPMState.prototype = new OPMEntity();
+function OPMState() {
+  this.type = null;
+  this.name = null;
+  this.description = null;
+  this.parentObject;
+  this.minActivationTime;
+  this.maxActivationTime;
+}
+
+OPMState.prototype.getType = function(){
+  return this.type;
+}  
+
+OPMState.prototype.setType = function(type){
+  this.type = type;
+  return;
+}
+
+OPMState.prototype.getDescription = function(){
+    return this.description;
+}
+
+OPMState.prototype.setDescription = function (description){
+  this.description = description;
+  return;
+}
+
+OPMState.prototype.getMinActivationTime = function(){
+  return this.minActivationTime;
+}
+
+OPMState.prototype.setMinActivationTime = function( minTime ){
+    if ( typeof( minTime ) !== float ){ //or should it be float?
+      throw "invalid input, please enter a number.";
+    }
+    this.minActivationTime = minTime;
+    return;
+}
+
+OPMState.prototype.getMaxActivationTime = function(){
+  return this.maxActivationTime;
+}
+
+OPMState.prototype.setMaxActivationTime = function(maxTime){
+  if (typeof(maxTime) !== float){ //or should it be float?
+      throw "invalid input, please enter a number.";
+    }
+    this.maxActivationTime = maxTime;
+    return;
+}
+
+
 //END OF OPMState CLASS//
 
 //START OF OPMLink CLASS//
-function OPMLink() {}
+
+OPMLink.prototype = new OPMElement();
+function OPMLink() {
+  this.type = null;
+  this.category = null;
+}
+
+OPMLink.prototype.getType = function(){
+  return this.type;
+}
+
+OPMLink.prototype.setType = function(type){
+  this.type = type;
+  return;
+}
+
+OPMLink.prototype.getCategory = function(){
+  return this.category;
+}
+
+
 //END OF OPMLink CLASS//
 
+
 //START OF OPMProcedural_Link CLASS//
-function OPMProcedural_Link() {
+
+OPMProceduralLink.prototype = new OPMLink();
+function OPMProceduralLink() {
 	
-	var source;
-	var destination;
-	var description;
-	var originType;
-	
-	
-	function getDest() {}
-	
-	function setDest() {}
-	
-	function getSource() {}
-	
-	function setSource() {}
-	
-	function getOriginType(){
-		return this.originType;
-	}
-	
-	function setOriginType(bool){
-		this.originType = bool;
-	}
-	
-	function destructor() {
-		//need procedure for deleting Model from database, including all children.
-	    try {
-	      if (anything_wrong === true){
-	      throw "unable to delete model, please try again";
-	      }
-	    }	
-	}
+	this.source;
+	this.destination;
+	this.description = null;
+	this.originType = null;
+ }
+ 
+OPMProceduralLink.prototype.getDestination = function(){
+  return this.destination;
+}
+
+OPMProceduralLink.prototype.setDestination = function(){
+//how to enter a pointer to destination.  
+}
+
+OPMProceduralLink.prototype.getSource = function(){
+  return this.source;
+}
+  
+OPMProceduralLink.prototype.setSource = function(){
+//how to enter a pointer for source.
+}
+
+OPMProceduralLink.prototype.getOriginType = function(){
+  return this.originType;
+}
+
+OPMProceduralLink.prototype.setOriginType = function(origin){
+  this.originType = origin;
+  return;
+}
+
+OPMProceduralLink.prorotype.getDescription = function(){
+  return this.description;
+}
+
+OPMProceduralLink.prototype.setDescription = function(description){
+  this.description = description;
+  return;
+}
+
+OPMProceduralLink.prototype.destructor = function(){
+    //need destructor procedure/
 }
 //END OF OPMProcedural_Link CLASS//
 
 // OPM Structural Link Class
-function OPMStructural_Link() {
-	
-	var source;
-	var destination;
-	var participationConst;
-	var participationVal;
-	var cardinality;
-	var tag;
-	
-	function getTag(){
-		if (this.tag===null){
-			return "Empty";
-		}
-		retun this.tag;
-	}
-	
-	function setTag(text){
-		this.tag=text;
-	}
-	
-	function getParticipationConst(){
-		if (this.participationConst===null){
-			return "Empty";
-		}
-		return this.participationConst;
-	}
-	
-	function setParticipationConst(){}
-	
-	function getParticipationVal(){
-		if (this.participationVal===null){
-			return "Empty";
-		}
-		return this.participationVal;
-	}
-	
-	function setParticipationVal(){}
-	
-	function getCardinality(){
-		return this.cardinality;
-	}
-	
-	function setCardinality(){}
-	
-	function getDestination(){}
-	
-	function setDestination(){}
-	
-	function getSource(){}
-	
-	function setSource(){}
-	
-	function destructor() {
-		//need procedure for deleting Model from database, including all children.
-	    try {
-	      if (anything_wrong === true){
-	      throw "unable to delete model, please try again";
-	      }
-	    }	
-	
-	}
-	
+OPMStructuralLink.prototype = new OPMLink();
+function OPMStructuralLink() {
+	this.source;
+	this.destination;
+	this.participationConst;
+	this.participationVal;
+	this.cardinality;
+	this.tag;
+}  
+ 
+OPMSturcturalLink.prototype.getDestinatoin = function(){
+  return this.destination;
+}
+
+OPMStructuralLink.prototype.setDestination = function(){
+    //how to add pointer here?
+}
+
+OPMStructuralLink.prototype.getSource = function(){
+  return this.source;
+}
+
+OPMStructuralLink.prototype.setSource = function(source){
+  this.source = source;
+  return;
+}
+
+OPMStructuralLink.prototype.getCardinality = function(){
+    return this.cardinality;
+}
+
+OPMStructuralLink.prototype.setCardinality = function(cardinality){
+  this.cardinality = cardinality;
+  return;
+}
+
+OPMStructuralLink.prototype.getTag = function(){
+  return this.tag;
+}
+
+OPMStructuralLink.prototype.setTag = function(tag){
+  this.tag = tag;
+  return;
+}
+
+OPMStructuralLink.prototype.getParticipationConst = function(){
+  return this.participationConst;
+}
+
+OPMStructuralLink.prototype.setParticipationConst = function(participationConst){
+  this.participationConst = participationConst;
+  return;
+}
+
+OPMStructuralLink.prototype.getParticipationVal = function(){
+    return this.participationVal;
+}
+
+OPMStructuralLink.prototype.setParticipationVal = function(Val){
+  this.participationVal = val;
+  return;
+}
+
+OPMStructuralLink.prototype.destructor = function(){
+    //destructor procedure
 }
 
 
-</script>
