@@ -134,6 +134,7 @@ OPMDiagram.prototype.getElements = function(){
 	
 OPMDiagram.prototype.print = function(){
 		//need implementation of print procedure.
+      //including XML function
  }
 	
  OPMDiagram.prototype.renumber = function( number ){
