@@ -9,10 +9,6 @@
  *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
 
-/*TODO:
-ADD USER CLASS
-*/
-
 function OPMUser( id , username , alienLogin , email , firstName , lastName , password ){
   this.id = id;
   this.username = username;
@@ -27,31 +23,54 @@ function OPMUser( id , username , alienLogin , email , firstName , lastName , pa
 
   //retrieve list of models by user's ID
 OPMUser.prototype.getModels = function( userId ){
-  //use JSON function return params by user ID
-}
-
-OPMUser.prototype.getModels = function( userId ){
-  //use JSON function return params by user ID
+  //sends userId to JSON function and receives all Model IDs of this user.  
 }
 
 OPMUser.prototype.login = function( userId, pass , loginProvider ){
   //call FB/Google/LinkedIn/Twitter login algorithm and process via Python?
 }
 
-OPMUser.prototype.logout = function(){
-  this.loginStatus = 0;
-  //TODO: perform save on working model
+OPMUser.prototype.logout = function( model ){//receives model object
+  try{
+    model.save;
+    this.loginStatus = 0;
+    //TODO: perform save on working model with recieved modelId
+  }
+  catch( err ){
+    txt="There was an error saving the Model.\n\n";
+    txt+="Error description: " + err.message + "\n\n";
+    txt+="Click OK to continue.\n\n";
+    alert(txt);
+  }
 }
 
+//replace user's first and last name
 OPMUser.prototype.changeName = function ( newFirstName , newLastName ){
   this.firstName = newFirstName;
   this.lastName = newLastName;
 }
 
+//replace existing user's email with new one
 OPMUser.prototype.changeEmail = function( newEmail ){
   this.email = newEmail;
 }
 
+//sets the last login timestamp
+OPMUser.prototype.updateLastLogin = function( timestamp ){
+  this.lastLogin = timestamp;
+}
+
+//returns user's last login timestamp
+OPMUser.prototype.getLastLogin = function(){
+  return this.lastLogin;
+}
+
+//returns user's full name
+OPMUser.getName = function(){
+  var x = this.firstName;
+  var y = this.lastName;
+  return x + " " + y;
+}
 
 //START OF OPMModel CLASS//
 function OPMModel( modelIdVal , creatorIdVal , creationDate ) {
@@ -79,35 +98,38 @@ OPMModel.prototype.getId = function(){
  
 //share model with additional users
 OPMModel.prototype.share = function( newUser ){ 
-  this.participants[ newUser.Id ] = newUser;
+  this.participants[ newUser.id ] = newUser;
   //TODO: add call to JSON function to send to server
-  return;
 }
 
-//returns a list of users with permissions to edit this Model
+//returns a list (array) of users with permissions to edit this Model
 OPMModel.prototype.getParticipants = function(){
-/*Write this better
-  try {}
-  catch(e) {}
- */
-  if ( this.participants === null ){
-    return "no participating users";
+  try{
+    var list = [ ];
+    for ( var i in this.participants ){
+      list [ i ] = modelId.participants.id;
+    }
+    return list;
   }
-  return this.participants;
+  catch( err ){
+    txt="There was an error loading the Participants list.\n\n";
+    txt+="Error description: " + err.message + "\n\n";
+    txt+="Click OK to continue.\n\n";
+    alert(txt);
+  }
 }
 
 //removes a specific user from the participants list
-OPMModel.prototype.unShare = function( p ){
-  if(this.participants[ p.userId ]) { del  };//TODO: Rewrite using Hash table
-  if ( x === -1 ){
-  
-    throw "cannot find collaborator ID. please try again.";
+OPMModel.prototype.unShare = function( id ){
+  try{
+    delete this.participants.id; //directly access hash table and delete specific id
   }
-  var temp = participants[ ( participants.length() ) - 1 ]; // Swap-n-Pop the userID from the participant list
-  participants[ ( participants.length() ) - 1 ] = participants [ x ];
-  participants[ x ] = temp;
-  var garbage = participants.pop();
-  delete garbage;
+  catch( err ){
+    txt="There was an error removing user from list.\n\n";
+    txt+="Error description: " + err.message + "\n\n";
+    txt+="Click OK to continue.\n\n";
+    alert(txt);
+  }
 }
  
 //returns the Model's name
@@ -131,15 +153,12 @@ OPMModel.prototype.setType = function( type ){
 	this.type = type;
   //TODO: add JSON function for setting model Type in DB
 }
-OPMModel.prototype.print = function (){
- // need procedure for printing a model 
-}
 
 OPMMOdel.prototype.save = function (){
   // need procedure for saving a model to DB
 }
 
-OPMModel.prototype.load = function (){
+OPMModel.prototype.load = function ( modelId ){
   //need procedure from loading a model from DB
 }
 
@@ -149,14 +168,14 @@ OPMModel.prototype.destructor = function(){
   var answer = confirm ("You are about to Completely remove\n all Model diagrams. Are you sure you wish to continue?")
   if (answer){
     try {
-      if (anything_wrong === true){
-        throw "unable to delete model, please try again";
-      }
-      delete this; //TODO: is this expression true??
+      delete this; //FIXME: is this expression true??
     }
-  }
-  else{
-    return;
+    catch( err ){
+      txt="There was an error deleting the model.\n\n";
+      txt+="Error description: " + err.message + "\n\n";
+      txt+="Click OK to continue.\n\n";
+      alert(txt);
+    }
   }
 }
 //END OF OPMModel CLASS//
@@ -185,21 +204,18 @@ OPMDiagram.prototype.print = function(){
       //including XML function
  }
 	
-  OPMDiagram.prototype.renumber = function( number ){//TODO: add procedure to renumber entire tree
+OPMDiagram.prototype.renumber = function( number ){//TODO: add procedure to renumber entire tree
 	 try{
-		 if(typeof number !== int){
-			throw "invalid input type, please insert a number.";
-		 }
-	 }
-	this.number = number;
- }
+     this.number = number
+	  }
+}
 	
- OPMDiagram.prototype.getOPL = function(){
+OPMDiagram.prototype.getOPL = function(){
 		if (this.OPL === null){
 			return "Empty";
 		}
 		return this.OPL;
-	}
+ }
 	
 OPMDiagram.prototype.writeOPL = function( text ){
 	 this.OPL = this.OPL+text;
