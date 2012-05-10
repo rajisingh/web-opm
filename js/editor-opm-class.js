@@ -8,29 +8,50 @@
  * 
  *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
+/*TODO:
+OPMLink checking - implementing 
 
-function OPMUser( id , username , alienLogin , email , firstName , lastName , password ){
+*/
+
+
+function User( id , email , password ){
   this.id = id;
-  this.username = username;
-  this.alienLogin = alienLogin;
+  this.username = null;
+  this.alienLogin = null;
   this.email = email;
-  this.firstName = firstName;
-  this.lastName = lastName;
+  this.firstName = null;
+  this.lastName = null;
   this.password = password;
+  this.models = { };
   this.lastLogin = null; //timestamp
   this.loginStatus = null; //boolean
 }
 
   //retrieve list of models by user's ID
-OPMUser.prototype.getModels = function( userId ){
-  //sends userId to JSON function and receives all Model IDs of this user.  
+User.prototype.getModels = function( ){
+  //call JSON function and receives list of all Model IDs of this user.
+  return this.models;
 }
 
-OPMUser.prototype.login = function( userId, pass , loginProvider ){
+
+User.prototype.deleteModel = function( model ){
+  try{
+    delete this.models[ model.id ];
+    model.destructor();
+  }
+  catch( err ){
+    txt="There was an error deleting the Model.\n\n";
+    txt+="Error description: " + err.message + "\n\n";
+    txt+="Click OK to continue.\n\n";
+    alert(txt);
+  }
+}
+
+User.prototype.login = function( userId, pass , loginProvider ){
   //call FB/Google/LinkedIn/Twitter login algorithm and process via Python?
 }
 
-OPMUser.prototype.logout = function( model ){//receives model object
+User.prototype.logout = function( model ){//receives model object
   try{
     model.save;
     this.loginStatus = 0;
@@ -45,28 +66,28 @@ OPMUser.prototype.logout = function( model ){//receives model object
 }
 
 //replace user's first and last name
-OPMUser.prototype.changeName = function ( newFirstName , newLastName ){
+User.prototype.changeName = function ( newFirstName , newLastName ){
   this.firstName = newFirstName;
   this.lastName = newLastName;
 }
 
 //replace existing user's email with new one
-OPMUser.prototype.changeEmail = function( newEmail ){
+User.prototype.changeEmail = function( newEmail ){
   this.email = newEmail;
 }
 
 //sets the last login timestamp
-OPMUser.prototype.updateLastLogin = function( timestamp ){
+User.prototype.updateLastLogin = function( timestamp ){
   this.lastLogin = timestamp;
 }
 
 //returns user's last login timestamp
-OPMUser.prototype.getLastLogin = function(){
+User.prototype.getLastLogin = function(){
   return this.lastLogin;
 }
 
 //returns user's full name
-OPMUser.getName = function(){
+User.prototype.getName = function(){
   var x = this.firstName;
   var y = this.lastName;
   return x + " " + y;
@@ -75,16 +96,12 @@ OPMUser.getName = function(){
 //START OF OPMModel CLASS//
 function OPMModel( modelIdVal , creatorIdVal , creationDate ) {
   
-  if ( ( typeof modelIDVal !== string ) && ( typeof creatorIDVal !== string ) ){
-    throw "invalid input type. check modelIDVal and creatorIDVal"; //Throw exception if data type is incorrect
-  }
-  
   this.modelId = modelIdVal;
   this.creatorId = creatorIdVal;
   this.name = 'Model Name'; //default value
   this.type = null;
   this.participants = { };
-  this.sd = null;
+  this.sd = new OPMDiagram();
   this.lastUpdateDate = null;
   this.creationDate = creationDate;
   
@@ -104,32 +121,11 @@ OPMModel.prototype.share = function( newUser ){
 
 //returns a list (array) of users with permissions to edit this Model
 OPMModel.prototype.getParticipants = function(){
-  try{
-    var list = [ ];
-    for ( var i in this.participants ){
-      list [ i ] = modelId.participants.id;
-    }
-    return list;
-  }
-  catch( err ){
-    txt="There was an error loading the Participants list.\n\n";
-    txt+="Error description: " + err.message + "\n\n";
-    txt+="Click OK to continue.\n\n";
-    alert(txt);
-  }
+  return this.participants;
 }
 
 //removes a specific user from the participants list
 OPMModel.prototype.unShare = function( id ){
-  try{
-    delete this.participants.id; //directly access hash table and delete specific id
-  }
-  catch( err ){
-    txt="There was an error removing user from list.\n\n";
-    txt+="Error description: " + err.message + "\n\n";
-    txt+="Click OK to continue.\n\n";
-    alert(txt);
-  }
 }
  
 //returns the Model's name
@@ -188,7 +184,7 @@ function OPMDiagram(){
   this.elements = { };
 	this.diagramName = 'Diagram Name';//default value
 	this.OPL = null;
-  this.number = { }; //need a default definition here.
+  this.number = null; //need a default definition here.
 }
  
 OPMDiagram.prototype.addElement = function( element ) {
@@ -205,29 +201,19 @@ OPMDiagram.prototype.print = function(){
  }
 	
 OPMDiagram.prototype.renumber = function( number ){//TODO: add procedure to renumber entire tree
-	 try{
-     this.number = number
-	  }
+
 }
 	
 OPMDiagram.prototype.getOPL = function(){
-		if (this.OPL === null){
-			return "Empty";
-		}
-		return this.OPL;
+  return this.OPL;
  }
 	
 OPMDiagram.prototype.writeOPL = function( text ){
-	 this.OPL = this.OPL+text;
+  //TODO: need to think of a more clever way to add text to the OPL.
  }
 	
 OPMDiagram.prototype.destructor = function(){
-	 //need procedure for deleting Model from database, including all children.
-	  try {
-	    if (anything_wrong === true){
-	    throw "unable to delete model, please try again";
-	    }
-	  }	
+	 //need procedure for deleting Model from database, including all children. 
  }
 
 //END OF OPMDiagram CLASS//
@@ -324,8 +310,9 @@ OPMThing.prototype.setScope = function( scope ){
   //TODO: send data through JSON to DB and server
 }
 
-OPMThing.prototype.unfold = function(){
-  
+OPMThing.prototype.unfold = function( diagram ){
+  this.unfoldDiag = new OPMDiagram();
+
 }
 
 OPMThing.prototype.inzoom = function(){
@@ -338,36 +325,15 @@ OPMObject.prototype = new OPMThing();
 function OPMObject() {
   this.states = { };
   this.initValue = null;
-  this.obejctType = null;
-}
-
-OPMObject.prototype.getName = function(){
-  return this.name;
-}
-
-OPMObject.prototype.getDescription = function(){
-  return this.description;
-}
-
-OPMObject.prototype.setDescription = function( description ){
-  this.description = description;
-  return;
+  this.objectType = null;
 }
 
 OPMObject.prototype.addState = function( state){
   this.states[ state.Id ] = state; 
 }
 
-  OPMObject.prototype.removeState = function(state){//TODO: change to Hash table procedure
-  var x = this.states.indexOf( state );
-  if ( x === -1 ){
-    throw "cannot find state ID. please try again.";
-  }
-  var temp = states[ ( states.length() ) - 1 ]; // Swap-n-Pop the state ID from the state list
-  states[ ( states.length() ) - 1 ] = states [ x ];
-  states[ x ] = temp;
-  var garbage = states.pop();
-  delete garbage;
+OPMObject.prototype.removeState = function(state){//TODO: change to Hash table procedure
+
 }
 
 OPMObject.prototype.destructor = function(){
@@ -379,29 +345,10 @@ OPMObject.prototype.destructor = function(){
 //START OF OPMProcess CLASS//
 OPMProcess.prototype = new OPMThing();
 function OPMProcess() {
-  this.name = null;
   this.minActivationTime = null;
   this.maxActivationTime = null;
-  this.inProcedualLinksRelationMatrix = null; //?
-  this.things = {};//?
-}
-
-OPMProcess.prototype.getName = function(){
-  return this.name;
-}
-
-OPMProcess.prototype.setName = function (name){
-  this.name = name;
-  return;
-}
-
-OPMProcess.prototype.getDescription = function(){
-  return this.description;
-}
-
-OPMProcess.prototype.setDescription = function (desc){
-  this.description = desc;
-  return;
+//  this.inProcedualLinksRelationMatrix = null;
+//  this.things = { };
 }
 
 OPMProcess.prototype.getMinActivationTime = function(){
@@ -409,11 +356,7 @@ OPMProcess.prototype.getMinActivationTime = function(){
 }
 
 OPMProcess.prototype.setMinActivationTime = function( minTime ){
-    if ( typeof( minTime ) !== float ){ //or should it be float?
-      throw "invalid input, please enter a number.";
-    }
     this.minActivationTime = minTime;
-    return;
 }
 
 OPMProcess.prototype.getMaxActivationTime = function(){
@@ -421,13 +364,9 @@ OPMProcess.prototype.getMaxActivationTime = function(){
 }
 
 OPMProcess.prototype.setMaxActivationTime = function(maxTime){
-  if (typeof(maxTime) !== float){ //or should it be float?
-      throw "invalid input, please enter a number.";
-    }
     this.maxActivationTime = maxTime;
-    return;
 }
-
+/*
 OPMProcess.prototype.getInProcedualLinksRelationMatrix = function(){
   return this.inProcedualLinksRelationMatrix;
 }
@@ -437,7 +376,7 @@ OPMProcess.prototype.setInProcedualLinksRelationMatrix = function(matrix){
   this.inProcedualLinksRelationMatrix = matrix;
   return;
 }
-
+*/
 OPMProcess.prototype.destructor = function(){
   //need destructor procedure
 }   
@@ -446,13 +385,11 @@ OPMProcess.prototype.destructor = function(){
 //START OF OPMState CLASS//
 
 OPMState.prototype = new OPMEntity();
-function OPMState() {
+function OPMState(parent) {
   this.type = null;
-  this.name = null;
-  this.description = null;
-  this.parentObject;
-  this.minActivationTime;
-  this.maxActivationTime;
+  this.parent = parent;
+  this.minActivationTime = 0;
+  this.maxActivationTime = 0;
 }
 
 OPMState.prototype.getType = function(){
@@ -461,16 +398,6 @@ OPMState.prototype.getType = function(){
 
 OPMState.prototype.setType = function(type){
   this.type = type;
-  return;
-}
-
-OPMState.prototype.getDescription = function(){
-    return this.description;
-}
-
-OPMState.prototype.setDescription = function (description){
-  this.description = description;
-  return;
 }
 
 OPMState.prototype.getMinActivationTime = function(){
@@ -478,11 +405,7 @@ OPMState.prototype.getMinActivationTime = function(){
 }
 
 OPMState.prototype.setMinActivationTime = function( minTime ){
-    if ( typeof( minTime ) !== float ){ //or should it be float?
-      throw "invalid input, please enter a number.";
-    }
     this.minActivationTime = minTime;
-    return;
 }
 
 OPMState.prototype.getMaxActivationTime = function(){
@@ -490,11 +413,7 @@ OPMState.prototype.getMaxActivationTime = function(){
 }
 
 OPMState.prototype.setMaxActivationTime = function(maxTime){
-  if (typeof(maxTime) !== float){ 
-      throw "invalid input, please enter a number.";
-    }
     this.maxActivationTime = maxTime;
-    return;
 }
 
 
