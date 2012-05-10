@@ -110,8 +110,8 @@ var drop = function(evt) {
 //Function is needed in order to connect nearest borders of objects instead of centers
 var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 	//Utility function for LSSB alg to identify code of code of quadrant
-	var c = 0;
 	var code = function(point) {
+		var c = 0;
 		if (point[0] < rectSizeMin[0]) { c = 1; }
 		else if (point[0] > rectSizeMax[0]) { c = 2; }
 		if (point[1] < rectSizeMin[1]) { c += 4; }
@@ -119,18 +119,60 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 		return c
 	}
 	var ca = code(srcCenter);
+	alert(ca);
 	var cb = code(destCenter);
+	alert(cb);
 	var dx = destCenter[0] - srcCenter[0];
 	var dy = destCenter[1] - srcCenter[1];
 	switch(ca + cb) {
 	case 1: 
+		if (ca === 1) {
+			destCenter[0] = rectSizeMin[0];
+			destCenter[1] = (rectSizeMin[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+			return destCenter;
+		}
+		else {
+			srcCenter[0] = rectSizeMin[0];
+			srcCenter[1] = (rectSizeMin[0] - destCenter[0]) * dy / dx + destCenter[1];
+			return srcCenter;
+		}
 	case 2:
+		if (ca === 2) {
+			destCenter[0] = rectSizeMax[0];
+			destCenter[1] = (rectSizeMax[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+			return destCenter;
+		}
+		else {
+			srcCenter[0] = rectSizeMax[0];
+			srcCenter[1] = (rectSizeMax[0] - destCenter[0]) * dy / dx + destCenter[1];
+			return srcCenter;
+		}
 	case 3:
 	case 4:
+		if (ca === 4) {
+			destCenter[0] = (rectSizeMin[1] - srcCenter[1]) * dx / dy + srcCenter[0];
+			destCenter[1] = rectSizeMin[1];
+			return destCenter;
+		}
+		else {
+			srcCenter[0] = (rectSizeMin[1] - destCenter[1]) * dx / dy + destCenter[0];
+			srcCenter[1] = rectSizeMin[1];
+			return srcCenter;
+		}
 	case 5:
 	case 6:
 	case 7:
 	case 8:
+		if (ca === 8) {
+			destCenter[0] = (rectSizeMax[1] - srcCenter[1]) * dx / dy + srcCenter[0];
+			destCenter[1] = rectSizeMax[1];
+			return destCenter;
+		}
+		else {
+			srcCenter[0] = (rectSizeMax[1] - destCenter[1]) * dx / dy + destCenter[0];
+			srcCenter[1] = rectSizeMax[1];
+			return srcCenter;
+		}
 	case 9:
 	case 10:
 	case 11:
