@@ -337,7 +337,7 @@ UILink.prototype.draw = function(src, dest) {
 	var destSizeMin = [dest.x, dest.y];
 	var destSizeMax = [dest.x + dest.width, dest.y + dest.height];
 	var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
-//	var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
+	var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
 	
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
@@ -346,7 +346,7 @@ UILink.prototype.draw = function(src, dest) {
 	//Build a path
 	switch(this.id.slice(0,3)){
 	case 'udr':
-		var newD = 'M ' + srcCenter.join(',') + ' L ' + destCenter.join(',');
+		var newD = 'M ' + srcBorderPoint.join(',') + ' L ' + destBorderPoint.join(',');
 		this.updateLink(newD);
 		//Drawing a link
 		var path = document.createElementNS(svgNS, 'path');
