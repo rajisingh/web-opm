@@ -494,7 +494,43 @@ function OPMProceduralLink( src , dest ) {//input source and destination Objects
   this.xor = { };
   this.or = { };
 }
- 
+
+OPMProceduralLink.prototype.verifyLink = function(){
+  //check for existing type of structural link between two entities
+  if ( src.outLinks[ dest.id ].category ===  dest.inLinks[ src.id ].category ){
+    alert( "Cannot connect two Entities with more than one " + this.type + " Link" );
+    delete this;
+    return false;
+  }
+
+//rest of Logic rules using Switch, by source type. many more rules are to be added
+  switch ( src.constructor.name ){
+  case "OPMObject":
+    if ( this.type !== "Invocation" && this.type !== "Exception" && dest.constructor.name === "OPMProcess" ){
+      return true;
+    }
+    else if ( dest.constructor.name === "OPMObject" ){
+      return false;
+    }
+    else if ( dest.constructor.name === "OPMState" ){
+      delete this;
+      return false;
+    }
+
+  case "OPMProcess":
+    if ( ( this.type === "Invocation" || this.type === "Exception" )  && dest.constructor.name === "OPMProcess" ){
+      return true;
+    }
+    else if ( dest.constructor.name === "OPMObject" ){
+      delete this;
+      return false;
+    }
+    else if ( dest.constructor.name === "OPMState" ){
+      delete.this;
+      return false;
+    }
+  }
+}
 OPMProceduralLink.prototype.getDestination = function(){
   return this.destination;
 }
