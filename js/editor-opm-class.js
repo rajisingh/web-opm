@@ -8,11 +8,9 @@
  * 
  *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
-/*TODO:
-OPMLink checking - implementing 
 
-*/
 
+//TODO: OPMLink checking - implementing 
 
 function User( id , email , password ){
   this.id = id;
@@ -47,13 +45,14 @@ User.prototype.deleteModel = function( model ){
   }
 }
 
-User.prototype.login = function( userId, pass , loginProvider ){
+User.prototype.login = function( loginProvider ){
   //call FB/Google/LinkedIn/Twitter login algorithm and process via Python?
+  //Yes, but you need only loginProvider for that
 }
 
 User.prototype.logout = function( model ){//receives model object
   try{
-    model.save();
+    model.save(); //And what if you user dosn't wanna save model before logout?
     this.loginStatus = 0;
     //TODO: perform save on working model with recieved modelId
   }
