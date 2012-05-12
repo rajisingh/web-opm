@@ -261,12 +261,23 @@ OPMDiagram.prototype.destructor = function(){
 //END OF OPMDiagram CLASS//
 
 //START OF OPMElement CLASS//
-function OPMElement(id) {
+function OPMElement( id ) {
   this.id = id;
+  this.description = null;
 }
 
 OPMElement.prototype.getId = function(){
   return this.id;
+}
+
+OPMElement.prototype.getDescription = function(){
+  return this.description;
+  
+}
+
+OPMElement.prototype.setDescription = function( description ){
+  this.description = description;
+  
 }
 //END OF OPMElement CLASS//
 
@@ -274,9 +285,8 @@ OPMElement.prototype.getId = function(){
 OPMEntity.prototype = new OPMElement(); //inheriting from OPMElement
 function OPMEntity() {
   this.name = null;
-  this.inLinks = { };
-  this.outLinks = { };
-  this.description = null;
+  this.inLinks = { };//hashtable - keys are source of links
+  this.outLinks = { };//hashtable - keys are destination of links
 }
 
 OPMEntity.prototype.getName = function(){
@@ -285,14 +295,6 @@ OPMEntity.prototype.getName = function(){
 
 OPMEntity.prototype.setName = function( name ){
   this.name = name;
-}
-
-OPMEntity.prototype.getDescription = function(){
-  return this.description;
-}
-
-OPMEntity.prototype.setDescription = function( description ){
-  this.description = description;
 }
 
 OPMEntity.prototype.addLink = function( link ){
@@ -354,7 +356,6 @@ OPMThing.prototype.setScope = function( scope ){
 
 OPMThing.prototype.unfold = function( diagram ){
   this.unfoldDiag = new OPMDiagram();
-
 }
 
 OPMThing.prototype.inzoom = function(){
@@ -398,7 +399,7 @@ OPMProcess.prototype.getMinActivationTime = function(){
 }
 
 OPMProcess.prototype.setMinActivationTime = function( minTime ){
-    this.minActivationTime = minTime;
+  this.minActivationTime = minTime;
 }
 
 OPMProcess.prototype.getMaxActivationTime = function(){
@@ -406,7 +407,7 @@ OPMProcess.prototype.getMaxActivationTime = function(){
 }
 
 OPMProcess.prototype.setMaxActivationTime = function(maxTime){
-    this.maxActivationTime = maxTime;
+  this.maxActivationTime = maxTime;
 }
 /*
 OPMProcess.prototype.getInProcedualLinksRelationMatrix = function(){
@@ -427,8 +428,8 @@ OPMProcess.prototype.destructor = function(){
 //START OF OPMState CLASS//
 
 OPMState.prototype = new OPMEntity();
-function OPMState(parent) {
-  this.type = null;
+function OPMState( parent ) {
+  this.type = null;//final, default, initial
   this.parent = parent;
   this.minActivationTime = 0;
   this.maxActivationTime = 0;
@@ -447,15 +448,15 @@ OPMState.prototype.getMinActivationTime = function(){
 }
 
 OPMState.prototype.setMinActivationTime = function( minTime ){
-    this.minActivationTime = minTime;
+  this.minActivationTime = minTime;
 }
 
 OPMState.prototype.getMaxActivationTime = function(){
   return this.maxActivationTime;
 }
 
-OPMState.prototype.setMaxActivationTime = function(maxTime){
-    this.maxActivationTime = maxTime;
+OPMState.prototype.setMaxActivationTime = function( maxTime ){
+  this.maxActivationTime = maxTime;
 }
 
 
@@ -464,144 +465,188 @@ OPMState.prototype.setMaxActivationTime = function(maxTime){
 //START OF OPMLink CLASS//
 
 OPMLink.prototype = new OPMElement();
-function OPMLink() {
-  this.type = null;
-  this.category = null;
+function OPMLink( type , category ) {
+  this.type = type;//types are strings, some values: "Instrument", "Agent" etc.
+  this.category = category;// Categories are strings, two values: "Structural" and "Procedural"
 }
 
 OPMLink.prototype.getType = function(){
   return this.type;
 }
 
-OPMLink.prototype.setType = function( type ){
-  this.type = type;
-  return;
-}
-
 OPMLink.prototype.getCategory = function(){
   return this.category;
 }
 
-
+OPMLink.prototype.setCategory = function( category ){
+  this.category = category;
+}
 //END OF OPMLink CLASS//
 
 
 //START OF OPMProcedural_Link CLASS//
 
 OPMProceduralLink.prototype = new OPMLink();
-function OPMProceduralLink() {
-	
-  this.source = {};
-  this.destination = {};
-	this.description = null;
-	this.originType = null;
- }
+function OPMProceduralLink( src , dest ) {//input source and destination Objects
+  this.source = src;
+  this.destination = dest;
+  this.originType = this.source.type; //default value
+  this.xor = { };
+  this.or = { };
+}
  
 OPMProceduralLink.prototype.getDestination = function(){
   return this.destination;
 }
 
-OPMProceduralLink.prototype.setDestination = function(){
-//how to enter a pointer to destination.  
+OPMProceduralLink.prototype.setDestination = function( dest ){
+  this.destination = dest;
 }
 
 OPMProceduralLink.prototype.getSource = function(){
   return this.source;
 }
   
-OPMProceduralLink.prototype.setSource = function(){
-//how to enter a pointer for source.
+OPMProceduralLink.prototype.setSource = function( src ){
+  this.source = src;
 }
 
-OPMProceduralLink.prototype.getOriginType = function(){
-  return this.originType;
+OPMLink.prototype.addXor = function( link ){
+  this.xor[ link.id ] = link;
 }
 
-OPMProceduralLink.prototype.setOriginType = function(origin){
-  this.originType = origin;
-  return;
+OPMLink.prototype.delXor = function( linkId ){
+  delete this.xor[ linkId ];
 }
 
-OPMProceduralLink.prorotype.getDescription = function(){
-  return this.description;
+OPMLink.prototype.addOr = function( link ){
+  this.or[ link.id ] = link;
 }
 
-OPMProceduralLink.prototype.setDescription = function(description){
-  this.description = description;
-  return;
+OPMLink.prototype.delOr = function( linkId ){
+  delete this.or[ linkId ];
 }
 
 OPMProceduralLink.prototype.destructor = function(){
-    //need destructor procedure/
+  delete this.source.inLinks[ this.id ];
+  delete this.destination.outLinks[ this.id ];
+  delete this;
+}
+
 }
 //END OF OPMProcedural_Link CLASS//
 
 // OPM Structural Link Class
 OPMStructuralLink.prototype = new OPMLink();
-function OPMStructuralLink() {
-	this.source;
-	this.destination;
-	this.participationConst;
-	this.participationVal;
-	this.cardinality;
-	this.tag;
+//input src and dest Objects (thing and/or state)
+function OPMStructuralLink( src , dest ) {
+  
+  this.source = src;
+  this.destination = dest;
+  this.participationConst = null;
+  this.participationVal = null;
+  this.cardinality = null;
+  this.tag = null;//description shown on link itself - only for uni/bi-directional relations
 }  
- 
-OPMSturcturalLink.prototype.getDestinatoin = function(){
+
+//returns true if OK, otherwise returns false
+OPMStructuralLink.prototype.verifyLink = function(){
+  
+  //check for existing type of structural link between two entities
+  if ( src.outLinks[ dest.id ].category ===  dest.inLinks[ src.id ].category ){
+    if ( this.type === "Unidirectional" || this.type === "Bidirectional" ){
+      return true;
+    }
+    else{
+      alert( "Cannot connect two Objects with more than one " + this.type + " Link" );
+      delete this;
+      return false;
+    }
+  }
+  
+  //rest of Logic rules using Switch, by source type. many more rules are to be added
+  switch ( src.constructor.name ){
+  case "OPMObject":
+    if ( this.type !== "Exhibition" && dest.constructor.name === "OPMProcess" ){
+      alert( "Cannot connect an Object and a Process with a " + this.type + " Link" );
+      delete this;
+      return false;
+    }
+    else if ( dest.constructor.name === "OPMObject" ){
+      return true;
+    }
+    else if ( dest.constructor.name === "OPMState" ){
+      delete this;
+      return false;
+    }
+  
+  case "OPMProcess":
+    if ( this.type !== "Exhibition" && dest.constructor.name === "OPMObject" ){
+      alert( "Cannot connect an Object and a Process with a " + this.type + " Link" );
+      delete this;
+      return false;
+    }
+    else if ( dest.constructor.name === "OPMProcess" ){
+      return true;
+    }
+    else if ( dest.constructor.name === "OPMState" ){
+      delete.this;
+      return false;
+    }
+  }
+}
+OPMStructuralLink.prototype.getDestination = function(){
   return this.destination;
 }
 
-OPMStructuralLink.prototype.setDestination = function(){
-    //how to add pointer here?
+OPMStructuralLink.prototype.setDestination = function( dest ){
+  this.destination = dest;
 }
 
 OPMStructuralLink.prototype.getSource = function(){
   return this.source;
 }
-
-OPMStructuralLink.prototype.setSource = function(source){
-  this.source = source;
-  return;
+  
+OPMStructuralLink.prototype.setSource = function( src ){
+  this.source = src;
 }
 
 OPMStructuralLink.prototype.getCardinality = function(){
-    return this.cardinality;
+  return this.cardinality;
 }
 
-OPMStructuralLink.prototype.setCardinality = function(cardinality){
-  this.cardinality = cardinality;
-  return;
+OPMStructuralLink.prototype.setCardinality = function( card ){
+  this.cardinality = card;
 }
 
 OPMStructuralLink.prototype.getTag = function(){
   return this.tag;
 }
 
-OPMStructuralLink.prototype.setTag = function(tag){
+OPMStructuralLink.prototype.setTag = function( tag ){
   this.tag = tag;
-  return;
 }
 
 OPMStructuralLink.prototype.getParticipationConst = function(){
   return this.participationConst;
 }
 
-OPMStructuralLink.prototype.setParticipationConst = function(participationConst){
-  this.participationConst = participationConst;
-  return;
+OPMStructuralLink.prototype.setParticipationConst = function( partConst ){
+  this.participationConst = partConst;
 }
 
 OPMStructuralLink.prototype.getParticipationVal = function(){
-    return this.participationVal;
+  return this.participationVal;
 }
 
-OPMStructuralLink.prototype.setParticipationVal = function(Val){
+OPMStructuralLink.prototype.setParticipationVal = function( val ){
   this.participationVal = val;
-  return;
 }
 
 OPMStructuralLink.prototype.destructor = function(){
-    //destructor procedure
+  delete this.source.inLinks[ this.id ];
+  delete this.destination.outLinks[ this.id ];
+  delete this;
 }
 
 
