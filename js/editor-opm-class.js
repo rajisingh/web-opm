@@ -27,7 +27,7 @@ function User( id , email , password ){
   this.loginStatus = null; //boolean
 }
 
-  //retrieve list of models by user's ID
+//retrieve list of models by user's ID
 User.prototype.getModels = function( ){
   //call JSON function and receives list of all Model IDs of this user.
   return this.models;
@@ -53,7 +53,7 @@ User.prototype.login = function( userId, pass , loginProvider ){
 
 User.prototype.logout = function( model ){//receives model object
   try{
-    model.save;
+    model.save();
     this.loginStatus = 0;
     //TODO: perform save on working model with recieved modelId
   }
@@ -86,6 +86,11 @@ User.prototype.getLastLogin = function(){
   return this.lastLogin;
 }
 
+//allows setting last login time
+User.prototype.setLastLogin = function( timestamp ){
+  this.lastLogin = timestamp;
+}
+
 //returns user's full name
 User.prototype.getName = function(){
   var x = this.firstName;
@@ -94,14 +99,15 @@ User.prototype.getName = function(){
 }
 
 //START OF OPMModel CLASS//
-function OPMModel( modelIdVal , creatorIdVal , creationDate ) {
+function OPMModel( modelId , creatorId , creationDate , mainSdDiagId ) {
   
-  this.modelId = modelIdVal;
-  this.creatorId = creatorIdVal;
+  this.modelId = modelId;
+  this.creatorId = creatorId;
   this.name = 'Model Name'; //default value
   this.type = null;
   this.participants = { };
-  this.sd = new OPMDiagram();
+  this.sd = new OPMDiagram( mainSdDiagId , null );//create first SD for model
+  this.diagrams = { };//hashtable with diagram ids in model
   this.lastUpdateDate = null;
   this.creationDate = creationDate;
   
@@ -119,38 +125,54 @@ OPMModel.prototype.share = function( newUser ){
   //TODO: add call to JSON function to send to server
 }
 
-//returns a list (array) of users with permissions to edit this Model
+//returns a list of users with permissions to edit this Model
 OPMModel.prototype.getParticipants = function(){
   return this.participants;
 }
 
 //removes a specific user from the participants list
-OPMModel.prototype.unShare = function( id ){
+OPMModel.prototype.unShare = function( userId ){
+  delete this.participants[ userId ];
 }
  
 //returns the Model's name
 OPMModel.prototype.getName = function(){
-	return this.name;	  
+  return this.name;	  
 }
  
 //sets the Model's name in the GUI and the DB
 OPMModel.prototype.setName = function( name ){
-	this.name = name;
+  this.name = name;
   //TODO: add JSON function for setting new model Name in DB
 }
  
 //returns Model's Type
 OPMModel.prototype.getType = function(){
-	return this.type;
+  return this.type;
 }
-	
+
+//adds diagram id to diagram of the model
+OPMModel.prototype.addDiagram = function( diagram ){
+  this.diagrams[ diagram.id ] = diagram;
+}
+
+//returns list of all diagram ids in model
+OPMModel.prototype.getDiagrams = function(){
+  return this.diagrams;
+}
+
+//removes diagram for diagram list
+OPMModel.prototype.removeDiagram = function( diagramId ){
+  delete this.diagrams[ diagramId ];
+}
+
 //sets Model's Type in the GUI and DB
 OPMModel.prototype.setType = function( type ){
 	this.type = type;
   //TODO: add JSON function for setting model Type in DB
 }
 
-OPMMOdel.prototype.save = function (){
+OPMModel.prototype.save = function (){
   // need procedure for saving a model to DB
 }
 
@@ -161,7 +183,7 @@ OPMModel.prototype.load = function ( modelId ){
 //remove model from user's model list including all siblings in the GUI and DB
 OPMModel.prototype.destructor = function(){
     //need procedure for deleting Model from database, including all children.
-  var answer = confirm ("You are about to Completely remove\n all Model diagrams. Are you sure you wish to continue?")
+  var answer = confirm ( "You are about to Completely remove\n all Model diagrams. Are you sure you wish to continue?" )
   if (answer){
     try {
       delete this; //FIXME: is this expression true??
@@ -177,14 +199,15 @@ OPMModel.prototype.destructor = function(){
 //END OF OPMModel CLASS//
 
 //START OF OPMDiagram CLASS//
-function OPMDiagram(){
+function OPMDiagram( id ){
 	
+  this.id = id;
   this.predecessor = { };
-  this.successors = { };
+  this.successors = { };//hashtable of successors
   this.elements = { };
-	this.diagramName = 'Diagram Name';//default value
-	this.OPL = null;
-  this.number = null; //need a default definition here.
+  this.diagramName = 'Diagram Name';//default value
+  this.OPL = null;
+  this.level = null; //need a default definition here.
 }
  
 OPMDiagram.prototype.addElement = function( element ) {
@@ -192,16 +215,18 @@ OPMDiagram.prototype.addElement = function( element ) {
 }
  
 OPMDiagram.prototype.getElements = function(){
-	return this.elements;
- }
+  return this.elements;
+}
 	
 OPMDiagram.prototype.print = function(){
-		//need implementation of print procedure.
-      //including XML function
+  //need implementation of print procedure.
+  //including XML function
  }
 	
-OPMDiagram.prototype.renumber = function( number ){//TODO: add procedure to renumber entire tree
-
+OPMDiagram.prototype.renumber = function( toLevel ){//TODO: add procedure to renumber entire tree
+  for ( var i in this.successors ){
+    this.successors[ i ]
+  }
 }
 	
 OPMDiagram.prototype.getOPL = function(){
@@ -210,11 +235,28 @@ OPMDiagram.prototype.getOPL = function(){
 	
 OPMDiagram.prototype.writeOPL = function( text ){
   //TODO: need to think of a more clever way to add text to the OPL.
+  //changes to OPL are done per element creation. therefor, at each creation of each type of element
+  //we'll need an OPL "generator".
  }
 	
 OPMDiagram.prototype.destructor = function(){
-	 //need procedure for deleting Model from database, including all children. 
- }
+  //need procedure for deleting diagram from database, including all children.
+  if (answer){
+    try {
+      for ( var i in this.successors ){
+        
+      }
+      delete this; //FIXME: is this expression true??
+    }
+    catch( err ){
+      txt="There was an error deleting the model.\n\n";
+      txt+="Error description: " + err.message + "\n\n";
+      txt+="Click OK to continue.\n\n";
+      alert(txt);
+    }
+  }
+  //call destructor function of each element in diagram
+}
 
 //END OF OPMDiagram CLASS//
 
@@ -272,7 +314,7 @@ OPMEntity.prototype.removeLink = function( link ){
 //END OF OPMEntity CLASS//
 
 //START OF OPMThing CLASS//
-OPMThing.prototype = new OPMEntity(); // inhereting from OPMEntity 
+OPMThing.prototype = new OPMEntity(); // inheriting from OPMEntity 
 function OPMThing(){
   this.essence = null;
   this.affiliation = null;
