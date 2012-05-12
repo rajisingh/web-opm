@@ -351,12 +351,13 @@ OPMThing.prototype.setScope = function( scope ){
   this.scope = scope;
   //TODO: send data through JSON to DB and server
 }
-
+//unfold object/process
 OPMThing.prototype.unfold = function( id , level ){
   this.unfoldDiag = new OPMDiagram( id , level );
   return this.unfoldDiag;
 }
 
+//inzoom object/process
 OPMThing.prototype.inzoom = function(){
   this.inzoomdDiag = new OPMDiagram( id , level );
   return this.inzoomDiag;
