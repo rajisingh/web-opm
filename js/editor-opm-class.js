@@ -106,7 +106,7 @@ function OPMModel( modelId , creatorId , creationDate , mainSdDiagId ) {
   this.name = 'Model Name'; //default value
   this.type = null;
   this.participants = { };
-  this.sd = new OPMDiagram( mainSdDiagId , null );//create first SD for model
+  this.sd = new OPMDiagram( mainSdDiagId , 0 );//create first SD for model
   this.diagrams = { };//hashtable with diagram ids in model
   this.lastUpdateDate = null;
   this.creationDate = creationDate;
@@ -199,7 +199,7 @@ OPMModel.prototype.destructor = function(){
 //END OF OPMModel CLASS//
 
 //START OF OPMDiagram CLASS//
-function OPMDiagram( id ){
+function OPMDiagram( id , level ){
 	
   this.id = id;
   this.predecessor = { };
@@ -207,7 +207,7 @@ function OPMDiagram( id ){
   this.elements = { };
   this.diagramName = 'Diagram Name';//default value
   this.OPL = null;
-  this.level = null; //need a default definition here.
+  this.level = level; //default value
 }
  
 OPMDiagram.prototype.addElement = function( element ) {
