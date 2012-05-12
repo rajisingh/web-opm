@@ -298,18 +298,17 @@ OPMEntity.prototype.setName = function( name ){
 }
 
 OPMEntity.prototype.addLink = function( link ){
-  switch( link.type ){
-    case "Procedural":
-      //TODO: VERIFY OPM LOGIC HERE
-    case "Structural":
-      //TODO: VERIFY OPM LOGIC HERE
-  this.links[ outLink.Destination ] = outLink;
+  if ( link.source.id === this.id ){
+    this.outLinks[ link.id ] = link;
+  }
+  else if ( link.destination.id === this.id ){
+    this.inLinks[ link.id ] = link;
+  }
   //TODO: DB update function needed
 }
 
 OPMEntity.prototype.removeLink = function( link ){
   this.outStructLinks[ outLink.Destination ] = outLink;
-  return;
   //TODO: DB update function needed
 }
 
@@ -321,8 +320,8 @@ function OPMThing(){
   this.essence = null;
   this.affiliation = null;
   this.scope = null;
-  this.unfoldDiag = {};
-  this.inzoomDiag = {};
+  this.unfoldDiag = { };
+  this.inzoomDiag = { };
 }
 
 OPMThing.prototype.getEssence = function(){
@@ -350,16 +349,17 @@ OPMThing.prototype.getScope = function(){
 
 OPMThing.prototype.setScope = function( scope ){
   this.scope = scope;
-  return;
   //TODO: send data through JSON to DB and server
 }
 
-OPMThing.prototype.unfold = function( diagram ){
-  this.unfoldDiag = new OPMDiagram();
+OPMThing.prototype.unfold = function( id , level ){
+  this.unfoldDiag = new OPMDiagram( id , level );
+  return this.unfoldDiag;
 }
 
 OPMThing.prototype.inzoom = function(){
-
+  this.inzoomdDiag = new OPMDiagram( id , level );
+  return this.inzoomDiag;
 }
 //END OF OPMThing CLASS//
 
