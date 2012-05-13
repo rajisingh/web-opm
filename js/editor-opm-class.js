@@ -8,12 +8,6 @@
  * 
  *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
-/*TODO:
-OPMLink checking - implementing 
-
-*/
-
-
 function User( id , email , password ){
   this.id = id;
   this.username = null;
@@ -32,7 +26,6 @@ User.prototype.getModels = function( ){
   //call JSON function and receives list of all Model IDs of this user.
   return this.models;
 }
-
 
 User.prototype.deleteModel = function( model ){
   try{
@@ -166,8 +159,8 @@ OPMModel.prototype.save = function (){
   // need procedure for saving a model to DB
 }
 
-OPMModel.prototype.load = function ( modelId ){
-  //need procedure from loading a model from DB
+OPMModel.prototype.load = function ( ){
+  // need procedure for loading a model from DB
 }
 
 //remove model from user's model list including all siblings in the GUI and DB
@@ -189,10 +182,10 @@ OPMModel.prototype.destructor = function(){
 //END OF OPMModel CLASS//
 
 //START OF OPMDiagram CLASS//
-function OPMDiagram( id , level ){
+function OPMDiagram( id , , predecessor , level ){
 	
   this.id = id;
-  this.predecessor = { };
+  this.predecessor = predecessor;//Diagram object of the "father"
   this.successors = { };//hashtable of successors
   this.elements = { };
   this.diagramName = 'Diagram Name';//default value
@@ -316,7 +309,12 @@ OPMEntity.prototype.removeLink = function( linkId ){
     txt+="Click OK to continue.\n\n";
     alert(txt);
   }
-  
+
+OPMEntity.prototype.destructor = function(){
+  this.removeLink( inLinks );
+  this.removeLink( outLinks );
+  delete this;
+}
   //TODO: DB update function needed
 }
 
@@ -360,15 +358,15 @@ OPMThing.prototype.setScope = function( scope ){
   //TODO: send data through JSON to DB and server
 }
 //unfold object/process
-OPMThing.prototype.unfold = function( id , currDiagLevel ){
-  this.unfoldDiag = new OPMDiagram( id , currDiagLevel + 1 );
+OPMThing.prototype.unfold = function( id , currDiagLevel , fatherDiag ){
+  this.unfoldDiag = new OPMDiagram( id , currDiagLevel + 1 , fatherDiag );
   this.unfoldDiag.elements[ this.id ] = this;//add current element to new unfolded diagram
   return this.unfoldDiag;
 }
 
 //inzoom object/process, returns new Diagram object
-OPMThing.prototype.inzoom = function( id , currDiagLevel ){
-  this.inzoomdDiag = new OPMDiagram( id , currDiagLevel + 1 );
+OPMThing.prototype.inzoom = function( id , currDiagLevel , fatherDiag ){
+  this.inzoomdDiag = new OPMDiagram( id , currDiagLevel + 1 , fatherDiag );
   this.inzoomDiag.elements[ this.id ] = this;//add current element to new inzoomed diagram
   return this.inzoomDiag;
 }
@@ -386,13 +384,10 @@ OPMObject.prototype.addState = function( state){
   this.states[ state.Id ] = state; 
 }
 
-OPMObject.prototype.removeState = function(state){//TODO: change to Hash table procedure
-
+OPMObject.prototype.removeState = function( state ){//TODO: change to Hash table procedure
+  delete this.states[ state.Id ];
 }
 
-OPMObject.prototype.destructor = function(){
-//needs the procedure of deletion
-}
 //END OF OPMObject CLASS//
 
 
@@ -469,7 +464,6 @@ OPMState.prototype.getMaxActivationTime = function(){
 OPMState.prototype.setMaxActivationTime = function( maxTime ){
   this.maxActivationTime = maxTime;
 }
-
 
 //END OF OPMState CLASS//
 
