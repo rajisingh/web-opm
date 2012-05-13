@@ -298,17 +298,31 @@ OPMEntity.prototype.setName = function( name ){
 }
 
 OPMEntity.prototype.addLink = function( link ){
-  if ( link.source.id === this.id ){
-    this.outLinks[ link.id ] = link;
-  }
-  else if ( link.destination.id === this.id ){
-    this.inLinks[ link.id ] = link;
+  if ( link.verifyLink ( link.source , link.destination ) ){
+    if ( link.source.id === this.id ){
+      this.outLinks[ link.id ] = link;
+    }
+    else{
+      this.inLinks[ link.id ] = link;
+    }
   }
   //TODO: DB update function needed
 }
 
-OPMEntity.prototype.removeLink = function( link ){
-  this.outStructLinks[ outLink.Destination ] = outLink;
+OPMEntity.prototype.removeLink = function( linkId ){
+  try{
+    delete this.inLinks[ linkId ].source.outLinks[ linkId ];
+    delete this.outLinks[ linkId ].destination.inLinks[ linkId ];
+    delete this.inLinks[ linkId ];
+    delete this.outLinks[ linkId ];
+  }
+  catch ( err ){
+    txt="There was an error deleting the link.\n\n";
+    txt+="Error description: " + err.message + "\n\n";
+    txt+="Click OK to continue.\n\n";
+    alert(txt);
+  }
+  
   //TODO: DB update function needed
 }
 
@@ -354,12 +368,14 @@ OPMThing.prototype.setScope = function( scope ){
 //unfold object/process
 OPMThing.prototype.unfold = function( id , level ){
   this.unfoldDiag = new OPMDiagram( id , level );
+  this.unfoldDiag.elements[ this.id ] = this;
   return this.unfoldDiag;
 }
 
-//inzoom object/process
-OPMThing.prototype.inzoom = function(){
+//inzoom object/process, returns new Diagram object
+OPMThing.prototype.inzoom = function( id , level ){
   this.inzoomdDiag = new OPMDiagram( id , level );
+  this.inzoomDiag.elements[ this.id ] = this;
   return this.inzoomDiag;
 }
 //END OF OPMThing CLASS//
