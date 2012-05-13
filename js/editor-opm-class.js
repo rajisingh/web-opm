@@ -182,10 +182,10 @@ OPMModel.prototype.destructor = function(){
 //END OF OPMModel CLASS//
 
 //START OF OPMDiagram CLASS//
-function OPMDiagram( id , , predecessor , level ){
+function OPMDiagram( id , predecessor , level ){
 	
   this.id = id;
-  this.predecessor = predecessor;//Diagram object of the "father"
+  this.predecessor = predecessor;//Diagram object of the "father", can be null
   this.successors = { };//hashtable of successors
   this.elements = { };
   this.diagramName = 'Diagram Name';//default value
@@ -586,11 +586,11 @@ function OPMStructuralLink( src , dest ) {
   this.destination = dest;
   this.participationConst = null;
   this.participationVal = null;
-  this.cardinality = null;
+  this.cardinality = 1;
   this.tag = null;//description shown on link itself - only for uni/bi-directional relations
 }  
 
-//returns true if OK, otherwise returns false
+//returns true if verified, otherwise returns false
 OPMStructuralLink.prototype.verifyLink = function(){
   
   //check for existing type of structural link between two entities
@@ -608,34 +608,21 @@ OPMStructuralLink.prototype.verifyLink = function(){
   //rest of Logic rules using Switch, by source type. many more rules are to be added
   switch ( src.constructor.name ){
   case "OPMObject":
-    if ( this.type !== "Exhibition" && dest.constructor.name === "OPMProcess" ){
-      alert( "Cannot connect an Object and a Process with a " + this.type + " Link" );
-      delete this;
-      return false;
-    }
-    else if ( dest.constructor.name === "OPMObject" ){
-      return true;
-    }
-    else if ( dest.constructor.name === "OPMState" ){
-      delete this;
-      return false;
-    }
+	if (dest.constructor.name === "OPMProcess") {
+		if (this.type === "Exhibition") { return true }
+		else { return false } 
+	}
+	if (dest.constructor.name === "OPMObject") { return true }
   
   case "OPMProcess":
-    if ( this.type !== "Exhibition" && dest.constructor.name === "OPMObject" ){
-      alert( "Cannot connect an Object and a Process with a " + this.type + " Link" );
-      delete this;
-      return false;
-    }
-    else if ( dest.constructor.name === "OPMProcess" ){
-      return true;
-    }
-    else if ( dest.constructor.name === "OPMState" ){
-      delete.this;
-      return false;
-    }
+	if (dest.constructor.name === "OPMObject") {
+		if (this.type === "Exhibition") { return true }
+		else { return false } 
+	}
+	if (dest.constructor.name === "OPMProcess") { return true }
   }
 }
+
 OPMStructuralLink.prototype.getDestination = function(){
   return this.destination;
 }
