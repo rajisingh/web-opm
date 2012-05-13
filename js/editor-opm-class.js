@@ -47,22 +47,12 @@ User.prototype.deleteModel = function( model ){
   }
 }
 
-User.prototype.login = function( userId, pass , loginProvider ){
+User.prototype.login = function( userId, pass ){
   //call FB/Google/LinkedIn/Twitter login algorithm and process via Python?
 }
 
-User.prototype.logout = function( model ){//receives model object
-  try{
-    model.save();
-    this.loginStatus = 0;
-    //TODO: perform save on working model with recieved modelId
-  }
-  catch( err ){
-    txt="There was an error saving the Model.\n\n";
-    txt+="Error description: " + err.message + "\n\n";
-    txt+="Click OK to continue.\n\n";
-    alert(txt);
-  }
+User.prototype.logout = function(){//receives model object
+  this.loginStatus = 0;
 }
 
 //replace user's first and last name
@@ -106,8 +96,8 @@ function OPMModel( modelId , creatorId , creationDate , mainSdDiagId ) {
   this.name = 'Model Name'; //default value
   this.type = null;
   this.participants = { };
-  this.sd = new OPMDiagram( mainSdDiagId , 0 );//create first SD for model
-  this.diagrams = { };//hashtable with diagram ids in model
+  this.sd = new OPMDiagram( mainSdDiagId , 0 );//create first SD for model, with level=0
+  this.diagrams = { };//hashtable with diagrams in model
   this.lastUpdateDate = null;
   this.creationDate = creationDate;
   
@@ -156,7 +146,7 @@ OPMModel.prototype.addDiagram = function( diagram ){
   this.diagrams[ diagram.id ] = diagram;
 }
 
-//returns list of all diagram ids in model
+//returns list of all diagrams in model
 OPMModel.prototype.getDiagrams = function(){
   return this.diagrams;
 }
@@ -207,7 +197,7 @@ function OPMDiagram( id , level ){
   this.elements = { };
   this.diagramName = 'Diagram Name';//default value
   this.OPL = null;
-  this.level = level; //default value
+  this.level = level; //int
 }
  
 OPMDiagram.prototype.addElement = function( element ) {
@@ -222,10 +212,17 @@ OPMDiagram.prototype.print = function(){
   //need implementation of print procedure.
   //including XML function
  }
-	
-OPMDiagram.prototype.renumber = function( toLevel ){//TODO: add procedure to renumber entire tree
-  for ( var i in this.successors ){
-    this.successors[ i ]
+//recursively reassignes levels to entire diagrams (nodes) in the tree.	
+OPMDiagram.prototype.reLevel = function( levels ){
+  try{
+    this.level = this.level + levels;
+    this.successors.level = this.successors.reLevel( levels );
+  }
+  catch( err ){
+    txt="There was an error deleting the model.\n\n";
+    txt+="Error description: " + err.message + "\n\n";
+    txt+="Click OK to continue.\n\n";
+    alert(txt);
   }
 }
 	
@@ -242,11 +239,8 @@ OPMDiagram.prototype.writeOPL = function( text ){
 OPMDiagram.prototype.destructor = function(){
   //need procedure for deleting diagram from database, including all children.
   if (answer){
-    try {
-      for ( var i in this.successors ){
-        
-      }
-      delete this; //FIXME: is this expression true??
+    try{  
+      delete this;
     }
     catch( err ){
       txt="There was an error deleting the model.\n\n";
@@ -366,16 +360,16 @@ OPMThing.prototype.setScope = function( scope ){
   //TODO: send data through JSON to DB and server
 }
 //unfold object/process
-OPMThing.prototype.unfold = function( id , level ){
-  this.unfoldDiag = new OPMDiagram( id , level );
-  this.unfoldDiag.elements[ this.id ] = this;
+OPMThing.prototype.unfold = function( id , currDiagLevel ){
+  this.unfoldDiag = new OPMDiagram( id , currDiagLevel + 1 );
+  this.unfoldDiag.elements[ this.id ] = this;//add current element to new unfolded diagram
   return this.unfoldDiag;
 }
 
 //inzoom object/process, returns new Diagram object
-OPMThing.prototype.inzoom = function( id , level ){
-  this.inzoomdDiag = new OPMDiagram( id , level );
-  this.inzoomDiag.elements[ this.id ] = this;
+OPMThing.prototype.inzoom = function( id , currDiagLevel ){
+  this.inzoomdDiag = new OPMDiagram( id , currDiagLevel + 1 );
+  this.inzoomDiag.elements[ this.id ] = this;//add current element to new inzoomed diagram
   return this.inzoomDiag;
 }
 //END OF OPMThing CLASS//
