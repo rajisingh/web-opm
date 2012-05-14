@@ -1,0 +1,278 @@
+/*	
+ * Web OPM: online case tool for Object-Process Methodology
+ * Copyright © 2012 Israel Institute of Technology - Technion
+ * The code is licensed under GNU General Public License, v2
+ * 
+ * File context description:
+ * Set of util functions for work w/ SVG canvas
+ * 
+ * Author: Sergey N. Bolshchikov  
+ * */
+
+var randomFromTo =  function(from, to) {
+	return Math.floor(Math.random() * (to - from + 1) + from);
+}
+
+//Set of utility function to identify source and destination elements to draw the link
+var setSrc = function(evt) {
+	if (linkOn.status) {
+		src = null;							//Make it null if it wasn't
+		src = activeUIDiagram.returnElement(evt.currentTarget.id);
+	}
+}
+var setDest = function(evt) {
+	if (linkOn.status) {
+		dest = null;
+		dest = activeUIDiagram.returnElement(evt.currentTarget.id);
+		addLink(src, dest);
+	}
+}
+//End
+
+var select = function(evt) {
+	if (evt.currentTarget !== activeSVGElement) {
+		if (activeSVGElement == null) {
+			activeSVGElement = evt.currentTarget;
+			activeUIElement = activeUIDiagram.returnElement(evt.currentTarget.id);
+		}
+		else {
+			deselect();
+			activeSVGElement = evt.currentTarget;
+			activeUIElement = activeUIDiagram.returnElement(evt.currentTarget.id);
+		}
+	}
+	if (activeSVGElement) {
+		activeSVGElement.firstChild.setAttributeNS(null, 'fill', 'whiteSmoke');
+		var grip = activeSVGElement.getElementsByTagNameNS(svgNS, 'image').item(0);
+		grip.setAttributeNS(null, 'visibility', 'visable');
+		activeSVGElement.setAttributeNS(null, 'onmousedown', 'pick(evt)');
+	}
+	else {
+		alert('Error: Element is not selected');
+	}
+}
+var deselect =  function(evt) {
+	if (activeSVGElement !== null) {
+		activeSVGElement.firstChild.setAttributeNS(null, 'fill', 'white');
+		var grip = activeSVGElement.getElementsByTagNameNS(svgNS, 'image').item(0);
+		grip.setAttributeNS(null, 'visibility', 'hidden');
+		activeSVGElement.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
+		activeSVGElement.setAttributeNS(null, 'onmousemove', null);
+		activeSVGElement = null;
+		activeUIElement = null;
+	}
+}
+
+//Set of utility function for dragging mechanism
+var pick = function(evt) {
+	activeSVGElement.setAttributeNS(null, 'onmousemove', 'dragging(evt)');
+	currentX = evt.clientX;
+	currentY = evt.clientY;
+	currentMatrix = activeSVGElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
+	for (var i = 0; i < currentMatrix.length; i++) { currentMatrix[i] = parseFloat(currentMatrix[i]); }
+}
+var dragging = function(evt) {
+	activeSVGElement.setAttributeNS(null, 'onmouseup', 'drop(evt)');
+	dx = evt.clientX - currentX;
+	dy = evt.clientY - currentY;
+	currentMatrix[4] += dx;
+	currentMatrix[5] += dy;
+	var newMatrix = "matrix(" + currentMatrix.join(' ') + ")";
+	activeSVGElement.setAttributeNS(null, 'transform', newMatrix);
+	currentX = evt.clientX;
+	currentY = evt.clientY;
+}
+var drop = function(evt) {
+	/* Update element coordinates of UI Element
+	 * Algorithm:
+	 * 1. Extract matrix transformation from SVG Element
+	 * 2. Update element XY coordinates
+	 * 3. Update element name XY coordinates
+	 * 4. If type is object and statesAmount is not 0
+	 * 5. 	Run the loop over all states
+	 * 6. 		Change XY of states*/
+	
+	var coord_change = activeSVGElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
+	activeUIElement.updateLocation(parseInt(activeUIElement.x) + parseInt(coord_change[4]), parseInt(activeUIElement.y) + parseInt(coord_change[5]));
+	activeUIElement.name.updateLocation(parseInt(activeUIElement.name.x) + parseInt(coord_change[4]), parseInt(activeUIElement.name.y) + parseInt(coord_change[5]));
+
+	if (activeUIElement.statesAmount !== 0 && activeUIElement.id.slice(0,3) === 'obj' ) {
+		for (var i in activeUIElement.states) {
+			activeUIElement.states[i].updateLocation(parseInt(activeUIElement.states[i].x) + parseInt(coord_change[4]), parseInt(activeUIElement.states[i].y) + parseInt(coord_change[5]))
+		}
+	}
+	activeSVGElement.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
+	deselect()
+}
+//End
+
+//LSSB algorithm for line segment clipping
+//Function is needed in order to connect nearest borders of objects instead of centers
+var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
+	//Utility function for LSSB alg to identify code of code of quadrant
+	var code = function(point) {
+		var c = 0;
+		if (point[0] < rectSizeMin[0]) { c = 1; }
+		else if (point[0] > rectSizeMax[0]) { c = 2; }
+		if (point[1] < rectSizeMin[1]) { c += 4; }
+		else if (point[1] > rectSizeMax[1]) { c += 8; }
+		return c
+	}
+	var ca = code(srcCenter);
+	console.log('lssb ca component = ' + ca);
+	var cb = code(destCenter);
+	console.log('lssb ca component = ' + cb);
+	var dx = destCenter[0] - srcCenter[0];
+	var dy = destCenter[1] - srcCenter[1];
+	switch(ca + cb) {
+	case 1: 
+		if (ca === 1) {
+			destCenter[0] = rectSizeMin[0];
+			destCenter[1] = (rectSizeMin[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+			return destCenter;
+		}
+		else {
+			srcCenter[0] = rectSizeMin[0];
+			srcCenter[1] = (rectSizeMin[0] - destCenter[0]) * dy / dx + destCenter[1];
+			return srcCenter;
+		}
+	case 2:
+		if (ca === 2) {
+			destCenter[0] = rectSizeMax[0];
+			destCenter[1] = (rectSizeMax[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+			return destCenter;
+		}
+		else {
+			srcCenter[0] = rectSizeMax[0];
+			srcCenter[1] = (rectSizeMax[0] - destCenter[0]) * dy / dx + destCenter[1];
+			return srcCenter;
+		}
+	case 4:
+		if (ca === 4) {
+			destCenter[0] = (rectSizeMin[1] - srcCenter[1]) * dx / dy + srcCenter[0];
+			destCenter[1] = rectSizeMin[1];
+			return destCenter;
+		}
+		else {
+			srcCenter[0] = (rectSizeMin[1] - destCenter[1]) * dx / dy + destCenter[0];
+			srcCenter[1] = rectSizeMin[1];
+			return srcCenter;
+		}
+	case 5:
+		var r = (rectSizeMin[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+		if (r < rectSizeMin[1]) {
+			if (ca === 5) {
+				destCenter[0] = destCenter[0] + (rectSizeMin[1] - destCenter[1]) * dx / dy; 
+				destCenter[1] = rectSizeMin[1];
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = srcCenter[0] + (rectSizeMin[1] - srcCenter[1]) * dx / dy; 
+				srcCenter[1] = rectSizeMin[1];
+				return srcCenter;
+			}
+		}
+		else {
+			if (ca === 5) {
+				destCenter[0] = rectSizeMin[0];
+				destCenter[1] = r;
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = rectSizeMin[0];
+				srcCenter[1] = r;
+				return srcCenter;
+			}
+		}
+	case 6:
+		var r = (rectSizeMax[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+		if (r < rectSizeMin[1]) {
+			if (ca === 6) {
+				destCenter[0] = destCenter[0] + (rectSizeMin[1] - destCenter[1]) * dx / dy; 
+				destCenter[1] = rectSizeMin[1];
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = srcCenter[0] + (rectSizeMin[1] - srcCenter[1]) * dx / dy; 
+				srcCenter[1] = rectSizeMin[1];
+				return srcCenter;
+			}
+		}
+		else {
+			if (ca === 6) {
+				destCenter[0] = rectSizeMin[0];
+				destCenter[1] = r;
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = rectSizeMin[0];
+				srcCenter[1] = r;
+				return srcCenter;
+			}
+		}
+	case 8:
+		if (ca === 8) {
+			destCenter[0] = (rectSizeMax[1] - srcCenter[1]) * dx / dy + srcCenter[0];
+			destCenter[1] = rectSizeMax[1];
+			return destCenter;
+		}
+		else {
+			srcCenter[0] = (rectSizeMax[1] - destCenter[1]) * dx / dy + destCenter[0];
+			srcCenter[1] = rectSizeMax[1];
+			return srcCenter;
+		}
+	case 9:
+		var r = (rectSizeMin[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+		if (r > rectSizeMax[1]) {
+			if (ca === 10) {
+				destCenter[0] = destCenter[0] + (rectSizeMax[1] - destCenter[1]) * dx / dy; 
+				destCenter[1] = rectSizeMax[1];
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = srcCenter[0] + (rectSizeMax[1] - srcCenter[1]) * dx / dy; 
+				srcCenter[1] = rectSizeMax[1];
+				return srcCenter;
+			}
+		}
+		else {
+			if (ca === 10) {
+				destCenter[0] = rectSizeMax[0];
+				destCenter[1] = r;
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = rectSizeMax[0];
+				srcCenter[1] = r;
+				return srcCenter;
+			}
+		}
+	case 10:
+		var r = (rectSizeMax[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+		if (r > rectSizeMax[1]) {
+			if (ca === 10) {
+				destCenter[0] = destCenter[0] + (rectSizeMax[1] - destCenter[1]) * dx / dy; 
+				destCenter[1] = rectSizeMax[1];
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = srcCenter[0] + (rectSizeMax[1] - srcCenter[1]) * dx / dy; 
+				srcCenter[1] = rectSizeMax[1];
+				return srcCenter;
+			}
+		}
+		else {
+			if (ca === 10) {
+				destCenter[0] = rectSizeMax[0];
+				destCenter[1] = r;
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = rectSizeMax[0];
+				srcCenter[1] = r;
+				return srcCenter;
+			}
+		}
+	}
+
+}
