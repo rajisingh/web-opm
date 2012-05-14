@@ -14,20 +14,24 @@ var xlinkNS = svg.getAttribute('xmlns:xlink');
 
 var activeSVGDiagram = document.getElementById('sd');
 var activeSVGElement = null;
+
+var activeUIDiagram = UIDiagramList.returnActive();
+var activeUIElement = null;
+
 var currentX = 0;
 var currentY = 0;
 var currentMatrix = 0;
 var objId = 0;
 var prcId = 0;
+var lnkId = 0;
 
 
-function addObject() {
+var addObject = function() {
 	try {
 		if (activeSVGElement !== null) { deselect(); }
 		objId++;
 		var obj = new UIObject(objId);
 		obj.draw();
-		var activeUIDiagram = UIDiagramList.returnActive();
 		activeUIDiagram.addElement(obj);
 	}
 	catch(e) {
@@ -35,13 +39,12 @@ function addObject() {
 	}
 }
 
-function addProcess() {
+var addProcess = function() {
 	try {
 		if (activeSVGElement !== null) { deselect(); }
 		prcId++;
 		var prc = new UIProcess(prcId);
 		prc.draw();
-		var activeUIDiagram = UIDiagramList.returnActive();
 		activeUIDiagram.addElement(prc);
 	}
 	catch(e) {
@@ -49,7 +52,7 @@ function addProcess() {
 	}
 }
 
-function addState() {
+var addState = function() {
 	try {
 		//Check
 		if (activeSVGElement === null) {
@@ -61,8 +64,8 @@ function addState() {
 			throw err;
 		}
 		else {
-			var type = activeSVGElement.getAttributeNS(null, 'type');
-			if (type == 'process') {
+			var type = activeSVGElement.getAttributeNS(null, 'id').slice(0,3);
+			if (type == 'prc') {
 				var msg = "Process cannot have a state";
 				var err = new Error(msg);
 				if (!err.message) {
@@ -72,20 +75,61 @@ function addState() {
 			}
 			
 			//Execute this if error are caught
-			var activeUIDiagram = UIDiagramList.returnActive();
-			var activeUIObject = activeUIDiagram.returnElement(activeSVGElement.id);
-			var stt = new UIState(activeUIObject);
-			activeUIObject.addState(stt);
+			var stt = new UIState(activeUIElement);
+			activeUIElement.addState(stt);
 			stt.draw();
 		}			
 	}
 	catch(e) {
 		alert(e.message);
 	}
-} 
+}
 
 
-function diagramZoom(scale) {
+/*Source and Destination are determined according to 
+ * events of the mouse on elements*/
+var src = null;
+var dest = null;
+
+//Flag that the link is on/off and its type
+var linkOn = {
+		status: false,
+		type: null,
+		off: function() {
+			this.status = false;
+			this.type = null;
+			}
+}; 			
+var turnLinkOn = function(type) {
+	if(activeSVGElement) { deselect(); }
+	linkOn.status = true;
+	linkOn.type = type;
+}
+var addLink = function(src, dest) {
+	try {
+		lnkId++;
+		var lnk = new UILink(linkOn.type + lnkId);		
+		if (lnk.check(src, dest) === true) {
+			lnk.draw(src, dest)
+			activeUIDiagram.addElement(lnk);
+		}
+		else {
+			delete lnk;
+			var msg = lnk.check(src, dest);
+			var err = new Error(msg);
+			if (!err.message) {
+				err.message = msg;
+			}
+			throw err
+		}
+		linkOn.off();
+	}
+	catch(e) {
+		alert(e.message);
+	}
+}
+
+var diagramZoom = function(scale) {
 	deselect();
 	var diagramWidth = activeSVGDiagram.getBBox().width + 2;
 	var diagramHeight = activeSVGDiagram.getBBox().height + 2;

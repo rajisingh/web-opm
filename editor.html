@@ -174,9 +174,9 @@
 					<div class="well sidebar-nav" style="padding: 0px;">
 					<table style="">
 						<tr><th colspan="2"><h6>Things</h6></th></tr>
-						<tr><td colspan="2"><a href="#" rel="tooltip" title="Add Object" onclick="addObject();"><img src="img/glyphicons/glyphicons_094_vector_path_square.png" alt="object"/></a></td></tr>
-						<tr><td colspan="2"><a href="#" rel="tooltip" title="Add Process" onclick="addProcess();"><img src="img/glyphicons/glyphicons_095_vector_path_circle.png" alt="process"/></a></td></tr>
-						<tr><td colspan="2"><a href="#" rel="tooltip" title="Add State" onclick="addState();"><img src="img/glyphicons/glyphicons_094_vector_path_square.png" alt="state"/></a></td></tr>
+						<tr><td colspan="2"><a href="#" rel="tooltip" title="Object" onclick="addObject();"><img src="img/glyphicons/glyphicons_094_vector_path_square.png" alt="object"/></a></td></tr>
+						<tr><td colspan="2"><a href="#" rel="tooltip" title="Process" onclick="addProcess();"><img src="img/glyphicons/glyphicons_095_vector_path_circle.png" alt="process"/></a></td></tr>
+						<tr><td colspan="2"><a href="#" rel="tooltip" title="State" onclick="addState();"><img src="img/glyphicons/glyphicons_094_vector_path_square.png" alt="state"/></a></td></tr>
 						<tr><td colspan="2"></td></tr>
 						<tr><th colspan="2"><h6>Links</h6></th></tr>
 						<tr>
@@ -197,7 +197,7 @@
 						</tr>
 						<tr>
 							<td><i class="icon-qrcode"></i></td>
-							<td><i class="icon-qrcode"></i></td>
+							<td><a href="#" rel="tooltip" title="Unidirectional Relation" onclick="turnLinkOn('udr');"><i class="icon-arrow-right"></i></a></td>
 						</tr>
 						<tr>
 							<td><i class="icon-qrcode"></i></td>
@@ -227,7 +227,12 @@
 
 				<div class="canvas">
 					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="100%" height="100%">
-						<script type="text/javascript" xlink:href="js/editor-svg.js"/>
+						<def>
+							<!-- List of markers which stand for links endings -->
+							<marker id="udr" viewBox="-20 -10 20 20" markerUnits="strokeWidth" refX="0" refY="0" markerWidth="10" markerHeight="10" orient="auto">
+								<path stroke="DimGrey" stroke-width="2" fill="none" d="M -15,-5 L 0,0 -15,5" />
+							</marker>
+						</def>
 						<g id="sd" transform="matrix(1 0 0 1 0 0)"></g>
 					</svg>
 					
