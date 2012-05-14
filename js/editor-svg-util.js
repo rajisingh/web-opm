@@ -119,9 +119,9 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 		return c
 	}
 	var ca = code(srcCenter);
-	alert(ca);
+	console.log('lssb ca component = ' + ca);
 	var cb = code(destCenter);
-	alert(cb);
+	console.log('lssb ca component = ' + cb);
 	var dx = destCenter[0] - srcCenter[0];
 	var dy = destCenter[1] - srcCenter[1];
 	switch(ca + cb) {
@@ -185,6 +185,31 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 			}
 		}
 	case 6:
+		var r = (rectSizeMax[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+		if (r < rectSizeMin[1]) {
+			if (ca === 6) {
+				destCenter[0] = destCenter[0] + (rectSizeMin[1] - destCenter[1]) * dx / dy; 
+				destCenter[1] = rectSizeMin[1];
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = srcCenter[0] + (rectSizeMin[1] - srcCenter[1]) * dx / dy; 
+				srcCenter[1] = rectSizeMin[1];
+				return srcCenter;
+			}
+		}
+		else {
+			if (ca === 6) {
+				destCenter[0] = rectSizeMin[0];
+				destCenter[1] = r;
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = rectSizeMin[0];
+				srcCenter[1] = r;
+				return srcCenter;
+			}
+		}
 	case 8:
 		if (ca === 8) {
 			destCenter[0] = (rectSizeMax[1] - srcCenter[1]) * dx / dy + srcCenter[0];
@@ -197,6 +222,31 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 			return srcCenter;
 		}
 	case 9:
+		var r = (rectSizeMin[0] - srcCenter[0]) * dy / dx + srcCenter[1];
+		if (r > rectSizeMax[1]) {
+			if (ca === 10) {
+				destCenter[0] = destCenter[0] + (rectSizeMax[1] - destCenter[1]) * dx / dy; 
+				destCenter[1] = rectSizeMax[1];
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = srcCenter[0] + (rectSizeMax[1] - srcCenter[1]) * dx / dy; 
+				srcCenter[1] = rectSizeMax[1];
+				return srcCenter;
+			}
+		}
+		else {
+			if (ca === 10) {
+				destCenter[0] = rectSizeMax[0];
+				destCenter[1] = r;
+				return destCenter;
+			}
+			else {
+				srcCenter[0] = rectSizeMax[0];
+				srcCenter[1] = r;
+				return srcCenter;
+			}
+		}
 	case 10:
 		var r = (rectSizeMax[0] - srcCenter[0]) * dy / dx + srcCenter[1];
 		if (r > rectSizeMax[1]) {
