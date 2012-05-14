@@ -501,41 +501,57 @@ function OPMProceduralLink( src , dest ) {//input source and destination Objects
 }
 
 OPMProceduralLink.prototype.verifyLink = function(){
-  //check for existing type of structural link between two entities
+  //check for existing type of procedural link between two entities
   if ( src.outLinks[ dest.id ].category ===  dest.inLinks[ src.id ].category ){
-    alert( "Cannot connect two Entities with more than one " + this.type + " Link" );
-    delete this;
+    alert( "Cannot connect two Objects with more than one " + this.type + " Link" );
     return false;
   }
-
-//rest of Logic rules using Switch, by source type. many more rules are to be added
+    //rest of Logic rules using Switch, by source type. many more rules are to be added
   switch ( src.constructor.name ){
   case "OPMObject":
-    if ( this.type !== "Invocation" && this.type !== "Exception" && dest.constructor.name === "OPMProcess" ){
-      return true;
+    if ( dest.constructor.name === "OPMProcess" ){
+      if ( this.type === "Invocation" || this.type === "Exception" ){
+        return false;
+      }
+      else{
+        return true;
+      }
     }
-    else if ( dest.constructor.name === "OPMObject" ){
+    if ( dest.constructor.name === "OPMObject" || dest.constructor.name === "OPMState" ){
       return false;
     }
-    else if ( dest.constructor.name === "OPMState" ){
-      delete this;
-      return false;
-    }
-
-  case "OPMProcess":
-    if ( ( this.type === "Invocation" || this.type === "Exception" )  && dest.constructor.name === "OPMProcess" ){
-      return true;
-    }
-    else if ( dest.constructor.name === "OPMObject" ){
-      delete this;
-      return false;
-    }
-    else if ( dest.constructor.name === "OPMState" ){
-      delete.this;
-      return false;
-    }
+    case "OPMProcess":
+      if ( dest.constructor.name === "OPMObject" || dest.constructor.name ==="OPMState" ){
+        if ( this.type === "Result" || this.type === "Effect" ){
+          return true;
+        }
+        else{
+          return false; 
+        } 
+      }
+      if ( dest.constructor.name === "OPMProcess" ){
+        if ( this.type === "Invocation" || this.type === "Exception" ){
+          return true;
+        }
+        else{
+          return false; 
+        }
+      }
+    case "OPMState":
+      if ( dest.constructor.name === "OPMProcess" ){
+        if ( this.type === "Invocation" || this.type === "Exception" ){
+          return false;
+        }
+        else{
+          return true;
+        }
+      }
+      if ( dest.constructor.name === "OPMObject" || dest.constructor.name === "OPMState" ){
+        return false;
+      }
   }
 }
+  
 OPMProceduralLink.prototype.getDestination = function(){
   return this.destination;
 }
@@ -600,7 +616,6 @@ OPMStructuralLink.prototype.verifyLink = function(){
     }
     else{
       alert( "Cannot connect two Objects with more than one " + this.type + " Link" );
-      delete this;
       return false;
     }
   }
@@ -608,18 +623,31 @@ OPMStructuralLink.prototype.verifyLink = function(){
   //rest of Logic rules using Switch, by source type. many more rules are to be added
   switch ( src.constructor.name ){
   case "OPMObject":
-	if (dest.constructor.name === "OPMProcess") {
-		if (this.type === "Exhibition") { return true }
-		else { return false } 
+	if ( dest.constructor.name === "OPMProcess" ){
+		if ( this.type === "Exhibition" ){
+		  return true;
+		}
+		else{
+		  return false; 
+		} 
 	}
-	if (dest.constructor.name === "OPMObject") { return true }
-  
+	if ( dest.constructor.name === "OPMObject" ){
+	  return true;
+	}
   case "OPMProcess":
-	if (dest.constructor.name === "OPMObject") {
-		if (this.type === "Exhibition") { return true }
-		else { return false } 
+	if ( dest.constructor.name === "OPMObject" ){
+	  if ( this.type === "Exhibition" ){
+	    return true;
+	  }
+	  else{
+	    return false; 
+	  } 
 	}
-	if (dest.constructor.name === "OPMProcess") { return true }
+	if ( dest.constructor.name === "OPMProcess" ){
+	  return true;
+	}
+  case "OPMState":
+    return false;
   }
 }
 
