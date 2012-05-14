@@ -8,6 +8,7 @@
  * 
  *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
+
 function User( id , email , password ){
   this.id = id;
   this.username = null;
@@ -22,7 +23,7 @@ function User( id , email , password ){
 }
 
 //retrieve list of models by user's ID
-User.prototype.getModels = function( ){
+User.prototype.getModels = function(){
   //call JSON function and receives list of all Model IDs of this user.
   return this.models;
 }
@@ -311,8 +312,8 @@ OPMEntity.prototype.removeLink = function( linkId ){
   }
 
 OPMEntity.prototype.destructor = function(){
-  this.removeLink( inLinks );
-  this.removeLink( outLinks );
+  this.removeLink( this.inLinks );
+  this.removeLink( this.outLinks );
   delete this;
 }
   //TODO: DB update function needed
@@ -380,12 +381,12 @@ function OPMObject() {
   this.objectType = null;
 }
 
-OPMObject.prototype.addState = function( state){
+OPMObject.prototype.addState = function( state ){
   this.states[ state.Id ] = state; 
 }
 
-OPMObject.prototype.removeState = function( state ){//TODO: change to Hash table procedure
-  delete this.states[ state.Id ];
+OPMObject.prototype.removeState = function( stateId ){
+  delete this.states[ stateId ];
 }
 
 //END OF OPMObject CLASS//
@@ -412,7 +413,7 @@ OPMProcess.prototype.getMaxActivationTime = function(){
   return this.maxActivationTime;
 }
 
-OPMProcess.prototype.setMaxActivationTime = function(maxTime){
+OPMProcess.prototype.setMaxActivationTime = function( maxTime ){
   this.maxActivationTime = maxTime;
 }
 /*
@@ -434,9 +435,9 @@ OPMProcess.prototype.destructor = function(){
 //START OF OPMState CLASS//
 
 OPMState.prototype = new OPMEntity();
-function OPMState( parent ) {
+function OPMState( parent ) {//parent = Object object containing the states
   this.type = null;//final, default, initial
-  this.parent = parent;
+  this.parent = parent;//of type OPMObject
   this.minActivationTime = 0;
   this.maxActivationTime = 0;
 }
@@ -445,7 +446,7 @@ OPMState.prototype.getType = function(){
   return this.type;
 }  
 
-OPMState.prototype.setType = function(type){
+OPMState.prototype.setType = function( type ){
   this.type = type;
 }
 
@@ -463,6 +464,13 @@ OPMState.prototype.getMaxActivationTime = function(){
 
 OPMState.prototype.setMaxActivationTime = function( maxTime ){
   this.maxActivationTime = maxTime;
+}
+
+OPMEntity.prototype.destructor = function(){//overloaded to delete State reference in Parent Object
+  this.removeLink( this.inLinks );
+  this.removeLink( this.outLinks );
+  delete this.parent.states[ this.id ];
+  delete this;
 }
 
 //END OF OPMState CLASS//
