@@ -121,7 +121,7 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 	var ca = code(srcCenter);
 	console.log('lssb ca component = ' + ca);
 	var cb = code(destCenter);
-	console.log('lssb ca component = ' + cb);
+	console.log('lssb cb component = ' + cb);
 	var dx = destCenter[0] - srcCenter[0];
 	var dy = destCenter[1] - srcCenter[1];
 	switch(ca + cb) {
@@ -200,12 +200,12 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 		}
 		else {
 			if (ca === 6) {
-				destCenter[0] = rectSizeMin[0];
+				destCenter[0] = rectSizeMax[0];
 				destCenter[1] = r;
 				return destCenter;
 			}
 			else {
-				srcCenter[0] = rectSizeMin[0];
+				srcCenter[0] = rectSizeMax[0];
 				srcCenter[1] = r;
 				return srcCenter;
 			}
@@ -224,7 +224,7 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 	case 9:
 		var r = (rectSizeMin[0] - srcCenter[0]) * dy / dx + srcCenter[1];
 		if (r > rectSizeMax[1]) {
-			if (ca === 10) {
+			if (ca === 9) {
 				destCenter[0] = destCenter[0] + (rectSizeMax[1] - destCenter[1]) * dx / dy; 
 				destCenter[1] = rectSizeMax[1];
 				return destCenter;
@@ -236,13 +236,13 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 			}
 		}
 		else {
-			if (ca === 10) {
-				destCenter[0] = rectSizeMax[0];
+			if (ca === 9) {
+				destCenter[0] = rectSizeMin[0];
 				destCenter[1] = r;
 				return destCenter;
 			}
 			else {
-				srcCenter[0] = rectSizeMax[0];
+				srcCenter[0] = rectSizeMin[0];
 				srcCenter[1] = r;
 				return srcCenter;
 			}
