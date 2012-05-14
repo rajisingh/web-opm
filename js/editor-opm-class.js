@@ -6,79 +6,71 @@
  * 	File context description:
  * 	File contains classes description used for OPM
  * 
- *   Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
+ * 	Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
-function User( id , email , password ){
-  this.id = id;
-  this.username = null;
-  this.alienLogin = null;
-  this.email = email;
-  this.firstName = null;
-  this.lastName = null;
-  this.password = password;
-  this.models = { };
-  this.lastLogin = null; //timestamp
-  this.loginStatus = null; //boolean
+
+function User(id, email, password) {
+	this.id = id;
+	this.alienLogin = null;
+	this.token = null;								//used for oauth2.0
+	this.email = email;
+	this.firstName = null;
+	this.lastName = null;
+	this.password = password;
+	this.models = { };
+	this.lastLogin = null; 							//timestamp
+	this.loginStatus = null; 						//boolean
 }
 
-//retrieve list of models by user's ID
-User.prototype.getModels = function( ){
+/*Working functions*/
+User.prototype.getName = function() {
+	//returns user's full name
+	var x = this.firstName;
+	var y = this.lastName;
+	return x + " " + y;
+}
+
+User.prototype.setName = function(newFirstName, newLastName) {
+	this.firstName = newFirstName;
+	this.lastName = newLastName;
+}
+
+User.prototype.getModels = function() {
   //call JSON function and receives list of all Model IDs of this user.
-  return this.models;
+	return this.models;
 }
 
-User.prototype.deleteModel = function( model ){
-  try{
-    delete this.models[ model.id ];
-    model.destructor();
-  }
-  catch( err ){
-    txt="There was an error deleting the Model.\n\n";
-    txt+="Error description: " + err.message + "\n\n";
-    txt+="Click OK to continue.\n\n";
-    alert(txt);
-  }
+User.prototype.addModel = function(model) {
+	//add model to the list
+	this.models[model.id] = model;
 }
 
-User.prototype.login = function( userId, pass ){
+User.prototype.getLastLogin = function() {
+	return this.lastLogin;
+}
+
+User.prototype.setLastLogin = function(timestamp) {
+	this.lastLogin = timestamp;
+}
+
+User.prototype.setToken = function(token) {
+	this.token = token;
+}
+User.prototype.getToken = function() {
+	return this.token
+}
+
+
+/*None-Working functions*/
+User.prototype.deleteModel = function() {
+}
+
+User.prototype.login = function() {
   //call FB/Google/LinkedIn/Twitter login algorithm and process via Python?
 }
 
-User.prototype.logout = function(){//receives model object
+User.prototype.logout = function() {
   this.loginStatus = 0;
-}
-
-//replace user's first and last name
-User.prototype.changeName = function ( newFirstName , newLastName ){
-  this.firstName = newFirstName;
-  this.lastName = newLastName;
-}
-
-//replace existing user's email with new one
-User.prototype.changeEmail = function( newEmail ){
-  this.email = newEmail;
-}
-
-//sets the last login timestamp
-User.prototype.updateLastLogin = function( timestamp ){
-  this.lastLogin = timestamp;
-}
-
-//returns user's last login timestamp
-User.prototype.getLastLogin = function(){
-  return this.lastLogin;
-}
-
-//allows setting last login time
-User.prototype.setLastLogin = function( timestamp ){
-  this.lastLogin = timestamp;
-}
-
-//returns user's full name
-User.prototype.getName = function(){
-  var x = this.firstName;
-  var y = this.lastName;
-  return x + " " + y;
 }
 
 //START OF OPMModel CLASS//
