@@ -11,18 +11,24 @@
 
 function User(id, email, password) {
 	this.id = id;
-	this.alienLogin = null;
+	this.provider = null;							//mechanism used for oauth2.0: {google, facebook, twitter}
 	this.token = null;								//used for oauth2.0
 	this.email = email;
 	this.firstName = null;
 	this.lastName = null;
 	this.password = password;
 	this.models = { };
-	this.lastLogin = null; 							//timestamp
+	this.lastLogin = new Date(); 					//timestamp
 	this.loginStatus = null; 						//boolean
 }
 
 /*Working functions*/
+User.prototype.getId = function() { 
+	return this.id; 
+}
+User.prototype.getEmail = function() { 
+	return this.email; 
+}
 User.prototype.getName = function() {
 	//returns user's full name
 	var x = this.firstName;
@@ -44,8 +50,8 @@ User.prototype.addModel = function(model) {
 User.prototype.getLastLogin = function() {
 	return this.lastLogin;
 }
-User.prototype.setLastLogin = function(timestamp) {
-	this.lastLogin = timestamp;
+User.prototype.setLastLogin = function() {
+	this.lastLogin = new Date();
 }
 User.prototype.setToken = function(token) {
 	/*Token is given to the user after she signs in via provider. 
@@ -55,8 +61,24 @@ User.prototype.setToken = function(token) {
 User.prototype.getToken = function() {
 	return this.token
 }
-
+User.prototype.setPassword = function(newPassword) {
+	//called if user wants to change password
+	this.password = newPassword;
+}
+User.prototype.getLoginStatus = function() {
+	return this.loginStatus;
+}
+User.prototype.setProvider = function(provider) {
+	this.provider = provider;
+}
+User.prototype.getProvider = function() {
+	return this.provider;
+}
 /*None-Working functions*/
+User.prototype.getPassword = function() {
+	//called if user forgets passwords
+	//TODO: send request to DB and send the letter w/ password to User
+}
 User.prototype.deleteModel = function(model) {
 	//TODO: should this be a recursive function, or is it enough to call the model's destructor?
 }
@@ -64,7 +86,7 @@ User.prototype.login = function() {
 	//call FB/Google/LinkedIn/Twitter login algorithm and process via Python?
 }
 User.prototype.logout = function() {
-	this.loginStatus = 0;
+	this.loginStatus = false;
 }
 
 
@@ -72,18 +94,21 @@ User.prototype.logout = function() {
 function OPMModel(id, creator) {							
 	this.id = id;
 	this.creator = creator;
-	this.name = 'Model Name'; 								//default value
+	this.name = 'New Model'; 								//default value
 	this.type = null;
 	this.participants = { };
 	this.sd = new OPMDiagram('sd', null, 0);				//create first SD for model, with level=0
 	this.diagrams = { };									//map object with diagrams in a model
-	this.lastUpdateDate = new Date();
+	this.lastUpdate = new Date();
 	this.creationDate = new Date();
 }
 
 /*Working functions*/
 OPMModel.prototype.getId = function(){ 
 	return this.id;
+}
+OPMModel.prototype.getCreator = function() {
+	return this.creator;
 }
 OPMModel.prototype.getName = function() {
 	return this.name;	  
@@ -120,10 +145,18 @@ OPMModel.prototype.removeDiagram = function(diagram) {
 	//removes diagram for diagram list
 	delete this.diagrams[diagram.id];
 }
-OPMModel.prototype.setLastUpdateDate = function() {
-	this.lastUpdateDate = new Date();
+OPMModel.prototype.getLastUpdate = function() {
+	return this.lastUpdate;
 }
-
+OPMModel.prototype.setLastUpdate = function() {
+	this.lastUpdate = new Date();
+}
+OPMModel.prototype.getCreationDate = function() {
+	return this.creationDate;
+}
+OPMModel.prototype.getSd = function() {
+	return this.sd;
+}
 /*Non-working functions*/
 OPMModel.prototype.load = function() {
 	//need procedure for loading a model from DB
@@ -152,17 +185,35 @@ function OPMDiagram(id, predecessor, level) {
 	this.predecessor = predecessor;							//diagram object of the "father", can be null
 	this.successors = { };									//map of successors
 	this.elements = { };									//map of elements that diagram contains
-	this.diagramName = 'Diagram Name';						//default value
+	this.name = 'New Diagram';								//default value
+	this.number = null;
 	this.OPL = null;
 	this.level = level; 									//int
 }
-
 /*Working functions*/
+OPMDiagram.prototype.getId = function() {
+	return this.id;
+}
+OPMDiagram.prototype.getName = function() {
+	return this.name;
+}
+OPMDiagram.prototype.setName = function(name) {
+	this.name = name;
+}
+OPMDiagram.prototype.getNumber = function() {
+	return this.number;
+}
+OPMDiagram.prototype.setNumber = function(number) {
+	this.number = number;
+}
 OPMDiagram.prototype.addElement = function(element) {
 	this.elements[element.id] = element;
 }
 OPMDiagram.prototype.getElements = function() {
 	return this.elements;
+}
+OPMDiagram.prototype.removeElement = function(element) {
+	delete this.elements[element.id]
 }
 OPMDiagram.prototype.getPredecessor = function() {
     return this.predecessor;
@@ -174,13 +225,15 @@ OPMDiagram.prototype.addSuccessor = function(diagram) {
     //receives OPMDiagram object to add to the map of successor diagrams
     this.successors[diagram.id] = diagram;
 }
+OPMDiagram.prototype.removeSuccessor = function(diagram) {
+	delete this.successors[diagram.id];
+}
 OPMDiagram.prototype.getLevel = function() {
     return this.level;
 }
 OPMDiagram.prototype.getOPL = function() {
 	return this.OPL;
 }
-
 /*Non-working function*/
 OPMDiagram.prototype.reLevel = function(levels) {          
 	//if level-up - enter positive int, otherwise negative
@@ -228,13 +281,11 @@ OPMDiagram.prototype.destructor = function() {
 
 
 
-
 function OPMElement(id) {
     this.id = id;
     this.diagrams = { };                       	//may be part of a few diagrams, so using map
     this.description = null;
 }
-
 OPMElement.prototype.getId = function() {
     return this.id;
 }
@@ -271,6 +322,12 @@ OPMEntity.prototype.getName = function() {
 }
 OPMEntity.prototype.setName = function(name) {
 	this.name = name;
+}
+OPMEntity.prototype.getInLinks = function() {
+	return this.inLinks;
+}
+OPMEntity.prototype.getOutLinks = function() {
+	return this.outLinks;
 }
 OPMEntity.prototype.addLink = function(link) {
 	if (link.verifyLink ( link.source , link.destination)) {
@@ -310,7 +367,6 @@ OPMEntity.prototype.destructor = function() {
   
 
 
-
 OPMThing.prototype = new OPMEntity(); 			// inheriting from OPMEntity 
 function OPMThing()	{
 	this.essence = "Informatical";
@@ -341,7 +397,7 @@ OPMThing.prototype.setScope = function(scope) {
     this.scope = scope;
 }
 OPMThing.prototype.addThing = function(thing) {
-    this.things[thing.id] = thing;
+    this.things[thing.id] = thing;	
 }
 OPMThing.prototype.removeThing = function(thing) {
     var currId = thing.id;                      					//once destructor is used, ID is no longer available
@@ -349,22 +405,31 @@ OPMThing.prototype.removeThing = function(thing) {
     delete this.things[currId];
     delete currId;
 }
+OPMThing.prototype.getThing = function() {
+	return this.things;
+}
 OPMThing.prototype.getURL = function() {
 	return this.url;
 }
 OPMThing.prototype.setURL = function(newURL) {
 	this.url = newURL;
 }
+OPMThing.prototype.getUnfoldDiag = function() {
+	return this.unfoldDiag;
+}
+OPMThing.prototype.getInzoomDiag = function() {
+	return this.inzoomDiag;
+}
 /*Non-working functions*/
-OPMThing.prototype.unfold = function(newDiagId, fatherDiag) {
+OPMThing.prototype.unfolding = function(newDiagId, fatherDiag) {
 	//unfold object/process
 	this.unfoldDiag = new OPMDiagram(newDiagId, fatherDiag, fatherDiag.level + 1);
 	this.unfoldDiag.elements[this.id] = this;									//add current element to new unfolded diagram
 	return this.unfoldDiag;
 }
-OPMThing.prototype.inzoom = function(newDiagId, fatherDiag) {
+OPMThing.prototype.inzooming = function(newDiagId, fatherDiag) {
     //inzoom object/process, returns new Diagram object
-    this.inzoomdDiag = new OPMDiagram(newDiagId, fatherDiag, fatherDiag.level + 1);
+    this.inzoomDiag = new OPMDiagram(newDiagId, fatherDiag, fatherDiag.level + 1);
     this.inzoomDiag.elements[this.id] = this;										//add current element to new inzoomed diagram
     return this.inzoomDiag;
 }
@@ -376,7 +441,6 @@ function OPMObject() {
 	this.states = { };
 	this.initValue = null;
 	this.type = "Compound Object";
-	this.icon = null;
 }
 /*Working function*/
 OPMObject.prototype.getInitValue = function() {
@@ -400,11 +464,8 @@ OPMObject.prototype.addState = function(state) {
 OPMObject.prototype.removeState = function(state) {
 	delete this.states[state.id];
 }
-OPMObject.prototype.getIcon = function() {
-	return this.icon;
-}
-OPMObject.prototype.setIcon = function(newIcon) {
-	this.icon = newIcon;
+OPMObject.prototype.getStates = function() {
+	return this.states;
 }
 
 
@@ -439,6 +500,9 @@ function OPMState(parent) {									//parent is an object which contains the sta
 }
 
 /*Working functions*/
+OPMState.prototype.getParent = function() {
+	return this.parent;
+}
 OPMState.prototype.getType = function() {
     return this.type;
 }  
@@ -468,11 +532,25 @@ OPMEntity.prototype.destructor = function() {//overloaded to delete State refere
 
 
 OPMLink.prototype = new OPMElement();
-function OPMLink(type, category) {
-    this.type = type;									//types are strings, some values: "Instrument", "Agent" etc.
+function OPMLink(src, dest, category, type) {
+	this.source = src;
+	this.destination = dest;
     this.category = category;							//categories are strings, two values: "Structural" and "Procedural"
+    this.type = type;									//types are strings, some values: "Instrument", "Agent" etc.
 }
 /*Working function*/
+OPMLink.prototype.getDestination = function() {
+    return this.destination;
+}
+OPMLink.prototype.setDestination = function(dest) {
+    this.destination = dest;
+}
+OPMLink.prototype.getSource = function() {
+    return this.source;
+} 
+OPMLink.prototype.setSource = function(src) {
+    this.source = src;
+}
 OPMLink.prototype.getType = function() {
     return this.type;
 }
@@ -483,9 +561,7 @@ OPMLink.prototype.getCategory = function() {
 
 
 OPMProceduralLink.prototype = new OPMLink();
-function OPMProceduralLink(src, dest) {					//input source and destination Objects
-    this.source = src;
-    this.destination = dest;
+function OPMProceduralLink() {					//input source and destination Objects
     this.xor = { };
     this.or = { };
 }
@@ -521,29 +597,23 @@ OPMProceduralLink.prototype.verifyLink = function() {
     	if (dest.constructor.name === "OPMObject" || dest.constructor.name === "OPMState") { return false; }
     }
 }  
-OPMProceduralLink.prototype.getDestination = function() {
-    return this.destination;
-}
-OPMProceduralLink.prototype.setDestination = function(dest) {
-    this.destination = dest;
-}
-OPMProceduralLink.prototype.getSource = function() {
-    return this.source;
-}  
-OPMProceduralLink.prototype.setSource = function(src) {
-    this.source = src;
-}
-OPMLink.prototype.addXor = function(link) {
+OPMProceduralLink.prototype.addXor = function(link) {
     this.xor[link.id] = link;
 }
-OPMLink.prototype.removeXor = function(link) {
+OPMProceduralLink.prototype.removeXor = function(link) {
     delete this.xor[link.id];
 }
-OPMLink.prototype.addOr = function(link) {
+OPMProceduralLink.prototype.getXor = function() {
+	return this.xor;
+}
+OPMProceduralLink.prototype.addOr = function(link) {
     this.or[link.id] = link;
 }
-OPMLink.prototype.removeOr = function(link) {
+OPMProceduralLink.prototype.removeOr = function(link) {
     delete this.or[link.id];
+}
+OPMProceduralLink.prototype.getOr = function() {
+	return this.or;
 }
 /*Non-working functions*/
 OPMProceduralLink.prototype.destructor = function() {
@@ -554,9 +624,7 @@ OPMProceduralLink.prototype.destructor = function() {
 
 
 OPMStructuralLink.prototype = new OPMLink();
-function OPMStructuralLink(src, dest) {
-    this.source = src;
-    this.destination = dest;
+function OPMStructuralLink() {
     this.participationConst = null;
     this.participationVal = null;
     this.cardinality = 1;
@@ -587,18 +655,6 @@ OPMStructuralLink.prototype.verifyLink = function() {
         	if (dest.constructor.name === "OPMProcess") { return true; }
         case "OPMState": return false;
     }
-}
-OPMStructuralLink.prototype.getDestination = function() {
-    return this.destination;
-}
-OPMStructuralLink.prototype.setDestination = function(dest) {
-    this.destination = dest;
-}
-OPMStructuralLink.prototype.getSource = function() {
-    return this.source;
-} 
-OPMStructuralLink.prototype.setSource = function(src) {
-    this.source = src;
 }
 OPMStructuralLink.prototype.getCardinality = function() {
     return this.cardinality;
