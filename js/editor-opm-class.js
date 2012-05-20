@@ -209,6 +209,9 @@ OPMDiagram.prototype.setNumber = function(number) {
 OPMDiagram.prototype.addElement = function(element) {
 	this.elements[element.id] = element;
 }
+OPMDiagram.prototype.getElement = function(id) {
+	return this.elements[id];
+}
 OPMDiagram.prototype.getElements = function() {
 	return this.elements;
 }
