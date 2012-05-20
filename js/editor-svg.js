@@ -35,8 +35,8 @@ var addObject = function() {
 		
 		//Create instance of OPMObject class (Client-side Logic)
 		var opmobj = new OPMObject();
-		opmobj.id = 'obj' + objId;
-		opmobj.name = 'Object ' + objId;
+		opmobj.id = obj.id
+		opmobj.name = obj.name.value;
 		activeOPMDiagram.addElement(opmobj);
 		opmobj.addDiagram(activeOPMDiagram);
 	}
@@ -49,9 +49,18 @@ var addProcess = function() {
 	try {
 		if (activeSVGElement !== null) { deselect(); }
 		prcId++;
+		
+		//Create instance of UIProcess class (GUI)
 		var prc = new UIProcess(prcId);
 		prc.draw();
 		activeUIDiagram.addElement(prc);
+		
+		//Create instance of OPMProcess class (Client-side Logic)
+		var opmprc = new OPMProcess();
+		opmprc.id = prc.id
+		opmprc.name = prc.name.value;
+		activeOPMDiagram.addElement(opmprc);
+		opmprc.addDiagram(activeOPMDiagram);
 	}
 	catch(e) {
 		alert(e.message);
@@ -81,9 +90,18 @@ var addState = function() {
 			}
 			
 			//Execute this if error are caught
+			//Create instance of UIState class (GUI)
 			var stt = new UIState(activeUIElement);
 			activeUIElement.addState(stt);
 			stt.draw();
+			
+			//Create instance of OPMState class (Client-side Logic)
+			var parent = activeOPMDiagram.getElement(activeUIElement.id);
+			var opmstt = new OPMState(parent);
+			opmstt.id = stt.id;
+			opmstt.name = stt.name.value;
+			parent.addState(opmstt);
+			
 		}			
 	}
 	catch(e) {
