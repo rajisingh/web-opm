@@ -376,6 +376,3 @@ UIDiagramList.returnActive = function() {
 		if (this[d].active === true) { return this[d]; }
 	}
 }
-// Data Structure Initialization
-var diag = new UIDiagram('sd');
-UIDiagramList[diag.id] = diag;

@@ -15,13 +15,10 @@ var xlinkNS = svg.getAttribute('xmlns:xlink');
 var activeSVGDiagram = document.getElementById('sd');
 var activeSVGElement = null;
 
-var activeUIDiagram = UIDiagramList.returnActive();
-var activeUIElement = null;
-
 var currentX = 0;
 var currentY = 0;
 var currentMatrix = 0;
-var objId = 0;
+var objId = 0; 
 var prcId = 0;
 var lnkId = 0;
 
@@ -30,9 +27,18 @@ var addObject = function() {
 	try {
 		if (activeSVGElement !== null) { deselect(); }
 		objId++;
+		
+		//Create instance of UIObject class (GUI)
 		var obj = new UIObject(objId);
 		obj.draw();
 		activeUIDiagram.addElement(obj);
+		
+		//Create instance of OPMObject class (Client-side Logic)
+		var opmobj = new OPMObject();
+		opmobj.id = 'obj' + objId;
+		opmobj.name = 'Object ' + objId;
+		activeOPMDiagram.addElement(opmobj);
+		opmobj.addDiagram(activeOPMDiagram);
 	}
 	catch(e) {
 		alert(e.message);

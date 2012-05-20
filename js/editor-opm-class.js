@@ -9,8 +9,8 @@
  * 	Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
 
-function User(id, email, password) {
-	this.id = id;
+function User(email, password) {
+	this.id = randomFromTo(1, 1000);
 	this.provider = null;							//mechanism used for oauth2.0: {google, facebook, twitter}
 	this.token = null;								//used for oauth2.0
 	this.email = email;
@@ -91,12 +91,12 @@ User.prototype.logout = function() {
 
 
 
-function OPMModel(id, creator) {							
-	this.id = id;
+function OPMModel(creator) {							
+	this.id = randomFromTo(1, 1000);
 	this.creator = creator;
 	this.name = 'New Model'; 								//default value
-	this.type = null;
-	this.participants = { };
+	this.type = 'System';
+	this.participants = { }
 	this.sd = new OPMDiagram('sd', null, 0);				//create first SD for model, with level=0
 	this.diagrams = { };									//map object with diagrams in a model
 	this.lastUpdate = new Date();
