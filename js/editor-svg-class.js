@@ -76,6 +76,7 @@ function UIObject(id) {
 	this.name = new UIName(this);
 	this.states = { }
 	this.statesAmount = 0;
+	this.icon = null;
 }
 UIObject.prototype.addState = function(state) {
 	this.states[state.id] = state;
@@ -147,6 +148,7 @@ function UIProcess(id) {
 	this.stroke = 'RoyalBlue';
 	this.strokeWidth = 2;
 	this.name = new UIName(this);
+	this.icon = null;
 }
 UIProcess.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
@@ -216,6 +218,7 @@ function UIState(parent) {
 	this.strokeWidth = 1;
 	this.name = new UIName(this);
 	this.parent = parent;
+	this.icon = null;
 }
 UIState.prototype.draw = function(){
 	var group = document.createElementNS(svgNS, 'g');
