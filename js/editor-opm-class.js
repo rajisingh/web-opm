@@ -333,13 +333,11 @@ OPMEntity.prototype.getOutLinks = function() {
 	return this.outLinks;
 }
 OPMEntity.prototype.addLink = function(link) {
-	if (link.verifyLink ( link.source , link.destination)) {
-		if (link.source.id === this.id) {
-			this.outLinks[link.id] = link;
-		}
-		else {
-			this.inLinks[link.id] = link;
-		}
+	if (link.source.id === this.id) {
+		this.outLinks[link.id] = link;
+	}
+	else {
+		this.inLinks[link.id] = link;
 	}
 }
 OPMEntity.prototype.removeLink = function(link) {
@@ -470,6 +468,9 @@ OPMObject.prototype.removeState = function(state) {
 OPMObject.prototype.getStates = function() {
 	return this.states;
 }
+OPMObject.prototype.getState = function(id) {
+	return this.states[id];
+}
 
 
 
@@ -557,14 +558,21 @@ OPMLink.prototype.setSource = function(src) {
 OPMLink.prototype.getType = function() {
     return this.type;
 }
+OPMLink.prototype.setType = function(newType) {
+	this.type = newType;
+}
 OPMLink.prototype.getCategory = function() {
     return this.category;
+}
+OPMLink.prototype.setCategory = function(newCategory) {
+	this.category = newCategory;
 }
 
 
 
 OPMProceduralLink.prototype = new OPMLink();
 function OPMProceduralLink() {					//input source and destination Objects
+	this.category = 'Procedural';
     this.xor = { };
     this.or = { };
 }
@@ -628,6 +636,7 @@ OPMProceduralLink.prototype.destructor = function() {
 
 OPMStructuralLink.prototype = new OPMLink();
 function OPMStructuralLink() {
+	this.category = 'Structural';
     this.participationConst = null;
     this.participationVal = null;
     this.cardinality = 1;
@@ -636,26 +645,26 @@ function OPMStructuralLink() {
 /*Working function*/
 OPMStructuralLink.prototype.verifyLink = function() {
 	//returns true if verified, otherwise returns false
-    if (src.outLinks[ dest.id ].category ===  dest.inLinks[ src.id ].category) {         //check for existing type of structural link between two entities
+    if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.source.id].category) {         //check for existing type of structural link between two entities
     	if (this.type === "Unidirectional" || this.type === "Bidirectional") { return true; }
     	else {
     		alert("Cannot connect two Objects with more than one " + this.type + " Link");
     		return false;
     	}
     }
-    switch (src.constructor.name) {                                                      //rest of Logic rules using Switch, by source type.
+    switch (this.source.constructor.name) {                                                      //rest of Logic rules using Switch, by source type.
     	case "OPMObject":
-    		if (dest.constructor.name === "OPMProcess") {
+    		if (this.destination.constructor.name === "OPMProcess") {
     			if (this.type === "Exhibition") { return true; }
             else { return false; } 
     		}
-    		if (dest.constructor.name === "OPMObject") { return true; }
+    		if (this.destination.constructor.name === "OPMObject") { return true; }
         case "OPMProcess":
-        	if (dest.constructor.name === "OPMObject") {
+        	if (this.destination.constructor.name === "OPMObject") {
         		if (this.type === "Exhibition") { return true; }
             else { return false; }
         	}
-        	if (dest.constructor.name === "OPMProcess") { return true; }
+        	if (this.destination.constructor.name === "OPMProcess") { return true; }
         case "OPMState": return false;
     }
 }
