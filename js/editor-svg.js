@@ -132,6 +132,42 @@ var turnLinkOn = function(type) {
 var addLink = function(src, dest) {
 	try {
 		lnkId++;
+		switch(linkOn.type) {
+		case 'udr':
+			var opmlink = new OPMStructuralLink();
+			opmlink.id = linkOn.type + lnkId;
+			opmlink.setType('Unidirectional');
+			if (src.id.slice(0,3) === 'stt') {
+				var parent = activeOPMDiagram.getElement(src.parent.id);
+				opmlink.setSource(parent.getState(src.id));
+			}
+			if (dest.id.slice(0,3) === 'stt') {
+				var parent = activeOPMDiagram.getElement(dest.parent.id);
+				opmlink.setDestination(parent.getState(dest.id))
+			}
+			opmlink.setSource(activeOPMDiagram.getElement(src.id));
+			opmlink.setDestination(activeOPMDiagram.getElement(dest.id));
+			if (opmlink.verifyLink()) {
+				var lnk = new UILink(opmlink.id);
+				lnk.draw(src, dest);
+				activeUIDiagram.addElement(lnk);
+				activeOPMDiagram.addElement(opmlink);
+				opmlink.source.addLink(opmlink);
+				opmlink.destination.addLink(opmlink);
+			}
+			else {
+				delete opmlink
+			}
+		}
+	}
+	catch(e) {
+		alert(e.message);
+	}
+}
+/*
+var addLink = function(src, dest) {
+	try {
+		lnkId++;
 		var lnk = new UILink(linkOn.type + lnkId);		
 		if (lnk.check(src, dest) === true) {
 			lnk.draw(src, dest)
@@ -152,6 +188,7 @@ var addLink = function(src, dest) {
 		alert(e.message);
 	}
 }
+*/
 
 var diagramZoom = function(scale) {
 	deselect();

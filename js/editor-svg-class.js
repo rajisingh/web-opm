@@ -295,7 +295,7 @@ UILink.prototype.updateLink = function(newD) {
 UILink.prototype.updateColor = function(color) {
 	this.stroke = color;
 }
-
+/*
 //FIXME: those checks below are the checks of logic
 UILink.prototype.check = function(src, dest) {
 	if (src.id === dest.id) {
@@ -320,6 +320,7 @@ UILink.prototype.check = function(src, dest) {
 	}
 	
 }
+*/
 UILink.prototype.draw = function(src, dest) {
 	//Calculating coordinates of connection point
 	try {
