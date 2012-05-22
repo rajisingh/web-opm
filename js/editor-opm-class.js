@@ -587,33 +587,38 @@ function OPMProceduralLink() {					//input source and destination Objects
 /*Working functions*/
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
-	if (src.outLinks[ dest.id ].category ===  dest.inLinks[ src.id ].category) {
+   
+    if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
+		return true;
+	}
+   
+	if (this.source.outLinks[ this.destination.id ].category ===  this.destination.inLinks[ this.source.id ].category) {
 		alert("Cannot connect two Objects with more than one " + this.type + " Link");
 		return false;
     }
     //rest of Logic rules using Switch, by source type. many more rules are to be added
-    switch (src.constructor.name) {
+    switch (this.source.constructor.name) {
     case "OPMObject":
-    	if (dest.constructor.name === "OPMProcess") {
+    	if (this.destinatoin.constructor.name === "OPMProcess") {
     		if (this.type === "Invocation" || this.type === "Exception") { return false; }
     		else { return true; }
     	}
-    	if (dest.constructor.name === "OPMObject" || dest.constructor.name === "OPMState") { return false; }
+    	if (this.destination.constructor.name === "OPMObject" || this.destination.constructor.name === "OPMState") { return false; }
     case "OPMProcess":
-    	if (dest.constructor.name === "OPMObject" || dest.constructor.name ==="OPMState") {
+    	if (this.destination.constructor.name === "OPMObject" || this.destination.constructor.name ==="OPMState") {
     		if (this.type === "Result" || this.type === "Effect") { return true; }
     		else { return false; } 
     	}
-    	if (dest.constructor.name === "OPMProcess") {
+    	if (this.destination.constructor.name === "OPMProcess") {
     		if (this.type === "Invocation" || this.type === "Exception") { return true; }
         else { return false; }
     	}
     case "OPMState":
-    	if (dest.constructor.name === "OPMProcess") {
+    	if (this.destination.constructor.name === "OPMProcess") {
     		if (this.type === "Invocation" || this.type === "Exception") { return false; }
     		else { return true; }
       	}
-    	if (dest.constructor.name === "OPMObject" || dest.constructor.name === "OPMState") { return false; }
+    	if (this.destination.constructor.name === "OPMObject" || this.destination.constructor.name === "OPMState") { return false; }
     }
 }  
 OPMProceduralLink.prototype.addXor = function(link) {
