@@ -645,11 +645,13 @@ function OPMStructuralLink() {
 /*Working function*/
 OPMStructuralLink.prototype.verifyLink = function() {
 	//returns true if link can be added according to OPM rules, otherwise returns false
-  if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined){  //check if two elements are linked
-  return true;
-  }
+//	if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined){  //check if two elements are linked
+//		return true;
+//	}
+	
+	if (Object.keys(this.source.outLinks).length === 0 || Object.keys(this.destination.inLinks).length === 0) { return true; }
   
-  if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.source.id].category) {         //check for existing type of structural link between two entities
+	if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.source.id].category) {         //check for existing type of structural link between two entities
     	if (this.type === "Unidirectional" || this.type === "Bidirectional") { return true; }
     	else {
     		alert("Cannot connect two Objects with more than one " + this.type + " Link");

@@ -164,31 +164,7 @@ var addLink = function(src, dest) {
 		alert(e.message);
 	}
 }
-/*
-var addLink = function(src, dest) {
-	try {
-		lnkId++;
-		var lnk = new UILink(linkOn.type + lnkId);		
-		if (lnk.check(src, dest) === true) {
-			lnk.draw(src, dest)
-			activeUIDiagram.addElement(lnk);
-		}
-		else {
-			delete lnk;
-			var msg = lnk.check(src, dest);
-			var err = new Error(msg);
-			if (!err.message) {
-				err.message = msg;
-			}
-			throw err
-		}
-		linkOn.off();
-	}
-	catch(e) {
-		alert(e.message);
-	}
-}
-*/
+
 
 var diagramZoom = function(scale) {
 	deselect();
