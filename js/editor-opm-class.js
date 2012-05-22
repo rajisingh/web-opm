@@ -316,8 +316,8 @@ OPMElement.prototype.removeDiagram = function(diagram) {
 OPMEntity.prototype = new OPMElement(); 		//inheriting from OPMElement
 function OPMEntity() {
 	this.name = null;
-	this.inLinks = { };							//map - keys are source of links
-	this.outLinks = { };						//map - keys are destination of links
+//	this.inLinks = { };							//map - keys are source of links
+//	this.outLinks = { };						//map - keys are destination of links
 }
 /*Working functions*/
 OPMEntity.prototype.getName = function() {
@@ -326,6 +326,7 @@ OPMEntity.prototype.getName = function() {
 OPMEntity.prototype.setName = function(name) {
 	this.name = name;
 }
+
 OPMEntity.prototype.getInLinks = function() {
 	return this.inLinks;
 }
@@ -359,6 +360,7 @@ OPMEntity.prototype.removeLink = function(link) {
     	alert(txt);
     }
 }
+
 /*Non-working functions*/
 OPMEntity.prototype.destructor = function() {
       this.removeLink(this.inLinks);
@@ -442,6 +444,8 @@ function OPMObject() {
 	this.states = { };
 	this.initValue = null;
 	this.type = "Compound Object";
+	this.inLinks = { };
+	this.outLinks = { };
 }
 /*Working function*/
 OPMObject.prototype.getInitValue = function() {
@@ -476,6 +480,8 @@ OPMObject.prototype.getState = function(id) {
 
 OPMProcess.prototype = new OPMThing();
 function OPMProcess() {
+	this.inLinks = { };
+	this.outLinks = { };
 	this.minActivationTime = null;
 	this.maxActivationTime = null;
 }
@@ -501,6 +507,8 @@ function OPMState(parent) {									//parent is an object which contains the sta
     this.parent = parent;									//of type OPMObject
     this.minActivationTime = null;
     this.maxActivationTime = null;
+    this.inLinks = { };
+    this.outLinks = { };
 }
 
 /*Working functions*/
@@ -645,11 +653,12 @@ function OPMStructuralLink() {
 /*Working function*/
 OPMStructuralLink.prototype.verifyLink = function() {
 	//returns true if link can be added according to OPM rules, otherwise returns false
-//	if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined){  //check if two elements are linked
-//		return true;
-//	}
+
+	if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
+		return true;
+	}
 	
-	if (Object.keys(this.source.outLinks).length === 0 || Object.keys(this.destination.inLinks).length === 0) { return true; }
+//	if (Object.keys(this.source.outLinks).length === 0 || Object.keys(this.destination.inLinks).length === 0) { return true; }
   
 	if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.source.id].category) {         //check for existing type of structural link between two entities
     	if (this.type === "Unidirectional" || this.type === "Bidirectional") { return true; }
