@@ -579,6 +579,13 @@ function OPMProceduralLink() {					//input source and destination Objects
 /*Working functions*/
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
+   
+   //	if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined){  //check if two elements are linked
+//		return true;
+//	}
+	
+	if (Object.keys(this.source.outLinks).length === 0 || Object.keys(this.destination.inLinks).length === 0) { return true; }
+   
 	if (src.outLinks[ dest.id ].category ===  dest.inLinks[ src.id ].category) {
 		alert("Cannot connect two Objects with more than one " + this.type + " Link");
 		return false;
