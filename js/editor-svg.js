@@ -154,9 +154,11 @@ var addLink = function(src, dest) {
 				activeOPMDiagram.addElement(opmlink);
 				opmlink.source.addLink(opmlink);
 				opmlink.destination.addLink(opmlink);
+				linkOn.off();
 			}
 			else {
-				delete opmlink
+				delete opmlink;
+				linkOn.off();
 			}
 		}
 	}

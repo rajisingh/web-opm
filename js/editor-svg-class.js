@@ -295,32 +295,6 @@ UILink.prototype.updateLink = function(newD) {
 UILink.prototype.updateColor = function(color) {
 	this.stroke = color;
 }
-/*
-//FIXME: those checks below are the checks of logic
-UILink.prototype.check = function(src, dest) {
-	if (src.id === dest.id) {
-		return 'Ups, you are trying to perform something impossible'
-	}
-	var lnkType = this.id.slice(0, 3);
-	var srcType = src.id.slice(0, 3);
-	var destType = dest.id.slice(0, 3);
-	switch(lnkType) {
-	//Unidirectional Relation
-	case 'udr':
-		if (srcType === 'obj' && destType === 'obj') {
-			return true
-		}
-		else if (srcType === 'prc' || destType === 'prc') {
-			return "Ups, the Object can't  be connected with the Process via Structural Link"
-		}
-		else {
-			return 'Ups, you are trying to perform something impossible'
-		}
-		//FIXME: perform the check whether the link between src and dest already exist
-	}
-	
-}
-*/
 UILink.prototype.draw = function(src, dest) {
 	//Calculating coordinates of connection point
 	try {
