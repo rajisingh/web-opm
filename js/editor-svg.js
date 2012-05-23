@@ -158,8 +158,39 @@ var addLink = function(src, dest) {
 			}
 			else {
 				delete opmlink;
+				lnkId--;
 				linkOn.off();
 			}
+			break;
+		case 'rcl':
+			var opmlink = new OPMProceduralLink();
+			opmlink.id = linkOn.type + lnkId;
+			opmlink.setType('Result-Consumption');
+			if (src.id.slice(0,3) === 'stt') {
+				var parent = activeOPMDiagram.getElement(src.parent.id);
+				opmlink.setSource(parent.getState(src.id));
+			}
+			if (dest.id.slice(0,3) === 'stt') {
+				var parent = activeOPMDiagram.getElement(dest);
+				opmlink.setDestination(parent.getState(dest.id));
+			}
+			opmlink.setSource(activeOPMDiagram.getElement(src.id));
+			opmlink.setDestination(activeOPMDiagram.getElement(dest.id));
+			if (opmlink.verifyLink()) {
+				var lnk = new UILink(opmlink.id);
+				lnk.draw(src, dest);
+				activeUIDiagram.addElement(lnk);
+				activeOPMDiagram.addElement(opmlink);
+				opmlink.source.addLink(opmlink);
+				opmlink.destination.addLink(opmlink);
+				linkOn.off();
+			}
+			else {
+				delete opmlink;
+				lnkId--;
+				linkOn.off();
+			}
+			break;
 		}
 	}
 	catch(e) {
