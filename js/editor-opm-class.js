@@ -581,8 +581,8 @@ OPMLink.prototype.setCategory = function(newCategory) {
 OPMProceduralLink.prototype = new OPMLink();
 function OPMProceduralLink() {					//input source and destination Objects
 	this.category = 'Procedural';
-    this.xor = { };
-    this.or = { };
+	this.xor = { };
+	this.or = { };
 }
 /*Working functions*/
 OPMProceduralLink.prototype.verifyLink = function() {
@@ -599,7 +599,7 @@ OPMProceduralLink.prototype.verifyLink = function() {
     //rest of Logic rules using Switch, by source type. many more rules are to be added
     switch (this.source.constructor.name) {
     case "OPMObject":
-    	if (this.destinatoin.constructor.name === "OPMProcess") {
+    	if (this.destination.constructor.name === "OPMProcess") {
     		if (this.type === "Invocation" || this.type === "Exception") { return false; }
     		else { return true; }
     	}
