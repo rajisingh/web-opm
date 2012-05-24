@@ -338,7 +338,7 @@ UILink.prototype.draw = function(src, dest) {
 			var destSizeMin = [dest.x, dest.y];
 			var destSizeMax = [dest.x + dest.width, dest.y + dest.height];
 		}
-		alert(srcCenter + " " + destCenter);
+		console.log('Source and Destination center coordinates: ' + srcCenter + " " + destCenter);
 		
 		if (src.id.slice(0,3) === 'prc') { 
 			var srcBorderPoint //function call here
@@ -348,7 +348,7 @@ UILink.prototype.draw = function(src, dest) {
 		}
 		
 		if (dest.id.slice(0,3) === 'prc') { 
-			var destBorderPoint //function call here
+			var destBorderPoint = ellipClipping(srcCenter, destCenter, dest.rx, dest.ry);
 		}
 		else {
 			var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
@@ -359,7 +359,7 @@ UILink.prototype.draw = function(src, dest) {
 		group.setAttributeNS(null, 'id', this.id);
 		activeSVGDiagram.appendChild(group);
 		
-		var newD = 'M ' + srcBorderPoint.join(',') + ' L ' + destCenter.join(',');
+		var newD = 'M ' + srcBorderPoint.join(',') + ' L ' + destBorderPoint.join(',');
 		this.updateLink(newD);
 		//Drawing a link
 		var path = document.createElementNS(svgNS, 'path');

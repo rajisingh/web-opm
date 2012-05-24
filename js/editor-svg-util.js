@@ -253,7 +253,7 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 			if (ca === 10) {
 				destCenter[0] = destCenter[0] + (rectSizeMax[1] - destCenter[1]) * dx / dy; 
 				destCenter[1] = rectSizeMax[1];
-				return destCenter;
+				return destCenter;Crossrider
 			}
 			else {
 				srcCenter[0] = srcCenter[0] + (rectSizeMax[1] - srcCenter[1]) * dx / dy; 
@@ -274,5 +274,11 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 			}
 		}
 	}
-
+}
+var ellipClipping = function(srcCenter, destCenter, rx, ry) {
+	var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(srcCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(srcCenter[0],2)) ));
+	console.log('Multiplier  Factor: ' + multiplier);
+	var point = [destCenter[0] + multiplier * srcCenter[0], destCenter[1] - multiplier * srcCenter[1]];
+	console.log('Intersection point coordinates: ' + point);
+	return point
 }
