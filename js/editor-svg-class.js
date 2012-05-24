@@ -19,7 +19,6 @@ function UIDiagram(id) {
 UIDiagram.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
-	group.setAttributeNS(null, 'type', 'diagram');
 	group.setAttributeNS(null, 'transform', this.transform);
 	svg.appendChild(group);
 }
@@ -77,6 +76,7 @@ function UIObject(id) {
 	this.name = new UIName(this);
 	this.states = { }
 	this.statesAmount = 0;
+	this.icon = null;
 }
 UIObject.prototype.addState = function(state) {
 	this.states[state.id] = state;
@@ -86,8 +86,9 @@ UIObject.prototype.draw = function() {
 	//Draw a group first
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
-	group.setAttributeNS(null, 'type', 'object');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	group.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
+	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeSVGDiagram.appendChild(group);
 	//Draw rectangle, appended to the group
@@ -147,12 +148,14 @@ function UIProcess(id) {
 	this.stroke = 'RoyalBlue';
 	this.strokeWidth = 2;
 	this.name = new UIName(this);
+	this.icon = null;
 }
 UIProcess.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
-	group.setAttributeNS(null, 'type', 'process');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	group.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
+	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
 	activeSVGDiagram.appendChild(group);
 	var ellipse = document.createElementNS(svgNS, 'ellipse');
@@ -184,8 +187,8 @@ UIProcess.prototype.draw = function() {
 	group.appendChild(elName);
 }
 UIProcess.prototype.updateLocation = function(newX, newY) {
-	if (newX) { this.cx = newX; }
-	if (newY) { this.cy = newY; }
+	if (newX) { this.x = newX; }
+	if (newY) { this.y = newY; }
 }
 UIProcess.prototype.updateSize = function(newRx, newRy) {
 	if (newRx) { this.rx = newRx; }
@@ -199,12 +202,13 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-var objHeightStep = 35;
-var stateYDelta = 10;
+var objHeightStep = 35;					//Amount of pixels to enlarge the object height when a new state is added
+var stateYDelta = 10;					//Distance between states
 function UIState(parent) {
+
 	this.id = 'stt' + (parent.statesAmount + 1).toString() ;
-	this.x = parent.x + 20;
-	this.y = parent.y + 55;
+	this.x = activeSVGElement.firstChild.x.baseVal.value + 20;
+	this.y = activeSVGElement.firstChild.y.baseVal.value + 55;
 	this.rx = 6;			
 	this.ry = 6;			
 	this.width = 70;	
@@ -214,11 +218,11 @@ function UIState(parent) {
 	this.strokeWidth = 1;
 	this.name = new UIName(this);
 	this.parent = parent;
+	this.icon = null;
 }
 UIState.prototype.draw = function(){
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
-	group.setAttributeNS(null, 'type', 'state');
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
 	activeSVGElement.appendChild(group);
 	
@@ -276,17 +280,63 @@ UIState.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	this.stroke = newStroke;
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
-function UILink(d) {
-	this.d = d;
+
+function UILink(id) {
+	this.id = id;
+	this.d = null;
 	this.fill = 'none';
-	this.stroke = 'black';
-	this.strokeWidth = 3;
+	this.stroke = 'DimGrey';
+	this.strokeWidth = 2;
+	this.name = null;
 }
 UILink.prototype.updateLink = function(newD) {
 	this.d = newD;
 }
 UILink.prototype.updateColor = function(color) {
 	this.stroke = color;
+}
+UILink.prototype.draw = function(src, dest) {
+	//Calculating coordinates of connection point
+	try {
+		var srcType = src.id.slice(0, 3);
+		var destType = src.id.slice(0, 3);
+		if (srcType === 'prc') { var srcCenter = [src.x, src.y] }
+		else { var srcCenter = [src.x + src.width / 2, src.y + src.height / 2] }
+		if (destType === 'prc') { var destCenter = [dest.x, dest.y] } 
+		else { var destCenter = [dest.x + dest.width / 2, dest.y + dest.height / 2] }		
+	}
+	catch(e) {
+		alert(e.message);
+	}
+	
+	//Call LSSB alg here for two rectangulars
+	var srcSizeMin = [src.x, src.y];
+	var srcSizeMax = [src.x + src.width, src.y + src.height];
+	var destSizeMin = [dest.x, dest.y];
+	var destSizeMax = [dest.x + dest.width, dest.y + dest.height];
+	var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
+	var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
+	
+	var group = document.createElementNS(svgNS, 'g');
+	group.setAttributeNS(null, 'id', this.id);
+	activeSVGDiagram.appendChild(group);
+	
+	//Build a path
+	switch(this.id.slice(0,3)){
+	case 'udr':
+		var newD = 'M ' + srcBorderPoint.join(',') + ' L ' + destBorderPoint.join(',');
+		this.updateLink(newD);
+		//Drawing a link
+		var path = document.createElementNS(svgNS, 'path');
+		path.setAttributeNS(null, 'marker-end', 'url(#udr)');
+		path.setAttributeNS(null, 'd', this.d);
+		path.setAttributeNS(null, 'stroke', this.stroke);
+		path.setAttributeNS(null, 'stroke-width', this.strokeWidth);
+		path.setAttributeNS(null, 'fill', this.fill);
+		group.appendChild(path);
+		break;
+	}
+	
 }
 
 //Data Structure Implementation
@@ -301,6 +351,3 @@ UIDiagramList.returnActive = function() {
 		if (this[d].active === true) { return this[d]; }
 	}
 }
-// Data Structure Initialization
-var diag = new UIDiagram('sd');
-UIDiagramList[diag.id] = diag;
