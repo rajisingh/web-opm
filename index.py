@@ -8,7 +8,7 @@
  
  Author: Sergey N. Bolshchikov
 '''
-
+from google.appengine.api import channel
 import webapp2
 import jinja2
 
@@ -41,6 +41,7 @@ class RPCHandlerGet(webapp2.RequestHandler):
 
         obj = json.loads(self.request.get("JSONRequest"))
         action = obj["action"]
+        clientId=obj["clientId"]
         data = obj["data"]
         if action:
             if action[0] == '_':
@@ -54,7 +55,7 @@ class RPCHandlerGet(webapp2.RequestHandler):
             return
 
         
-        result = func(data)
+        result = func(data,clientId)
         self.response.headers["Content-Type"] = "application/jsonrequest"
         self.response.out.write(json.dumps(result))
 
@@ -65,6 +66,7 @@ class RPCHandlerPost(webapp2.RequestHandler):
         obj = json.loads(self.request.body)
         #logging.warning(type(obj))
         func=obj["action"]
+        clientId=obj["clientId"]
         args=obj["data"]
         #logging.warning(type(args))
         if func[0] == '_':
@@ -76,7 +78,7 @@ class RPCHandlerPost(webapp2.RequestHandler):
             self.error(404) # file not found
             return
 
-        result = func(args)
+        result = func(args,clientId)
         self.response.headers["Content-Type"] = "application/jsonrequest"
         self.response.out.write(json.dumps(result))
 
@@ -86,16 +88,19 @@ class RPCMethods:
     """
 
     def openChannel(self, args , clientId):
-        create_channel(clientId,duration_minutes=None)
-        return "Channel is open"
+        return channel.create_channel(str(clientId),duration_minutes=None)
         
+    def minus(self, args , clientId):
+        result = int(args["arg1"])-int(args["arg2"]) 
+        channel.send_message(str(clientId),str(result))
+        return "Answer sent by channel"   
     def add(self, args , clientId):
         # The JSON encoding may have encoded integers as strings.
         # Be sure to convert args to any mandatory type(s).
     
         #logging.warning(args)
         ints = [int(args["arg1"]),int(args["arg2"])]
-        send_message(clientId, json.dumps(sum(ints)))
+        channel.send_message(str(clientId), str(sum(ints)))
         return "Answer sent by channel"
           
 app = webapp2.WSGIApplication([('/', IndexHandler),
