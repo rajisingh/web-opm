@@ -30,13 +30,14 @@ class EditorHandler(webapp2.RequestHandler):
         self.response.out.write(template.render())
         
 
-class RPCHandlerGet(webapp2.RequestHandler):
+class RPCHandler(webapp2.RequestHandler):
     """ Allows the functions defined in the RPCMethods class to be RPCed."""
     """def __init__(self):
         webapp2.RequestHandler.__init__(self)
         self.methods = RPCMethods()"""
 
     def get(self):
+
         func = None
 
         obj = json.loads(self.request.get("JSONRequest"))
@@ -58,10 +59,7 @@ class RPCHandlerGet(webapp2.RequestHandler):
         result = func(data,clientId)
         self.response.headers["Content-Type"] = "application/jsonrequest"
         self.response.out.write(json.dumps(result))
-
-
-class RPCHandlerPost(webapp2.RequestHandler):
-    
+        
     def post(self):
         obj = json.loads(self.request.body)
         #logging.warning(type(obj))
@@ -81,6 +79,8 @@ class RPCHandlerPost(webapp2.RequestHandler):
         result = func(args,clientId)
         self.response.headers["Content-Type"] = "application/jsonrequest"
         self.response.out.write(json.dumps(result))
+
+
 
 class RPCMethods:
     """ Defines the methods that can be RPCed.
@@ -105,8 +105,7 @@ class RPCMethods:
           
 app = webapp2.WSGIApplication([('/', IndexHandler),
                                ('/editor', EditorHandler),
-                               ('/rpcg', RPCHandlerGet),
-                               ('/rpcp', RPCHandlerPost)], debug = True)    
+                               ('/rpc', RPCHandler)], debug = True)    
     
 def main():
     app.run()
