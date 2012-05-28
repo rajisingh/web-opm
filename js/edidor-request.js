@@ -26,16 +26,6 @@ var actions = {
 		}
 }
 
-function MsgObj(act, dat){
-	// send this kind of objects to the method "sendUpd()" 
-	// action - a string with the accurate name of the method you want to activate on the server
-	// data - the method in "action" on the server will get it as a parameter
-	this.id = randomFromTo(1, 1000); // need to generate unique id
-	this.action=act;
-	this.data=dat;
-	this.clientId=currentUser.id;
-}
-
 
 function sendUpd(obj)
 {
@@ -94,7 +84,7 @@ function httpRequestPost(obj){
 // receives MsgObj object and send it to server via JSONRequest POST
 	var body = obj;	
 	requestNumber = JSONRequest.post(
-		    "http://localhost:8080/rpcp", 
+		    "http://localhost:8080/rpc", 
 		    body, 
 		    function (requestNumber, result, exception) {
 		      // callback function , on success will run only with 2 first parameters
@@ -106,12 +96,31 @@ function httpRequestGet(obj) {
 	// receives MsgObj object and send it to server via JSONRequest GET	
 	jsonObj=JSON.encode(obj);
 	var request = encodeURIComponent(jsonObj);
-	JSONRequest.get("http://localhost:8080/rpcg?JSONRequest="+request, function(requestNumber, result, exception){
+	JSONRequest.get("http://localhost:8080/rpc?JSONRequest="+request, function(requestNumber, result, exception){
 	//	callback function , on success will run only with 2 first parameters
 	});
 	
 }
 
+var channel = null;
+function channel_open() {
+	// the method opens a channel with the server by GET request
+	obj=new MsgObj("openChannel","");
+	jsonObj=JSON.encode(obj);
+	var request = encodeURIComponent(jsonObj);
+	JSONRequest.get("http://localhost:8080/rpc?JSONRequest="+request, function(sn, result, error){ 
+//		alert(result);
+		channel = new goog.appengine.Channel(result);
+		socket = channel.open();
+		// the next are callback functions 
+		//onmessage receives object with one field "data" , its what the server sends
+		//onerror receives object with 2 fields , "code" - the http error code , and "description"
+		socket.onopen = function() {alert("channel opened");}
+		socket.onmessage = function(msg) {alert("answer :"+ msg.data ); }
+		socket.onerror = function(err){alert(err.code + ":" + err.description )};
+  		socket.onclose = function() {alert("channel closed");};
+	});
+}
 
 
 
