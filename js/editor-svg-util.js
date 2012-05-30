@@ -119,9 +119,12 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 		return c
 	}
 	var ca = code(srcCenter);
-	console.log('lssb ca component = ' + ca);
+	
 	var cb = code(destCenter);
-	console.log('lssb cb component = ' + cb);
+	if (window.console) {
+		console.log('lssb ca component = ' + ca);
+		console.log('lssb cb component = ' + cb);
+	}
 	var dx = destCenter[0] - srcCenter[0];
 	var dy = destCenter[1] - srcCenter[1];
 	switch(ca + cb) {
@@ -275,10 +278,115 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 		}
 	}
 }
-var ellipClipping = function(srcCenter, destCenter, rx, ry) {
-	var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(srcCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(srcCenter[0],2)) ));
-	console.log('Multiplier  Factor: ' + multiplier);
-	var point = [destCenter[0] + multiplier * srcCenter[0], destCenter[1] - multiplier * srcCenter[1]];
-	console.log('Intersection point coordinates: ' + point);
-	return point
+var ellipClipping = function(srcCenter, destCenter, params) {
+	/* Ellipse clipping algorithm intended to find intersection
+	 * point between line and ellipse and return coordinates of the point
+	 * */
+
+	try {
+
+		if ( srcCenter[0] === params.cx && srcCenter[1] === params.cy ) {
+			var intersection = [srcCenter[0], srcCenter[1]];
+			var OnTheLeft = (srcCenter[0] > destCenter[0]) ? true : false;
+		}
+		else if ( destCenter[0] === params.cx && destCenter[1] === params.cy ) {
+			var intersection = [destCenter[0], destCenter[1]];
+			var OnTheLeft = (destCenter[0] > srcCenter[0]) ? true : false;
+		}
+		else {
+			var err = new Error("Error in ellip clipping alg: no center of ellipse is found");
+			throw err;
+		}
+		if (!OnTheLeft) {
+			var teta = Math.atan( (destCenter[1] - srcCenter[1]) / (destCenter[0] - srcCenter[0]) );
+		}
+		else {
+			var teta = Math.PI + Math.atan( (destCenter[1] - srcCenter[1]) / (destCenter[0] - srcCenter[0]) );
+		}
+		var x = ( params.rx * params.ry * Math.cos(teta) ) / ( Math.sqrt(Math.pow((params.ry*Math.cos(teta)),2) + Math.pow((params.rx*Math.sin(teta)),2)) );
+		var y = ( params.rx * params.ry * Math.sin(teta) ) / ( Math.sqrt(Math.pow((params.ry*Math.cos(teta)),2) + Math.pow((params.rx*Math.sin(teta)),2)) );
+		
+		intersection[0] += x;
+		intersection[1] += y;
+		
+		if (window.console) {
+			console.log('Teta: ' + teta);
+			console.log('x: ' + x);
+			console.log('y: ' + y);
+		}
+		
+		return intersection
+		
+	}
+	catch(e) {
+		alert(e.message);
+	}
+	
+/*
+	var rx = 60;			//default radius of ellipse over axis x
+	var ry = 40;			//default radius of ellipse over axis y
+	var code = function(point) {
+		var c = 0;		
+		if (point[0] == x && point[1] == y) { return c; }
+		if (point[0] < x) { c = (point[1] < y) ? 2 : 3; }
+		else { c = (point[1] < y) ? 1 : 4; }
+		return c;
+	}
+	var ca = code(srcCenter);
+	var cb = code(destCenter);
+	if (window.console) { 
+		console.log('ellipse clipping component ca = ' + ca); 
+		console.log('ellipse clipping component cb = ' + cb); 
+	}
+	switch (ca + cb) {
+	case 1:
+		if (ca == 1) {
+			var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(destCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(destCenter[0],2)) ));
+			var point = [destCenter[0] + multiplier * destCenter[0], destCenter[1] - multiplier * destCenter[1]];
+			return point;
+		}
+		else {
+			var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(srcCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(srcCenter[0],2)) ));
+			var point = [srcCenter[0] + multiplier * srcCenter[0], srcCenter[1] - multiplier * srcCenter[1]];
+			return point;
+		}
+		break;
+	case 4:
+		if (ca == 4) {
+			var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(destCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(destCenter[0],2)) ));
+			var point = [destCenter[0] + multiplier * destCenter[0], destCenter[1] + multiplier * destCenter[1]];
+			return point;
+		}
+		else {
+			var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(srcCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(srcCenter[0],2)) ));
+			var point = [srcCenter[0] + multiplier * srcCenter[0], srcCenter[1] + multiplier * srcCenter[1]];
+			return point;
+		}
+		break;
+	case 3:
+		if (ca == 3) {
+			var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(destCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(destCenter[0],2)) ));
+			var point = [destCenter[0] - multiplier * destCenter[0], destCenter[1] + multiplier * destCenter[1]];
+			return point;
+		}
+		else {
+			var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(srcCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(srcCenter[0],2)) ));
+			var point = [srcCenter[0] - multiplier * srcCenter[0], srcCenter[1] + multiplier * srcCenter[1]];
+			return point;
+		}
+		break;
+	case 2:
+		if (ca == 2) {
+			var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(destCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(destCenter[0],2)) ));
+			var point = [destCenter[0] - multiplier * destCenter[0], destCenter[1] - multiplier * destCenter[1]];
+			return point;
+		}
+		else {
+			var multiplier = (rx*ry)/(Math.sqrt( (Math.pow(rx, 2))*(Math.pow(srcCenter[1],2)) + (Math.pow(ry,2))*(Math.pow(srcCenter[0],2)) ));
+			var point = [srcCenter[0] - multiplier * srcCenter[0], srcCenter[1] - multiplier * srcCenter[1]];
+			return point;
+		}
+		break;
+	}
+*/
 }
