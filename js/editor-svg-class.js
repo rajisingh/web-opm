@@ -326,6 +326,7 @@ UILink.prototype.draw = function(src, dest) {
 		break;
 	
 	case 'rcl':
+
 		if (src.id.slice(0,3) === 'prc') { var srcCenter = [src.x, src.y]; }
 		else { 
 			var srcCenter = [src.x + src.width / 2, src.y + src.height / 2]; 
@@ -338,17 +339,19 @@ UILink.prototype.draw = function(src, dest) {
 			var destSizeMin = [dest.x, dest.y];
 			var destSizeMax = [dest.x + dest.width, dest.y + dest.height];
 		}
-		console.log('Source and Destination center coordinates: ' + srcCenter + " " + destCenter);
+
 		
 		if (src.id.slice(0,3) === 'prc') { 
-			var srcBorderPoint //function call here
+			var params = { cx: src.x, cy: src.y, rx: src.rx, ry: src.ry }
+			var srcBorderPoint = ellipClipping(srcCenter, destCenter, params);
 		}
 		else {
 			var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
 		}
 		
 		if (dest.id.slice(0,3) === 'prc') { 
-			var destBorderPoint = ellipClipping(srcCenter, destCenter, dest.rx, dest.ry);
+			var params = { cx: dest.x, cy: dest.y, rx: dest.rx, ry: dest.ry }
+			var destBorderPoint = ellipClipping(srcCenter, destCenter, params);
 		}
 		else {
 			var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
