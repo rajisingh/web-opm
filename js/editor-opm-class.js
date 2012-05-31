@@ -587,7 +587,6 @@ function OPMProceduralLink() {					//input source and destination Objects
 /*Working functions*/
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
-   
     if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
 		return true;
 	}
@@ -597,6 +596,7 @@ OPMProceduralLink.prototype.verifyLink = function() {
 		return false;
     }
     //rest of Logic rules using Switch, by source type. many more rules are to be added
+	
     switch (this.source.constructor.name) {
     case "OPMObject":
     	if (this.destination.constructor.name === "OPMProcess") {
