@@ -160,6 +160,8 @@ var addLink = function(src, dest) {
 				delete opmlink;
 				lnkId--;
 				linkOn.off();
+				var err = new Error("You can't do it! Unidirectional relation can connect only objects or states.");
+				throw err;
 			}
 			break;
 		case 'rcl':
@@ -189,6 +191,8 @@ var addLink = function(src, dest) {
 				delete opmlink;
 				lnkId--;
 				linkOn.off();
+				var err = new Error("You can't do it! Result-Consumption link connects only process with object or state");
+				throw err;
 			}
 			break;
 		}
