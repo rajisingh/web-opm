@@ -441,7 +441,8 @@ OPMThing.prototype.inzooming = function(newDiagId, fatherDiag) {
 
 OPMObject.prototype = new OPMThing();
 function OPMObject() {
-	this.states = { };
+	this.classType = 'OPMObject';
+  this.states = { };
 	this.initValue = null;
 	this.type = "Compound Object";
 	this.inLinks = { };
@@ -480,7 +481,8 @@ OPMObject.prototype.getState = function(id) {
 
 OPMProcess.prototype = new OPMThing();
 function OPMProcess() {
-	this.inLinks = { };
+  this.classType = 'OPMProcess';
+  this.inLinks = { };
 	this.outLinks = { };
 	this.minActivationTime = null;
 	this.maxActivationTime = null;
@@ -503,7 +505,8 @@ OPMProcess.prototype.setMaxActivationTime = function(maxTime) {
 
 OPMState.prototype = new OPMEntity();
 function OPMState(parent) {									//parent is an object which contains the state
-    this.type = null;										//final, default, initial
+  this.classType = 'OPMState';  
+  this.type = null;										//final, default, initial
     this.parent = parent;									//of type OPMObject
     this.minActivationTime = null;
     this.maxActivationTime = null;
@@ -585,11 +588,36 @@ function OPMProceduralLink() {					//input source and destination Objects
 	this.or = { };
 }
 /*Working functions*/
+OPMProceduralLink.prototype.opmRulesCheck = function(){
+  switch (this.source.classType) {
+  case "OPMObject":
+      if (this.destination.classType === "OPMProcess") {
+          if (this.type === "Invocation" || this.type === "Exception") { return false; }
+          else { return true; }
+      }
+      if (this.destination.classType === "OPMObject" || this.destination.classType === "OPMState") { return false; }
+  case "OPMProcess":
+      if (this.destination.classType === "OPMObject" || this.destination.classType ==="OPMState") {
+          if (this.type === "Result" || this.type === "Effect") { return true; }
+          else { return false; } 
+      }
+      if (this.destination.classType === "OPMProcess") {
+          if (this.type === "Invocation" || this.type === "Exception") { return true; }
+      else { return false; }
+      }
+  case "OPMState":
+      if (this.destination.classType === "OPMProcess") {
+          if (this.type === "Invocation" || this.type === "Exception") { return false; }
+          else { return true; }
+      }
+      if (this.destination.classType === "OPMObject" || this.destination.classType === "OPMState") { return false; }
+  }
+}
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
    
     if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
-		return true;
+		this.opmRulesCheck();
 	}
    
 	if (this.source.outLinks[ this.destination.id ].category ===  this.destination.inLinks[ this.source.id ].category) {
@@ -597,29 +625,7 @@ OPMProceduralLink.prototype.verifyLink = function() {
 		return false;
     }
     //rest of Logic rules using Switch, by source type. many more rules are to be added
-    switch (this.source.constructor.name) {
-    case "OPMObject":
-    	if (this.destination.constructor.name === "OPMProcess") {
-    		if (this.type === "Invocation" || this.type === "Exception") { return false; }
-    		else { return true; }
-    	}
-    	if (this.destination.constructor.name === "OPMObject" || this.destination.constructor.name === "OPMState") { return false; }
-    case "OPMProcess":
-    	if (this.destination.constructor.name === "OPMObject" || this.destination.constructor.name ==="OPMState") {
-    		if (this.type === "Result" || this.type === "Effect") { return true; }
-    		else { return false; } 
-    	}
-    	if (this.destination.constructor.name === "OPMProcess") {
-    		if (this.type === "Invocation" || this.type === "Exception") { return true; }
-        else { return false; }
-    	}
-    case "OPMState":
-    	if (this.destination.constructor.name === "OPMProcess") {
-    		if (this.type === "Invocation" || this.type === "Exception") { return false; }
-    		else { return true; }
-      	}
-    	if (this.destination.constructor.name === "OPMObject" || this.destination.constructor.name === "OPMState") { return false; }
-    }
+	this.opmRulesCheck();
 }  
 OPMProceduralLink.prototype.addXor = function(link) {
     this.xor[link.id] = link;
@@ -656,15 +662,30 @@ function OPMStructuralLink() {
     this.tag = null;																	//description shown on link itself - only for uni/bi-directional relations
 }  
 /*Working function*/
+OPMStructuralLink.prototype.opmRulesCheck = function(){
+  switch (this.source.classType) {                                                      //rest of Logic rules using Switch, by source type.
+  case "OPMObject":
+      if (this.destination.classType === "OPMProcess") {
+          if (this.type === "Exhibition") { return true; }
+      else { return false; } 
+      }
+      if (this.destination.classType === "OPMObject") { return true; }
+  case "OPMProcess":
+      if (this.destination.classType === "OPMObject") {
+          if (this.type === "Exhibition") { return true; }
+      else { return false; }
+      }
+      if (this.destination.classType === "OPMProcess") { return true; }
+  case "OPMState": return false;
+  }
+}
 OPMStructuralLink.prototype.verifyLink = function() {
 	//returns true if link can be added according to OPM rules, otherwise returns false
 
 	if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
-		return true;
+		this.opmRulesCheck();
 	}
-	
-//	if (Object.keys(this.source.outLinks).length === 0 || Object.keys(this.destination.inLinks).length === 0) { return true; }
-  
+
 	if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.source.id].category) {         //check for existing type of structural link between two entities
     	if (this.type === "Unidirectional" || this.type === "Bidirectional") { return true; }
     	else {
@@ -672,21 +693,9 @@ OPMStructuralLink.prototype.verifyLink = function() {
     		return false;
     	}
     }
-    switch (this.source.constructor.name) {                                                      //rest of Logic rules using Switch, by source type.
-    	case "OPMObject":
-    		if (this.destination.constructor.name === "OPMProcess") {
-    			if (this.type === "Exhibition") { return true; }
-            else { return false; } 
-    		}
-    		if (this.destination.constructor.name === "OPMObject") { return true; }
-        case "OPMProcess":
-        	if (this.destination.constructor.name === "OPMObject") {
-        		if (this.type === "Exhibition") { return true; }
-            else { return false; }
-        	}
-        	if (this.destination.constructor.name === "OPMProcess") { return true; }
-        case "OPMState": return false;
-    }
+	
+	this.opmRulesCheck();
+	
 }
 OPMStructuralLink.prototype.getCardinality = function() {
     return this.cardinality;
