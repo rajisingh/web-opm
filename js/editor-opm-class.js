@@ -9,19 +9,6 @@
  * 	Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
 
-
-
-function MsgObj(act, dat){
-	// send this kind of objects to the method "sendUpd()" 
-	// action - a string with the accurate name of the method you want to activate on the server
-	// data - the method in "action" on the server will get it as a parameter
-	this.id = randomFromTo(1, 1000); // need to generate unique id
-	this.action=act;
-	this.data=dat;
-	this.clientId=currentUser.id;
-}
-
-
 function User(email, password) {
 	this.id = randomFromTo(1, 1000);
 	this.provider = null;							//mechanism used for oauth2.0: {google, facebook, twitter}
