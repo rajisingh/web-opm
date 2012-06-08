@@ -14,26 +14,4 @@
 	<natures>
 		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>js/json/JSON.js</name>
-			<type>1</type>
-			<location>C:/Users/user/workspace/web-opm/js/json/JSON.js</location>
-		</link>
-		<link>
-			<name>js/json/JSONError.js</name>
-			<type>1</type>
-			<location>C:/Users/user/workspace/web-opm/js/json/JSONError.js</location>
-		</link>
-		<link>
-			<name>js/json/JSONRequest.js</name>
-			<type>1</type>
-			<location>C:/Users/user/workspace/web-opm/js/json/JSONRequest.js</location>
-		</link>
-		<link>
-			<name>js/json/JSONRequestError.js</name>
-			<type>1</type>
-			<location>C:/Users/user/workspace/web-opm/js/json/JSONRequestError.js</location>
-		</link>
-	</linkedResources>
 </projectDescription>
