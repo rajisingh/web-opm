@@ -211,7 +211,7 @@ JSONRequest  = new function(){
 		else {
 			try {
 				queue[i] = {"data":JSON.encode(send), "done":done, "method":method, "send":true, "timeout":timeout, "url":url, "xhr":xhr()};
-				if(queue[i].data === undefined || (send.constructor !== MsgObj && send.constructor !== Array && send.constructor !== Object))
+				if(queue[i].data === undefined || (send.constructor !== Message && send.constructor !== Array && send.constructor !== Object))
 					throw new JSONRequestError;
 			}
 			catch(e) {

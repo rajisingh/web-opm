@@ -59,34 +59,26 @@ var sendMessage = function(msg) {
 	}
 }
 
-/*
+
 function aaa(x){
 // sendMessage checks
 	if (x===1) {
 		data= new Object();
 		data.arg1=1;
 		data.arg2=2;
-		obj=new MsgObj("add",data);
-		obj =new Object();
-		obj.action="add";
-		obj.data=data;
-		obj.id=1;
-		obj.clientId=currentUser.id; 
+		obj=new Message("add",data,currentUser);
+		
 	}
 	else if (x===2) {
 		data= new Object();
 		data.arg1=1;
 		data.arg2=2;
-		obj=new MsgObj("minus",data);
-		obj =new Object();
-		obj.action="minus";
-		obj.data=data;
-		obj.id=1;
-		obj.clientId=currentUser.id;
+		obj=new Message("minus",data,currentUser);
+		
 	}
     sendMessage(obj);           
 }
-*/
+
 
 var httpRequestPost = function(obj) {
 // receives Message object and send it to server via JSONRequest POST
@@ -112,7 +104,7 @@ var httpRequestGet = function(obj) {
 var channel = null;
 var channelOpen = function() {
 	// the method opens a channel with the server by GET request
-	obj = new Message("openChannel","");
+	obj = new Message("openChannel","",currentUser);
 	jsonObj = JSON.encode(obj);
 	var request = encodeURIComponent(jsonObj);
 	JSONRequest.get("http://localhost:8080/rpc?JSONRequest="+request, function(sn, result, error){ 
