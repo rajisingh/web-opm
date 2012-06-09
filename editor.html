@@ -29,7 +29,7 @@
   		})();
 	</script>
 	
-	<body>
+	<body onload='channelOpen()'>
 		<div class="navbar navbar-fixed-top">
   			<div class="navbar-inner">
   				<div class="container-fluid">
@@ -192,8 +192,9 @@
 							<td><i class="icon-qrcode"></i></td>
 						</tr>
 						<tr>
-							<td><i class="icon-qrcode"></i></td>
-							<td><i class="icon-qrcode"></i></td>
+						<!--  My POST and GET checks-->
+							<td><a href="#" rel="tooltip" title="Post" onclick="aaa(1);"><i class="icon-arrow-right"></i></a></td>
+							<td><a href="#" rel="tooltip" title="Get" onclick="aaa(2);"><i class="icon-arrow-right"></i></a></td>
 						</tr>
 						<tr>
 							<td><i class="icon-qrcode"></i></td>
@@ -260,6 +261,7 @@
 		<p>Copyright &copy 2012 Israel Institute of Technology - <a href="//www.technion.ac.il" target="_blank">Technion</a></p>
 		<p style="margin-bottom: 20px;">The code is licensed under <a href="//www.gnu.org/licenses/gpl-2.0.html" target="_blank">GNU General Public License, v2</a></p>
 		<p>Version 1.2.0 released on 23/05/2012</p>
+		
 	</footer>
 	
 
@@ -282,12 +284,26 @@
 		<script src="js/bootstrap-tooltip.js"></script>
 <!--	<script src="js/bootstrap-transition.js"></script>		-->
 <!--	<script src="js/bootstrap-typeahead.js"></script>		-->
-	<!-- Additional -->
+	
+    <!-- JSON -->
+    <script src="js/json/JSON.js"></script>
+    <script src="js/json/JSONError.js"></script>
+    <script src="js/json/JSONRequestError.js"></script>
+    <script src="js/json/JSONRequest.js"></script>
 
+    <!-- Google -->
+		<script src="/_ah/channel/jsapi"></script>
+	
 	<!-- Custom JS -->
+		
+    <script src="js/editor-comm.js"></script>
+    <script src="js/editor-comm-request.js"></script>
+    <script src="js/editor-comm-channel.js"></script>
+    	
 		<script src="js/editor-svg-class.js"></script>
 		<script src="js/editor-svg-util.js"></script>
 		<script src="js/editor-svg.js"></script>
+		
     <script src="js/editor-opm-class.js"></script>  
     <script src="js/editor.js"></script>  
 	</body>
