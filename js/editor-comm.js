@@ -1,7 +1,9 @@
 function Message(action, data, user) {
-	// send this kind of objects to the method "sendUpd()" 
-	// action - a string with the accurate name of the method you want to activate on the server
-	// data - the method in "action" on the server will get it as a parameter
+	/* this message is an input attr to the function sendMessage, where
+	 * action is a string with the accurate name of the method that needs 
+	 * to be activated on the server
+	 * data will be received by the server is input parameter for corresponding actions
+	 * */
 	this.id = randomFromTo(1, 1000); // need to generate unique id
 	this.action = action;
 	this.data = data;
@@ -10,9 +12,12 @@ function Message(action, data, user) {
 
 
 var actions = { 
-		// key-value list when the key is (CaSe sensitive !!) string , action name in RPCMethods (index.py)
-		// and the value is the HttpRequest method GET/POST (CaSe sensitive !!) 
-		// you can add manually or use the the function "addAction"
+	/* key-value list when the key is (CaSe sensitive !!) string, 
+	 * the value of a key is an action name in RPCMethods (index.py)
+	 *  the value is the HttpRequest method GET/POST (CaSe sensitive !!) 
+	 *  the dict can be added via method 'addAction'
+	 *  */
+		
 		"add": 'POST',
 		"minus": 'GET',
 		"openChannel": 'GET',
@@ -39,7 +44,7 @@ var actions = {
 
 
 var sendMessage = function(msg) {
-// this function receives MsgObj and choose how to sent it to the server (via POST or GET)  
+// function receives MsgObj and choose how to sent it to the server (via POST or GET)  
 	try {
 		if (actions.hasOwnProperty(msg.action)) {
 			if (actions[msg.action] === 'GET') {
@@ -59,7 +64,7 @@ var sendMessage = function(msg) {
 	}
 }
 
-
+/*
 function aaa(x){
 // sendMessage checks
 	if (x===1) {
@@ -78,45 +83,4 @@ function aaa(x){
 	}
     sendMessage(obj);           
 }
-
-
-var httpRequestPost = function(obj) {
-// receives Message object and send it to server via JSONRequest POST
-	var body = obj;	
-	requestNumber = JSONRequest.post(
-		    "http://localhost:8080/rpc", 
-		    body, 
-		    function (requestNumber, result, exception) {
-		      // callback function , on success will run only with 2 first parameters
-		    }
-		); 	
-}
-
-var httpRequestGet = function(obj) {
-	// receives MsgObj object and send it to server via JSONRequest GET	
-	jsonObj=JSON.encode(obj);
-	var request = encodeURIComponent(jsonObj);
-	JSONRequest.get("http://localhost:8080/rpc?JSONRequest="+request, function(requestNumber, result, exception) {
-	//	callback function , on success will run only with 2 first parameters
-	});
-}
-
-var channel = null;
-var channelOpen = function() {
-	// the method opens a channel with the server by GET request
-	obj = new Message("openChannel","",currentUser);
-	jsonObj = JSON.encode(obj);
-	var request = encodeURIComponent(jsonObj);
-	JSONRequest.get("http://localhost:8080/rpc?JSONRequest="+request, function(sn, result, error){ 
-//		alert(result);
-		channel = new goog.appengine.Channel(result);
-		socket = channel.open();
-		// the next are callback functions 
-		//onmessage receives object with one field "data" , its what the server sends
-		//onerror receives object with 2 fields , "code" - the http error code , and "description"
-		socket.onopen = function() {alert("channel opened");}
-		socket.onmessage = function(msg) {alert("answer :"+ msg.data ); }
-		socket.onerror = function(err){alert(err.code + ":" + err.description )};
-  		socket.onclose = function() {alert("channel closed");};
-	});
-}
+*/
