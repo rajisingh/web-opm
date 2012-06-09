@@ -615,7 +615,6 @@ OPMProceduralLink.prototype.opmRulesCheck = function(){
 }
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
-   
     if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
 		this.opmRulesCheck();
 	}
