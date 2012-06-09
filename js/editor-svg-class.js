@@ -297,33 +297,22 @@ UILink.prototype.updateColor = function(color) {
 }
 UILink.prototype.draw = function(src, dest) {
 	//Calculating coordinates of connection point
-	try {
-		var srcType = src.id.slice(0, 3);
-		var destType = src.id.slice(0, 3);
-		if (srcType === 'prc') { var srcCenter = [src.x, src.y] }
-		else { var srcCenter = [src.x + src.width / 2, src.y + src.height / 2] }
-		if (destType === 'prc') { var destCenter = [dest.x, dest.y] } 
-		else { var destCenter = [dest.x + dest.width / 2, dest.y + dest.height / 2] }		
-	}
-	catch(e) {
-		alert(e.message);
-	}
-	
-	//Call LSSB alg here for two rectangulars
-	var srcSizeMin = [src.x, src.y];
-	var srcSizeMax = [src.x + src.width, src.y + src.height];
-	var destSizeMin = [dest.x, dest.y];
-	var destSizeMax = [dest.x + dest.width, dest.y + dest.height];
-	var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
-	var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
-	
-	var group = document.createElementNS(svgNS, 'g');
-	group.setAttributeNS(null, 'id', this.id);
-	activeSVGDiagram.appendChild(group);
-	
-	//Build a path
-	switch(this.id.slice(0,3)){
+	switch(linkOn.type) {
 	case 'udr':
+		var srcCenter = [src.x + src.width / 2, src.y + src.height / 2];
+		var destCenter = [dest.x + dest.width / 2, dest.y + dest.height / 2];
+		
+		var srcSizeMin = [src.x, src.y];
+		var srcSizeMax = [src.x + src.width, src.y + src.height];
+		var destSizeMin = [dest.x, dest.y];
+		var destSizeMax = [dest.x + dest.width, dest.y + dest.height];
+		var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
+		var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
+		
+		var group = document.createElementNS(svgNS, 'g');
+		group.setAttributeNS(null, 'id', this.id);
+		activeSVGDiagram.appendChild(group);
+		
 		var newD = 'M ' + srcBorderPoint.join(',') + ' L ' + destBorderPoint.join(',');
 		this.updateLink(newD);
 		//Drawing a link
@@ -335,8 +324,58 @@ UILink.prototype.draw = function(src, dest) {
 		path.setAttributeNS(null, 'fill', this.fill);
 		group.appendChild(path);
 		break;
-	}
 	
+	case 'rcl':
+
+		if (src.id.slice(0,3) === 'prc') { var srcCenter = [src.x, src.y]; }
+		else { 
+			var srcCenter = [src.x + src.width / 2, src.y + src.height / 2]; 
+			var srcSizeMin = [src.x, src.y];
+			var srcSizeMax = [src.x + src.width, src.y + src.height];
+		}
+		if (dest.id.slice(0,3) === 'prc') { var destCenter = [dest.x, dest.y]; }
+		else { 
+			var destCenter = [dest.x + dest.width / 2, dest.y + dest.height / 2]; 
+			var destSizeMin = [dest.x, dest.y];
+			var destSizeMax = [dest.x + dest.width, dest.y + dest.height];
+		}
+
+		
+		if (src.id.slice(0,3) === 'prc') { 
+			var params = { cx: src.x, cy: src.y, rx: src.rx, ry: src.ry }
+			var srcBorderPoint = ellipClipping(srcCenter, destCenter, params);
+		}
+		else {
+			var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
+		}
+		
+		if (dest.id.slice(0,3) === 'prc') { 
+			var params = { cx: dest.x, cy: dest.y, rx: dest.rx, ry: dest.ry }
+			var destBorderPoint = ellipClipping(srcCenter, destCenter, params);
+		}
+		else {
+			var destBorderPoint = lssbClipping(srcCenter, destCenter, destSizeMin, destSizeMax);
+		}
+		
+
+		var group = document.createElementNS(svgNS, 'g');
+		group.setAttributeNS(null, 'id', this.id);
+		activeSVGDiagram.appendChild(group);
+		
+		var newD = 'M ' + srcBorderPoint.join(',') + ' L ' + destBorderPoint.join(',');
+		this.updateLink(newD);
+		//Drawing a link
+		var path = document.createElementNS(svgNS, 'path');
+		path.setAttributeNS(null, 'marker-end', 'url(#rcl)');
+		path.setAttributeNS(null, 'd', this.d);
+		path.setAttributeNS(null, 'stroke', this.stroke);
+		path.setAttributeNS(null, 'stroke-width', this.strokeWidth);
+		path.setAttributeNS(null, 'fill', this.fill);
+		group.appendChild(path);
+		
+		break;
+	}
+
 }
 
 //Data Structure Implementation
