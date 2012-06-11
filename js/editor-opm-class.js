@@ -610,16 +610,16 @@ OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
           if (this.type === "Invocation" || this.type === "Exception") { return false; }
           else { return true; }
       }
-      if (this.destination.classType === "OPMObject" || this.destination.classType === "OPMState") { return false; }
+      if (dest_chk.classType === "OPMObject" || dest_chk.classType === "OPMState") { return false; }
   }
 }
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
-    if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked - if not, perform link check according to basic opm rules
+    if (src.outLinks[dest.id] === undefined || dest.inLinks[src.id] === undefined) {  //check if two elements are linked - if not, perform link check according to basic opm rules
 		this.opmRulesCheck(src,dest);
 	}
    
-	if (this.source.outLinks[ this.destination.id ].category ===  this.destination.inLinks[ this.source.id ].category) {
+	if (src.outLinks[ dest.id ].category ===  dest.inLinks[ src.id ].category) {
 		alert("Cannot connect two Objects with more than one " + this.type + " Link");
 		return false;
     }
@@ -681,11 +681,11 @@ OPMStructuralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
 OPMStructuralLink.prototype.verifyLink = function() {
 	//returns true if link can be added according to OPM rules, otherwise returns false
 
-	if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
+	if (src.outLinks[dest.id] === undefined || dest.inLinks[src.id] === undefined) {  //check if two elements are linked
 		this.opmRulesCheck(src,dest);
 	}
 
-	if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.source.id].category) {         //check for existing type of structural link between two entities
+	if (src.outLinks[dest.id].category ===  dest.inLinks[dest.id].category) {         //check for existing type of structural link between two entities
     	if (this.type === "Unidirectional" || this.type === "Bidirectional") { return true; }
     	else {
     		alert("Cannot connect two Objects with more than one " + this.type + " Link");
