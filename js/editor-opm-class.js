@@ -588,25 +588,25 @@ function OPMProceduralLink() {					//input source and destination Objects
 	this.or = { };
 }
 /*Working functions*/
-OPMProceduralLink.prototype.opmRulesCheck = function(){
-  switch (this.source.classType) {
+OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
+  switch (src_chk.classType) {
   case "OPMObject":
-      if (this.destination.classType === "OPMProcess") {
+      if (dest_chk.classType === "OPMProcess") {
           if (this.type === "Invocation" || this.type === "Exception") { return false; }
           else { return true; }
       }
-      if (this.destination.classType === "OPMObject" || this.destination.classType === "OPMState") { return false; }
+      if (dest_chk.classType === "OPMObject" || dest_chk.classType === "OPMState") { return false; }
   case "OPMProcess":
-      if (this.destination.classType === "OPMObject" || this.destination.classType ==="OPMState") {
+      if (dest_chk.classType === "OPMObject" || dest_chk.classType ==="OPMState") {
           if (this.type === "Result" || this.type === "Effect") { return true; }
           else { return false; } 
       }
-      if (this.destination.classType === "OPMProcess") {
+      if (dest_chk.classType === "OPMProcess") {
           if (this.type === "Invocation" || this.type === "Exception") { return true; }
       else { return false; }
       }
   case "OPMState":
-      if (this.destination.classType === "OPMProcess") {
+      if (dest_chk.classType === "OPMProcess") {
           if (this.type === "Invocation" || this.type === "Exception") { return false; }
           else { return true; }
       }
@@ -615,8 +615,8 @@ OPMProceduralLink.prototype.opmRulesCheck = function(){
 }
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
-    if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
-		this.opmRulesCheck();
+    if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked - if not, perform link check according to basic opm rules
+		this.opmRulesCheck(src,dest);
 	}
    
 	if (this.source.outLinks[ this.destination.id ].category ===  this.destination.inLinks[ this.source.id ].category) {
@@ -624,7 +624,7 @@ OPMProceduralLink.prototype.verifyLink = function() {
 		return false;
     }
     //rest of Logic rules using Switch, by source type. many more rules are to be added
-	this.opmRulesCheck();
+	this.opmRulesCheck(src,dest);
 }  
 OPMProceduralLink.prototype.addXor = function(link) {
     this.xor[link.id] = link;
@@ -661,20 +661,20 @@ function OPMStructuralLink() {
     this.tag = null;																	//description shown on link itself - only for uni/bi-directional relations
 }  
 /*Working function*/
-OPMStructuralLink.prototype.opmRulesCheck = function(){
-  switch (this.source.classType) {                                                      //rest of Logic rules using Switch, by source type.
+OPMStructuralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
+  switch (src_chk.classType) {                                                      //rest of Logic rules using Switch, by source type.
   case "OPMObject":
-      if (this.destination.classType === "OPMProcess") {
+      if (dest_chk.classType === "OPMProcess") {
           if (this.type === "Exhibition") { return true; }
       else { return false; } 
       }
-      if (this.destination.classType === "OPMObject") { return true; }
+      if (dest_chk.classType === "OPMObject") { return true; }
   case "OPMProcess":
-      if (this.destination.classType === "OPMObject") {
+      if (dest_chk.classType === "OPMObject") {
           if (this.type === "Exhibition") { return true; }
       else { return false; }
       }
-      if (this.destination.classType === "OPMProcess") { return true; }
+      if (dest_chk.classType === "OPMProcess") { return true; }
   case "OPMState": return false;
   }
 }
@@ -682,7 +682,7 @@ OPMStructuralLink.prototype.verifyLink = function() {
 	//returns true if link can be added according to OPM rules, otherwise returns false
 
 	if (this.source.outLinks[this.destination.id] === undefined || this.destination.inLinks[this.source.id] === undefined) {  //check if two elements are linked
-		this.opmRulesCheck();
+		this.opmRulesCheck(src,dest);
 	}
 
 	if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.source.id].category) {         //check for existing type of structural link between two entities
@@ -693,7 +693,7 @@ OPMStructuralLink.prototype.verifyLink = function() {
     	}
     }
 	
-	this.opmRulesCheck();
+	this.opmRulesCheck(src,dest);
 	
 }
 OPMStructuralLink.prototype.getCardinality = function() {
