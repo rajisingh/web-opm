@@ -1,6 +1,6 @@
 /*	
  * 	Web OPM: online case tool for Object-Process Methodology
- * 	Copyright © 2012 Israel Institute of Technology - Technion
+ * 	Copyright ֲ© 2012 Israel Institute of Technology - Technion
  * 	The code is licensed under GNU General Public License, v2
  * 
  * 	File context description:
@@ -442,7 +442,7 @@ OPMThing.prototype.inzooming = function(newDiagId, fatherDiag) {
 OPMObject.prototype = new OPMThing();
 function OPMObject() {
 	this.classType = 'OPMObject';
-  this.states = { };
+    this.states = { };
 	this.initValue = null;
 	this.type = "Compound Object";
 	this.inLinks = { };
@@ -481,8 +481,8 @@ OPMObject.prototype.getState = function(id) {
 
 OPMProcess.prototype = new OPMThing();
 function OPMProcess() {
-  this.classType = 'OPMProcess';
-  this.inLinks = { };
+    this.classType = 'OPMProcess';
+    this.inLinks = { };
 	this.outLinks = { };
 	this.minActivationTime = null;
 	this.maxActivationTime = null;
@@ -595,36 +595,36 @@ OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
           if (this.type === "Invocation" || this.type === "Exception") { return false; }
           else { return true; }
       }
-      if (dest_chk.classType === "OPMObject" || dest_chk.classType === "OPMState") { return false; }
+      else if (dest_chk.classType === "OPMObject" || dest_chk.classType === "OPMState") { return false; }
   case "OPMProcess":
       if (dest_chk.classType === "OPMObject" || dest_chk.classType ==="OPMState") {
-          if (this.type === "Result" || this.type === "Effect") { return true; }
+          if (this.type === "Result-Consumption" || this.type === "Effect") { return true; }
           else { return false; } 
       }
-      if (dest_chk.classType === "OPMProcess") {
+      else if (dest_chk.classType === "OPMProcess") {
           if (this.type === "Invocation" || this.type === "Exception") { return true; }
-      else { return false; }
+          else { return false; }
       }
   case "OPMState":
       if (dest_chk.classType === "OPMProcess") {
           if (this.type === "Invocation" || this.type === "Exception") { return false; }
           else { return true; }
       }
-      if (dest_chk.classType === "OPMObject" || dest_chk.classType === "OPMState") { return false; }
+      else if (dest_chk.classType === "OPMObject" || dest_chk.classType === "OPMState") { return false; }
   }
 }
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
-    if (src.outLinks[dest.id] === undefined || dest.inLinks[src.id] === undefined) {  //check if two elements are linked - if not, perform link check according to basic opm rules
-		this.opmRulesCheck(src,dest);
+    if (typeof this.source.outLinks[this.destination.id] === 'undefined' || typeof this.destination.inLinks[this.source.id] === 'undefined') {  //check if two elements are linked - if not, perform link check according to basic opm rules
+		return (this.opmRulesCheck(this.source,this.destination));
 	}
    
-	if (src.outLinks[ dest.id ].category ===  dest.inLinks[ src.id ].category) {
+    else if (this.source.outLinks[ this.destination.id ].category ===  this.destination.inLinks[ this.source.id ].category) {
 		alert("Cannot connect two Objects with more than one " + this.type + " Link");
 		return false;
     }
     //rest of Logic rules using Switch, by source type. many more rules are to be added
-	this.opmRulesCheck(src,dest);
+	this.opmRulesCheck(this.source, this.destination);
 }  
 OPMProceduralLink.prototype.addXor = function(link) {
     this.xor[link.id] = link;
@@ -679,13 +679,11 @@ OPMStructuralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
   }
 }
 OPMStructuralLink.prototype.verifyLink = function() {
-	//returns true if link can be added according to OPM rules, otherwise returns false
-
-	if (src.outLinks[dest.id] === undefined || dest.inLinks[src.id] === undefined) {  //check if two elements are linked
-		this.opmRulesCheck(src,dest);
+  if (typeof this.source.outLinks[this.destination.id] === 'undefined' || typeof this.destination.inLinks[this.source.id] === 'undefined') {  //check if two elements are linked
+		return (this.opmRulesCheck(this.source,this.destination));
 	}
 
-	if (src.outLinks[dest.id].category ===  dest.inLinks[dest.id].category) {         //check for existing type of structural link between two entities
+  else if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.destination.id].category) {         //check for existing type of structural link between two entities
     	if (this.type === "Unidirectional" || this.type === "Bidirectional") { return true; }
     	else {
     		alert("Cannot connect two Objects with more than one " + this.type + " Link");
@@ -693,7 +691,7 @@ OPMStructuralLink.prototype.verifyLink = function() {
     	}
     }
 	
-	this.opmRulesCheck(src,dest);
+	this.opmRulesCheck(this.source,this.destination);
 	
 }
 OPMStructuralLink.prototype.getCardinality = function() {
