@@ -335,22 +335,22 @@ OPMEntity.prototype.getOutLinks = function() {
 }
 OPMEntity.prototype.addLink = function(link) {
 	if (link.source.id === this.id) {
-		this.outLinks[link.id] = link;
+		this.outLinks[link.destination.id] = link.destination;
 	}
 	else {
-		this.inLinks[link.id] = link;
+		this.inLinks[link.source.id] = link.source;
 	}
 }
 OPMEntity.prototype.removeLink = function(link) {
 //remove link from source and destination
 	try {
 		if(link.source.id === this.id){
-			delete this.outLinks[link.id].destination.inLinks[link.id];
-			delete this.outLinks[link.id];
+			delete this.outLinks[link.destination.id].destination.inLinks[link.source.id];
+			delete this.outLinks[link.destination.id];
 		}
 		else if(link.destination.id === this.id){
-			delete this.inLinks[link.id].source.outLinks[link.id];
-			delete this.inLinks[link.id];
+			delete this.inLinks[link.source.id].source.outLinks[link.destination.id];
+			delete this.inLinks[link.source.id];
 		}
     }
     catch (err) {
@@ -476,8 +476,18 @@ OPMObject.prototype.getStates = function() {
 OPMObject.prototype.getState = function(id) {
 	return this.states[id];
 }
-
-
+OPMObject.prototype.addInLink = function(link){
+    this.inLinks[link.id] = link;
+}
+OPMObject.prototype.addOutLink = function(link){
+    this.outLinks[link.id] = link;
+}
+OPMObject.prototype.delOutLink = function(link){
+    delete this.outLinks[link.id];
+}
+OPMObject.prototype.delInLink = function(link){
+    delete this.outLinks[link.id];
+}
 
 OPMProcess.prototype = new OPMThing();
 function OPMProcess() {
@@ -500,7 +510,18 @@ OPMProcess.prototype.getMaxActivationTime = function() {
 OPMProcess.prototype.setMaxActivationTime = function(maxTime) {
     this.maxActivationTime = maxTime;
 }
-
+OPMProcess.prototype.addInLink = function(link){
+  this.inLinks[link.id] = link;
+}
+OPMProcess.prototype.addOutLink = function(link){
+  this.outLinks[link.id] = link;
+}
+OPMProcess.prototype.delOutLink = function(link){
+  delete this.outLinks[link.id];
+}
+OPMProcess.prototype.delInLink = function(link){
+  delete this.outLinks[link.id];
+}
 
 
 OPMState.prototype = new OPMEntity();
@@ -535,6 +556,18 @@ OPMState.prototype.getMaxActivationTime = function() {
 }
 OPMState.prototype.setMaxActivationTime = function(maxTime) {
     this.maxActivationTime = maxTime;
+}
+OPMState.prototype.addInLink = function(link){
+  this.inLinks[link.id] = link;
+}
+OPMState.prototype.addOutLink = function(link){
+  this.outLinks[link.id] = link;
+}
+OPMState.prototype.delOutLink = function(link){
+  delete this.outLinks[link.id];
+}
+OPMState.prototype.delInLink = function(link){
+  delete this.outLinks[link.id];
 }
 /*Non-working functions*/
 OPMEntity.prototype.destructor = function() {//overloaded to delete State reference in Parent Object
@@ -616,11 +649,12 @@ OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
 OPMProceduralLink.prototype.verifyLink = function() {
 	//check for existing type of procedural link between two entities
     if (typeof this.source.outLinks[this.destination.id] === 'undefined' || typeof this.destination.inLinks[this.source.id] === 'undefined') {  //check if two elements are linked - if not, perform link check according to basic opm rules
-		return (this.opmRulesCheck(this.source,this.destination));
-	}
+		var x = (this.opmRulesCheck(this.source,this.destination));
+		return x;
+    }
    
     else if (this.source.outLinks[ this.destination.id ].category ===  this.destination.inLinks[ this.source.id ].category) {
-		alert("Cannot connect two Objects with more than one " + this.type + " Link");
+        alert("Cannot connect two Objects with more than one " + this.type + " Link");
 		return false;
     }
     //rest of Logic rules using Switch, by source type. many more rules are to be added
@@ -680,7 +714,8 @@ OPMStructuralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
 }
 OPMStructuralLink.prototype.verifyLink = function() {
   if (typeof this.source.outLinks[this.destination.id] === 'undefined' || typeof this.destination.inLinks[this.source.id] === 'undefined') {  //check if two elements are linked
-		return (this.opmRulesCheck(this.source,this.destination));
+		var x = (this.opmRulesCheck(this.source,this.destination));
+		return x;
 	}
 
   else if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.destination.id].category) {         //check for existing type of structural link between two entities
@@ -727,5 +762,8 @@ OPMStructuralLink.prototype.destructor = function() {
     delete this.destination.outLinks[this.id];
     delete this;
 }
+
+
+
 
 
