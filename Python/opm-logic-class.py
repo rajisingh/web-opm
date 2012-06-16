@@ -197,7 +197,7 @@ class OPMModel():
 
 ################################################################
 
-
+import itertools
 messageQueue = []                         # list of entries arranged in a heap
 entry_finder = {}               # mapping of tasks to entries
 REMOVED = '<removed-task>'      # placeholder for a removed task
@@ -258,50 +258,51 @@ class OPMDiagram():
 	#  Working functions
 	def getId(self):
 		return self.id
-
+	
 	def getName(self):
 		return self.name
-
+	
 	def setName(self,name):
 		self.name = name
-
+	
 	def getNumber(self):
 		return self.number
-
+	
 	def setNumber(self,number):
 		self.number = number
-
+	
 	def addElement(self,element):
 		self.elements[element.id] = element
-
+	
 	def getElement(self,id):
 		return self.elements[id]
-
+	
 	def getElements(self):
 		return self.elements
-
+	
 	def removeElement(self,element):
 		del self.elements[element.id]
-
+		pass
+	
 	def getPredecessor(self):
-    	return self.predecessor
-
+   		return self.predecessor
+	    
 	def getSuccessors(self):
-    	return self.successors
-
+		return self.successors
+	    
 	def addSuccessor(self,diagram):
     #receives OPMDiagram object to add to the map of successor diagrams
-    	self.successors[diagram.id] = diagram
-
+	   self.successors[diagram.id] = diagram
+	
 	def removeSuccessor(self,diagram):
 		del self.successors[diagram.id]
-
+	
 	def getLevel(self):
-    	return self.level
+		return self.level
 	
 	def getOPL(self): #for future implementation
 		return self.OPL
-
+	
 # /*Non-working function*/
 #	def reLevel(self,levels):          
 	
@@ -320,30 +321,31 @@ class OPMElement():   #this is an abstract class. Here, and in the other
 					#I'd raise an exception if we somehow use the getID method without implementing it
 					#please view http://nedbatchelder.com/text/pythonic-interfaces.html
 					#and http://www.boduch.ca/2010/04/python-abstract-class.html
-	def __init__(self,id):
+	def __init__(self ,id):
 		self.id = id
-    	self.diagrams = { }   	#may be part of a few diagrams, so using map
-     	self.description = None
+		self.diagrams = { }   	#may be part of a few diagrams, so using map
+		self.description = None
+     	
 	def getID(self):
 		return self.id
 
 
 	def getDescription(self):
-    	return self.description  
+		return self.description  
 
 	def setDescription(self,description):
-    self.description = description
+		self.description = description
 
 	def getDiagrams(self):
-    	return self.diagrams
+		return self.diagrams
 
 	def addDiagram(self,diagram):
     #receives diagram object
-    	self.diagrams[diagram.id] = diagram
+		self.diagrams[diagram.id] = diagram
 
 	def removeDiagram(self,diagram):
 	#removes diagram from the element's list of diagrams
-    	del self.diagrams[diagram.id]
+		del self.diagrams[diagram.id]
 
 
 
@@ -517,8 +519,7 @@ class OPMStructuralLink(OPMLink):
 		self.participationVal=None
 		self.cardinality = 1
 		self.tag=None
-		
-"""	def verifyLink(self):
+	"""	def verifyLink(self):
 		#this function verifies if a link can be added between two entities
 		if ((self.source.outLinks[self.destination.id]== None) or (self.destination.inLinks[self.source.id] == None)) :
 			return True   #Checks if two elements are linked
@@ -577,37 +578,37 @@ class OPMThing(OPMEntity):
 	def __init__(self,id,name=None,essence = "Informatical",affiliation = "Systemic",scope = "Public",url=None):
 		OPMEntity.__init__(self,id,name=None)
 		self.essence = essence 
-    	self.affiliation = affiliation	
-     	self.scope = scope
-      	self.unfoldDiag = { }	#diagram instance which is created by unfolding of this object
-      	self.inzoomDiag = { }	#diagram instance which is created by inzooming of this object
-       	self.things = { }
-    	self.url = url
+		self.affiliation = affiliation	
+	 	self.scope = scope
+	 	self.unfoldDiag = { }	#diagram instance which is created by unfolding of this object
+	 	self.inzoomDiag = { }	#diagram instance which is created by inzooming of this object
+	 	self.things = { }
+	 	self.url = url
 
 #  Working function
 	def getEssence(self):
-    	return self.essence
+		return self.essence
 
 	def setEssence(self,ess):
-    	self.essence = ess
+		self.essence = ess
 
 	def getAffiliation(self):
-    	return self.affiliation
+		return self.affiliation
 
 	def setAffiliation(self,aff):
-    	self.affiliation = aff
+		self.affiliation = aff
 
 	def getScope(self):
-    	return self.scope
+		return self.scope
     
 	def setScope(self,scope):
-    	self.scope = scope
+		self.scope = scope
 
 	def addThing(self,thing):
-    	self.things[thing.id] = thing	
+		self.things[thing.id] = thing	
 
 	def removeThing(self,thing):
-     	del self.things[thing.id]
+ 		del self.things[thing.id]
      	# IMPORTANT this will not delete the thing it only removes it from the dict
       	
 
