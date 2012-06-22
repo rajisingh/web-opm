@@ -8,8 +8,7 @@
  * 
  *    Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
-var dictInst = { };
-var dictChildLen = { };
+
 
 function User(email, password) {
    this.id = randomFromTo(1, 1000);
@@ -112,16 +111,16 @@ function OPMModel(creatorId) {
    this.creationDate = new Date();
    
    
-   dictInst[this.id] = this;
-   var sd = new OPMDiagram('sd', null, 0, this.id);            //create first SD for model, with level=0
+   partyOrder.dictInst[this.id] = this;
+   var sd = new OPMDiagram(this.id);            //create first SD for model, with level=0
    
    var msg = new Message("createModelInstance", this , this.creator);
    sendMessage(msg);
    var msg2 = new Message ("createDiagramInstance", sd, this.creator);
    sendMessage(msg2);
    
-   delete sd;
    delete msg;
+   delete msg2;
 }
 
 /*Working functions*/
@@ -142,10 +141,10 @@ OPMModel.prototype.share = function(newUser) {
    //share model with additional users
    this.participants.push(newUser);
 }
-OPMModel.prototype.unshare = function(user) {
+OPMModel.prototype.unshare = function(userId) {
    //removes a specific user from the participants list and global dictionary
-   for (var i=0; )
-	delete this.participants[user.id];
+   var index = this.participants.indexOf(userId);
+   this.participants.splice(index, 1);
 }
 OPMModel.prototype.getParticipants = function() {
    //returns a list of users with permissions to edit this model
@@ -187,13 +186,13 @@ OPMModel.prototype.destructor = function(){
    }
 }
 
-function OPMDiagram() {   
-   this.id = getId();                          
+function OPMDiagram(activeOPMModel) {   
+   this.id = getId(activeOPMModel.id);                          
    this.name = 'New Diagram';                        //default value
    this.number = null;
    this.OPL = null;
    
-   dictInst[this.id] = this;
+   partyOrder.dictInst[this.id] = this;
    
    var msg = new Message("createDiagramInstance", this , null);
    sendMessage(msg);
@@ -244,8 +243,8 @@ OPMDiagram.prototype.destructor = function() {
    //call destructor function of each element in diagram
 }
 
-function OPMElement() {
-    this.id = getId();
+function OPMElement(activeOPMDiagram) {
+    this.id = getId(activeOPMDiagram.id);
 	this.description = null;
 }
 OPMElement.prototype.returnId = function() {
@@ -350,7 +349,7 @@ function OPMObject() {
    this.inLinks = [ ];
    this.outLinks = [ ];
    
-   dictInst[this.id] = this;
+   partyOrder.dictInst[this.id] = this;
    
    var msg = new Message("createObjectInstance", this , null);
    sendMessage(msg);
@@ -381,7 +380,7 @@ function OPMProcess() {
   this.minActivationTime = null;
   this.maxActivationTime = null;
    
-  dictInst[this.id] = this;
+  partyOrder.dictInst[this.id] = this;
    
   var msg = new Message("createProcessInstance", this , null);
   sendMessage(msg);
@@ -410,7 +409,7 @@ function OPMState(parent) {                           //parent is an object whic
   this.inLinks = [ ];
   this.outLinks = [ ];
   
-  dictInst[this.id] = this;
+  partyOrder.dictInst[this.id] = this;
   
   var msg = new Message("createStateInstance", this , null);
   sendMessage(msg);
@@ -488,7 +487,7 @@ function OPMProceduralLink() {               //input source and destination Obje
    this.relationXor = [ ];
    this.relationOr = [ ];
    
-   dictInst[this.id] = this;
+   partyOrder.dictInst[this.id] = this;
    
    var msg = new Message("createProceduralLinkInstance", this , null);
    sendMessage(msg);
@@ -566,7 +565,7 @@ function OPMStructuralLink() {
     this.cardinality = 1;
     this.tag = null;                                                   //description shown on link itself - only for uni/bi-directional relations
     
-    dictInst[this.id] = this;
+    partyOrder.dictInst[this.id] = this;
     
     var msg = new Message("createStructuralLinkInstance", this , this.creator);
     sendMessage(msg);
