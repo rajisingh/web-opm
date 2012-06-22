@@ -152,7 +152,8 @@ def newObject(objClass):
 				type = objClass.type,
 				inLinks = objClass.inLinks,
 				outLInks = objClass.outLinks,
-				initValue = objClass.initValue
+				initValue = objClass.initValue,
+                states = objClass.states
 	)
     nObj.put()
 
