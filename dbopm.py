@@ -1,5 +1,4 @@
 import datetime
-import dictproperty
 from google.appengine.ext import db
 
 ##User Interface Classes
@@ -76,10 +75,6 @@ class SRVuser(db.Model):
 
 class SRVOPMdiagram(db.Model):
     id = db.StringProperty()
-	modelID = db.StringProperty()
-    predecessor = db.StringProperty() # OPM Diagram Key
-    successors = db.StringListProperty() # List Keys
-    elements = db.StringListProperty() # List Keys
     name = db.StringProperty()
     number = db.IntegerProperty()
     OPL = db.BlobProperty()
@@ -92,14 +87,11 @@ class SRVOPMmodel(db.Model):
     name = db.StringProperty()
     type = db.StringProperty()
     participants = db.StringListProperty() # List Keys
-    SD = db.StringProperty() # OPM Diagram Key
-	diagrams = db.StringListProperty() # List Keys
     lastUpdate = db.DateTimeProperty()
 
 class SRVOPMProceduralLInk(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Link
   source = db.StringProperty # Object Key  
@@ -113,7 +105,6 @@ class SRVOPMProceduralLInk(db.Model):
 class SRVOPMStructuralLInk(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Link
   source = db.StringProperty() # Object Key  
@@ -129,7 +120,6 @@ class SRVOPMStructuralLInk(db.Model):
 class SRVOPMState(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Entity
   name = db.StringProperty()
@@ -145,7 +135,6 @@ class SRVOPMState(db.Model):
 class SRVOPMPRocess(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Entity
   name = db.StringProperty()
@@ -153,9 +142,6 @@ class SRVOPMPRocess(db.Model):
   essence = db.StringProperty()
   affiliation = db.StringProperty()
   scope = db.StringProperty()
-  unfoldDiag = db.StringListProperty() # List Keys
-  inzoomDiag = db.StringListProperty() # List Keys
-  things = db.StringListProperty() # List Keys
   url = db.URLProperty()
   # OPM Process
   classType = db.StringProperty()
@@ -167,7 +153,6 @@ class SRVOPMPRocess(db.Model):
 class SRVOPMObject(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Entity
   name = db.StringProperty()
@@ -175,13 +160,10 @@ class SRVOPMObject(db.Model):
   essence = db.StringProperty()
   affiliation = db.StringProperty()
   scope = db.StringProperty()
-  unfoldDiag = db.StringListProperty() # List Keys
-  inzoomDiag = db.StringListProperty() # List Keys
-  things = db.StringListProperty() # List Keys
   url = db.URLProperty()
   # OPM Object
   classType = db.StringProperty()
   type = db.StringProperty()
-  states = db.StringListProperty() # List Keys
   inLinks = db.StringListProperty() # List Keys
   outLInks = db.StringListProperty() # List Keys
+  initValue = db.StringProperty()
