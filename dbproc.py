@@ -2,6 +2,7 @@ import dbopm
 
 def newUser(userClass):
     nUser = dbopm.SRVuser(
+                    key_name = userClass.id,
 					userID = userClass.id,
 					provider = userClass.provider,
 					token = userClass.token,
@@ -18,10 +19,9 @@ def newUser(userClass):
 def newModel(modelClass):
     q = db.Query(dbopm.SRVuser, keys_only = True)
     q.filter("userID = ",modelClass.creator)
-    creatorKey = ""
-    for p in q.fetch(1):
-        creatorKey = p
+    creatorKey = q.get()
     nModel = dbopm.SRVOPMmodel(
+                key_name = modelClass.id,
 				parent = creatorKey,
 				modelID = modelClass.id,
 				creator = modelClass.creator,
@@ -43,11 +43,6 @@ def newDiagram(diagClass):
     for p in q.fetch(1):
 		parentKey = p
     if parentKey == "":
-		q = db.Query(dbopm.SRVOPMProceduralLInk, keys_only = True)
-		q.filter("id = ",parID)
-		for p in q.fetch(1):
-			parentKey = p
-    if parentKey == "":
 		q = db.Query(dbopm.SRVOPMObject, keys_only = True)
 		q.filter("id = ",parID)
 		for p in q.fetch(1):
@@ -58,25 +53,24 @@ def newDiagram(diagClass):
 		for p in q.fetch(1):
 			parentKey = p
     nDiag = dbopm.SRVOPMdiagram(
+                key_name = diagClass.id,
 				parent = parentKey,
 				id = diagClass.id,
 				name = diagClass.name,
 				number = diagClass.number,
-				OPL = diagClass.OPL,
-				level = diagClass.level
+				OPL = diagClass.OPL
                 )
     nDiag.put()
 
-def newPLink(plinkClass):
+def newPlink(plinkClass):
     tempVar = diagClass.id.split(":")
     del tempVar[-1]
     parID = ":".join(tempVar)
     q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
     q.filter("id = ",parID)
-    diagKey = ""
-    for p in q.fetch(1):
-		diagKey = p
-    nPLink = dbopm.SRVOPMProceduralLInk(
+    diagKey = q.get()
+    nPlink = dbopm.SRVOPMProceduralLink(
+                key_name = plinkClass.id,
 				parent = diagKey,
 				id = plinkClass.id,
 				description = plinkClass.description,
@@ -87,7 +81,30 @@ def newPLink(plinkClass):
 				xorRelation = plinkClass.xorRelation,
 				orRelation = plinkClass.orRelation
 	)
-    nPLink.put() 
+    nPlink.put()
+
+def newSlink(slinkClass):
+    tempVar = diagClass.id.split(":")
+    del tempVar[-1]
+    parID = ":".join(tempVar)
+    q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
+    q.filter("id = ",parID)
+    diagKey = q.get()
+    nSlink = dbopm.SRVOPMStructuralLink(
+                key_name = slinkClass.id,
+                parent = diagKey,
+                id = slinkClass.id,
+                description = slinkClass.description,
+                source = slinkClass.source,
+                destination = slinkClass.destination,
+                category = slinkClass.category,
+                type = slinkClass.type,
+                participationConst = slinkClass.participationConst,
+                participationVal = slinkClass.participationVal,
+                cardinality = slinkClass.cardinality,
+                tag = slinkClass.tag
+    )
+    nSlink.put()
 
 def newProcess(processClass):
     tempVar = diagClass.id.split(":")
@@ -95,10 +112,9 @@ def newProcess(processClass):
     parID = ":".join(tempVar)
     q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
     q.filter("id = ",parID)
-    diagKey = ""
-    for p in q.fetch(1):
-		diagKey = p
+    diagKey = q.get()
     nProcess = dbopm.SRVOPMPRocess(
+                key_name = processClass.id,
 				parent = diagKey,
 				id = processClass.id,
 				description = processClass.description,
@@ -121,13 +137,11 @@ def newObject(objClass):
     parID = ":".join(tempVar)
     q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
     q.filter("id = ",parID)
-    diagKey = ""
-    for p in q.fetch(1):
-		diagKey = p
+    diagKey = q.get()
     nObj = dbopm.SRVOPMObject(
+                key_name = objClass.id,
 				parent = diagKey,
 				id = objClass.id,
-				diagrams = objClass.diagrams,
 				description = objClass.description,
 				name = objClass.name,
 				essence = objClass.essence,
@@ -140,4 +154,26 @@ def newObject(objClass):
 				outLInks = objClass.outLinks,
 				initValue = objClass.initValue
 	)
-    nObj.put() 
+    nObj.put()
+
+def newState(stateClass):
+    tempVar = diagClass.id.split(":")
+    del tempVar[-1]
+    parID = ":".join(tempVar)
+    q = db.Query(dbopm.SRVOPMObject, keys_only = True)
+    q.filter("id = ",parID)
+    diagKey = q.get()
+    nState = dbopm.SRVOPMObject(
+                key_name = stateClass.id,
+                parent = diagKey,
+                id = stateClass.id,
+                description = stateClass.description,
+                name = stateClass.name,
+                classType = stateClass.classType,
+                type = stateClass.type,
+                minActivationTime = stateClass.minActivationTime,
+                maxActivationTime = stateClass.maxActivationTime,
+                inLinks = stateClass.inLinks,
+                outLinks = stateClass.outLinks
+    )
+    nState.put()
