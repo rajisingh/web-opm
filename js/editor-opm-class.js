@@ -8,6 +8,8 @@
  * 
  *    Authors: Rochai Ben-Mordechai & Sameer Makladeh (The Horses)
  * */
+var dictInst = { };
+var dictChildLen = { };
 
 function User(email, password) {
    this.id = randomFromTo(1, 1000);
@@ -17,9 +19,14 @@ function User(email, password) {
    this.firstName = null;
    this.lastName = null;
    this.password = password;
-   this.models = { };
+   this.models = [];
    this.lastLogin = new Date();                //timestamp
    this.loginStatus = null;                   //boolean
+   
+   //dict[this.id] = this;
+   var msg = new Message("createUserInstance", this , this);
+   sendMessage(msg);
+   
 }
 
 /*Working functions*/
@@ -40,12 +47,18 @@ User.prototype.setName = function(newFirstName, newLastName) {
    this.lastName = newLastName;
 }
 User.prototype.getModels = function() {
-  //call JSON function and receives list of all Model IDs of this user.
-   return this.models;
+  //need to add call from SVG, which will display a list of models, check bootstrap for suitable GUI
+  var msg = new Message("getUserModels", this.id, null);
+  sendMessage(msg);
+}
+User.prototype.loadModel = function(modelId){
+  var msg = new Message("getModel", modelId, this);
+  sendMessage(msg);
 }
 User.prototype.addModel = function(model) {
-   //add model to the list
-   this.models[model.id] = model;
+   //add model to users model list
+   this.models.push(model.id);
+   
 }
 User.prototype.getLastLogin = function() {
    return this.lastLogin;
@@ -88,46 +101,35 @@ User.prototype.login = function() {
 User.prototype.logout = function() {
    this.loginStatus = false;
 }
-User.prototype.objForJson = function() {
-  var obj = new Object();
-  obj.id = this.id;
-  obj.provider = this.provider;
-  obj.token = this.token;
-  obj.email = this.email;
-  obj.firstName = this.firstName;
-  obj.lastName = this.lastName;
-  obj.password = this.password;
-  obj.lastLogin = this.lastLogin;
-  obj.loginStatus = this.loginStatus;
-  obj.models = [];
-  var count = 0;
-  for (var i in this.models){
-      obj.models[count] = this.models[i].id;
-      count = count+1;
-  }
-  return obj;
-}
 
-
-
-
-function OPMModel(creator) {                     
-   this.id = randomFromTo(1, 1000);
-   this.creator = creator;
+function OPMModel(creatorId) {                     
+   this.id = getId();
+   this.creator = creatorId;
    this.name = 'New Model';                         //default value
    this.type = 'System';
-   this.participants = { }
-   this.sd = new OPMDiagram('sd', null, 0, this.id);            //create first SD for model, with level=0
-   this.diagrams = { };                           //map object with diagrams in a model
+   this.participants = [];
    this.lastUpdate = new Date();
    this.creationDate = new Date();
+   
+   
+   dictInst[this.id] = this;
+   var sd = new OPMDiagram('sd', null, 0, this.id);            //create first SD for model, with level=0
+   
+   var msg = new Message("createModelInstance", this , this.creator);
+   sendMessage(msg);
+   var msg2 = new Message ("createDiagramInstance", sd, this.creator);
+   sendMessage(msg2);
+   
+   delete sd;
+   delete msg;
 }
 
 /*Working functions*/
-OPMModel.prototype.getId = function(){ 
+OPMModel.prototype.returnId = function(){ 
    return this.id;
 }
 OPMModel.prototype.getCreator = function() {
+	//returns creator ID
    return this.creator;
 }
 OPMModel.prototype.getName = function() {
@@ -138,11 +140,12 @@ OPMModel.prototype.setName = function(name) {
 }
 OPMModel.prototype.share = function(newUser) { 
    //share model with additional users
-   this.participants[newUser.id] = newUser;
+   this.participants.push(newUser);
 }
 OPMModel.prototype.unshare = function(user) {
-   //removes a specific user from the participants list
-   delete this.participants[user.id];
+   //removes a specific user from the participants list and global dictionary
+   for (var i=0; )
+	delete this.participants[user.id];
 }
 OPMModel.prototype.getParticipants = function() {
    //returns a list of users with permissions to edit this model
@@ -154,17 +157,6 @@ OPMModel.prototype.getType = function() {
 OPMModel.prototype.setType = function(newType) {
    this.type = newType;
 }
-OPMModel.prototype.addDiagram = function(diagram) {
-   this.diagrams[diagram.id] = diagram;
-}
-OPMModel.prototype.getDiagrams = function() {
-   //returns list of all diagrams in model
-   return this.diagrams;
-}
-OPMModel.prototype.removeDiagram = function(diagram) {
-   //removes diagram for diagram list
-   delete this.diagrams[diagram.id];
-}
 OPMModel.prototype.getLastUpdate = function() {
    return this.lastUpdate;
 }
@@ -173,9 +165,6 @@ OPMModel.prototype.setLastUpdate = function() {
 }
 OPMModel.prototype.getCreationDate = function() {
    return this.creationDate;
-}
-OPMModel.prototype.getSd = function() {
-   return this.sd;
 }
 /*Non-working functions*/
 OPMModel.prototype.load = function() {
@@ -197,45 +186,20 @@ OPMModel.prototype.destructor = function(){
       }
    }
 }
-OPMModel.prototype.objForJson = function() {
-  var obj = new Object();
-  obj.id = this.id;
-  obj.creator = this.creator;
-  obj.name = this.name;
-  obj.type = this.type;
-  obj.lastUpdate = this.lastUpdate;
-  obj.creationDate = this.creationDate;
-  obj.sd = this.sd.id
-  obj.diagrams = [];
-  obj.participants = [];
-  var count=0;
-  for (var i in this.diagrams){
-     obj.diagrams[count] = this.diagrams[i].id;
-     count = count+1;
-  }
-  count = 0;
-  for (var i in this.participants){
-    obj.participants[count] = this.participants[i].id;
-    count = count+1;
-  }
-  return obj;
-}
 
-
-
-function OPMDiagram(id, predecessor, level, modelId) {   
-   this.id = id;
-   this.modelId = modelId;
-   this.predecessor = predecessor;                     //diagram object of the "father", can be null
-   this.successors = { };                           //map of successors
-   this.elements = { };                           //map of elements that diagram contains
+function OPMDiagram() {   
+   this.id = getId();                          
    this.name = 'New Diagram';                        //default value
    this.number = null;
    this.OPL = null;
-   this.level = level;                            //int
+   
+   dictInst[this.id] = this;
+   
+   var msg = new Message("createDiagramInstance", this , null);
+   sendMessage(msg);
 }
 /*Working functions*/
-OPMDiagram.prototype.getId = function() {
+OPMDiagram.prototype.returnId = function() {
    return this.id;
 }
 OPMDiagram.prototype.getName = function() {
@@ -250,60 +214,11 @@ OPMDiagram.prototype.getNumber = function() {
 OPMDiagram.prototype.setNumber = function(number) {
    this.number = number;
 }
-OPMDiagram.prototype.addElement = function(element) {
-   this.elements[element.id] = element;
-}
-OPMDiagram.prototype.getElement = function(id) {
-   return this.elements[id];
-}
-OPMDiagram.prototype.getElements = function() {
-   return this.elements;
-}
-OPMDiagram.prototype.removeElement = function(element) {
-   delete this.elements[element.id]
-}
-OPMDiagram.prototype.getPredecessor = function() {
-    return this.predecessor;
-}
-OPMDiagram.prototype.getSuccessors = function() {
-    return this.successors;
-}
-OPMDiagram.prototype.addSuccessor = function(diagram) {
-    //receives OPMDiagram object to add to the map of successor diagrams
-    this.successors[diagram.id] = diagram;
-}
-OPMDiagram.prototype.removeSuccessor = function(diagram) {
-   delete this.successors[diagram.id];
-}
-OPMDiagram.prototype.getLevel = function() {
-    return this.level;
-}
 OPMDiagram.prototype.getOPL = function() {
    return this.OPL;
 }
-OPMDiagram.prototype.getModelId = function() {
-	return this.modelId;
-}
 /*Non-working function*/
-OPMDiagram.prototype.reLevel = function(levels) {          
-   //if level-up - enter positive int, otherwise negative
-    //recursively re-assigns levels to entire diagrams (nodes) in the tree.
-   try   {
-      if (this.successors === null) {
-         return;
-      }
-      this.level = this.level - levels;
-      for (var i in this.successors) {
-         this.successors.reLevel(levels);
-      }
-    }
-   catch(err) {
-      txt="There was an error deleting the model.\n\n";
-      txt+="Error description: " + err.message + "\n\n";
-      txt+="Click OK to continue.\n\n";
-      alert(txt);
-   }
-}
+
 OPMDiagram.prototype.print = function() {
    //need implementation of print procedure.
    //including XML function
@@ -328,39 +243,12 @@ OPMDiagram.prototype.destructor = function() {
    }
    //call destructor function of each element in diagram
 }
-OPMDiagram.prototype.objForJson = function() {
-  var obj = new Object();
-  obj.id = this.id;
-  obj.modelId = this.modelId;
-  obj.predecessor = this.predecessor.id;
-  obj.name = this.name;
-  obj.number = this.number
-  obj.OPL = this.OPL;
-  obj.level = this.level;
-  obj.elements = [];  
-  var count=0;
-  for (var i in this.elements){
-     obj.elements[count] = this.elements[i].id;
-     count = count+1;
-  }
-  obj.successors = [];
-  count=0;
-  for (var i in this.successors){
-     obj.successors[count] = this.successors[i].id;
-     count = count+1;
-  }
-  return obj;
-}
 
-
-
-
-function OPMElement(id) {
-    this.id = id;
-    this.diagrams = { };                          //may be part of a few diagrams, so using map
+function OPMElement() {
+    this.id = getId();
 	this.description = null;
 }
-OPMElement.prototype.getId = function() {
+OPMElement.prototype.returnId = function() {
     return this.id;
 }
 OPMElement.prototype.getDescription = function() {
@@ -369,26 +257,12 @@ OPMElement.prototype.getDescription = function() {
 OPMElement.prototype.setDescription = function(description) {
     this.description = description;  
 }
-OPMElement.prototype.getDiagrams = function() {
-    return this.diagrams;
-}
-OPMElement.prototype.addDiagram = function(diagram) {
-    //receives diagram object
-    this.diagrams[diagram.id] = diagram;
-}
-OPMElement.prototype.removeDiagram = function(diagram) {
-   //removes diagram from the element's list of diagrams
-    delete this.diagrams[diagram.id];
-}
-
-
 
 
 OPMEntity.prototype = new OPMElement();       //inheriting from OPMElement
 function OPMEntity() {
    this.name = null;
-//   this.inLinks = { };                     //map - keys are source of links
-//   this.outLinks = { };                  //map - keys are destination of links
+   
 }
 /*Working functions*/
 OPMEntity.prototype.getName = function() {
@@ -396,13 +270,6 @@ OPMEntity.prototype.getName = function() {
 }
 OPMEntity.prototype.setName = function(name) {
    this.name = name;
-}
-
-OPMEntity.prototype.getInLinks = function() {
-   return this.inLinks;
-}
-OPMEntity.prototype.getOutLinks = function() {
-   return this.outLinks;
 }
 OPMEntity.prototype.addLink = function(link) {
         if (link.source.id === this.id) {
@@ -444,12 +311,9 @@ OPMEntity.prototype.destructor = function() {
 OPMThing.prototype = new OPMEntity();          // inheriting from OPMEntity 
 function OPMThing()   {
    this.essence = "Informatical";
-    this.affiliation = "Systemic";            //default value
-    this.scope = "Public";
-    this.unfoldDiag = { };                  //diagram instance which is created by unfolding of this object
-    this.inzoomDiag = { };                  //diagram instance which is created by inzooming of this object
-    this.things = { };
-    this.url = null;
+   this.affiliation = "Systemic";            //default value
+   this.scope = "Public";
+   this.url = null;
 }
 /*Working function*/
 OPMThing.prototype.getEssence = function() {
@@ -470,54 +334,26 @@ OPMThing.prototype.getScope = function() {
 OPMThing.prototype.setScope = function(scope) {
     this.scope = scope;
 }
-OPMThing.prototype.addThing = function(thing) {
-    this.things[thing.id] = thing;   
-}
-OPMThing.prototype.removeThing = function(thing) {
-    var currId = thing.id;                                     //once destructor is used, ID is no longer available
-    this.things[thing.id].destructor();
-    delete this.things[currId];
-    delete currId;
-}
-OPMThing.prototype.getThing = function() {
-   return this.things;
-}
 OPMThing.prototype.getURL = function() {
    return this.url;
 }
 OPMThing.prototype.setURL = function(newURL) {
    this.url = newURL;
 }
-OPMThing.prototype.getUnfoldDiag = function() {
-   return this.unfoldDiag;
-}
-OPMThing.prototype.getInzoomDiag = function() {
-   return this.inzoomDiag;
-}
-/*Non-working functions*/
-OPMThing.prototype.unfolding = function(newDiagId, fatherDiag) {
-   //unfold object/process
-   this.unfoldDiag = new OPMDiagram(newDiagId, fatherDiag, fatherDiag.level + 1);
-   this.unfoldDiag.elements[this.id] = this;                           //add current element to new unfolded diagram
-   return this.unfoldDiag;
-}
-OPMThing.prototype.inzooming = function(newDiagId, fatherDiag) {
-    //inzoom object/process, returns new Diagram object
-    this.inzoomDiag = new OPMDiagram(newDiagId, fatherDiag, fatherDiag.level + 1);
-    this.inzoomDiag.elements[this.id] = this;                              //add current element to new inzoomed diagram
-    return this.inzoomDiag;
-}
-
 
 
 OPMObject.prototype = new OPMThing();
 function OPMObject() {
    this.classType = 'OPMObject';
-  this.states = { };
    this.initValue = null;
    this.type = "Compound Object";
-   this.inLinks = { };
-   this.outLinks = { };
+   this.inLinks = [ ];
+   this.outLinks = [ ];
+   
+   dictInst[this.id] = this;
+   
+   var msg = new Message("createObjectInstance", this , null);
+   sendMessage(msg);
 }
 /*Working function*/
 OPMObject.prototype.getInitValue = function() {
@@ -535,83 +371,20 @@ OPMObject.prototype.setType = function(newType) {
 OPMObject.prototype.setInitValue = function(newInitValue) {
    this.initValue = newInitValue;
 }
-OPMObject.prototype.addState = function(state) {
-   this.states[state.id] = state; 
-}
-OPMObject.prototype.removeState = function(state) {
-   delete this.states[state.id];
-}
-OPMObject.prototype.getStates = function() {
-   return this.states;
-}
-OPMObject.prototype.getState = function(id) {
-   return this.states[id];
-}
-OPMObject.prototype.objForJson = function(){
-	 var obj = new Object();  
-	obj.classType = this.classType;
-    obj.initValue = this.initValue;
-     obj.type = this.type;
-     obj.essence = this.essence;
-    obj.affiliation = this.affiliation; 
-    obj.scope = this.scope;
-    obj.url = this.url;
-     obj.name = this.name;
-    obj.id = this.id;
-    obj.description = this.description;
-    obj.states = [];
-    var count = 0;
-    for (var i in this.states){
-    	obj.states[count] = this.states[i].id;
-     	count = count+1;
-    }
-	obj.inLinks = [];
-    count=0;
-    for (var i in this.inLinks){
-    	obj.inLinks[count] = this.inLinks[i].source.id;
-     	count = count+1;
-    }
-    obj.outLinks = [];
-    count = 0;
-    for (var i in this.outLinks){
-    	obj.outLinks[count] = this.outLinks[i].destination.id;
-     	count = count+1;
-    }
-    obj.unfoldDiag = [];
-    count = 0;
-    for (var i in this.unfoldDiag){
-    	obj.unfoldDiag[count] = this.unfoldDiag[i].id;
-     	count = count+1;
-    }
-    obj.inzoomDiag = [];
-    count = 0;
-    for (var i in this.inzoomDiag){
-    	obj.inzoomDiag[count] = this.inzoomDiag[i].id;
-     	count = count+1;
-    } 
-    obj.things = [];
-    count = 0;
-    for (var i in this.things){
-    	obj.things[count] = this.things[i].id;
-     	count = count+1;
-    }
-    this.diagrams = [];
-    count = 0;
-    for (var i in this.diagrams){
-    	obj.diagrams[count] = this.diagrams[i].id;
-     	count = count+1;
-    }
-    return obj;
-}
 
 
 OPMProcess.prototype = new OPMThing();
 function OPMProcess() {
   this.classType = 'OPMProcess';
-  this.inLinks = { };
-   this.outLinks = { };
-   this.minActivationTime = null;
-   this.maxActivationTime = null;
+  this.inLinks = [ ];
+  this.outLinks = [ ];
+  this.minActivationTime = null;
+  this.maxActivationTime = null;
+   
+  dictInst[this.id] = this;
+   
+  var msg = new Message("createProcessInstance", this , null);
+  sendMessage(msg);
 }
 /*Working functions*/
 OPMProcess.prototype.getMinActivationTime = function() {
@@ -626,69 +399,21 @@ OPMProcess.prototype.getMaxActivationTime = function() {
 OPMProcess.prototype.setMaxActivationTime = function(maxTime) {
     this.maxActivationTime = maxTime;
 }
-OPMProcess.prototype.objForJson = function(){
-    var obj = new Object();
-    obj.classType = this.classType;
-     obj.minActivationTime = this.minActivationTime;
-     obj.maxActivationTime = this.maxActivationTime;
-	obj.essence = this.essence;
-    obj.affiliation = this.affiliation; 
-    obj.scope = this.scope;
-    obj.description = this.description;
-    obj.url = this.url;
-     obj.name = this.name;
-    obj.id = this.id;
-    obj.inLinks = [];
-    var count=0;
-    for (var i in this.inLinks){
-    	obj.inLinks[count] = this.inLinks[i].source.id;
-     	count = count+1;
-    }
-    obj.outLinks = [];
-    count = 0;
-    for (var i in this.outLinks){
-    	obj.outLinks[count] = this.outLinks[i].destination.id;
-     	count = count+1;
-    }
-    obj.unfoldDiag = [];
-    count = 0;
-    for (var i in this.unfoldDiag){
-    	obj.unfoldDiag[count] = this.unfoldDiag[i].id;
-     	count = count+1;
-    }
-    obj.inzoomDiag = [];
-    count = 0;
-    for (var i in this.inzoomDiag){
-    	obj.inzoomDiag[count] = this.inzoomDiag[i].id;
-     	count = count+1;
-    } 
-    obj.things = [];
-    count = 0;
-    for (var i in this.things){
-    	obj.things[count] = this.things[i].id;
-     	count = count+1;
-    }
-    
-    this.diagrams = [];
-    count = 0;
-    for (var i in this.diagrams){
-    	obj.diagrams[count] = this.diagrams[i].id;
-     	count = count+1;
-    }
-    return obj;
-}
-
 
 
 OPMState.prototype = new OPMEntity();
 function OPMState(parent) {                           //parent is an object which contains the state
   this.classType = 'OPMState';  
   this.type = null;                              //final, default, initial
-    this.parent = parent;                           //of type OPMObject
-    this.minActivationTime = null;
-    this.maxActivationTime = null;
-    this.inLinks = { };
-    this.outLinks = { };
+  this.minActivationTime = null;
+  this.maxActivationTime = null;
+  this.inLinks = [ ];
+  this.outLinks = [ ];
+  
+  dictInst[this.id] = this;
+  
+  var msg = new Message("createStateInstance", this , null);
+  sendMessage(msg);
 }
 
 /*Working functions*/
@@ -720,25 +445,14 @@ OPMEntity.prototype.destructor = function() {//overloaded to delete State refere
     delete this.parent.states[this.id];
     delete this;
 }
-OPMState.prototype.objForJson = function(){  
-  this.classType = 'OPMProcess';
-  this.inLinks = { };
-   this.outLinks = { };
-   this.minActivationTime = null;
-   this.maxActivationTime = null;
-   this.name = null;
-  this.id = id;
-  this.diagrams = { };
-  this.description = null;
-}
 
 
 OPMLink.prototype = new OPMElement();
 function OPMLink(src, dest, category, type) {
    this.source = src;
    this.destination = dest;
-    this.category = category;                     //categories are strings, two values: "Structural" and "Procedural"
-    this.type = type;                           //types are strings, some values: "Instrument", "Agent" etc.
+   this.category = category;                     //categories are strings, two values: "Structural" and "Procedural"
+   this.type = type;                           //types are strings, some values: "Instrument", "Agent" etc.
 }
 /*Working function*/
 OPMLink.prototype.getDestination = function() {
@@ -771,8 +485,13 @@ OPMLink.prototype.setCategory = function(newCategory) {
 OPMProceduralLink.prototype = new OPMLink();
 function OPMProceduralLink() {               //input source and destination Objects
    this.category = 'Procedural';
-   this.xor = { };
-   this.or = { }; 
+   this.relationXor = [ ];
+   this.relationOr = [ ];
+   
+   dictInst[this.id] = this;
+   
+   var msg = new Message("createProceduralLinkInstance", this , null);
+   sendMessage(msg);
 }
 /*Working functions*/
 OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
@@ -815,56 +534,28 @@ OPMProceduralLink.prototype.verifyLink = function() {
         this.opmRulesCheck(this.source, this.destination);
 }
 OPMProceduralLink.prototype.addXor = function(link) {
-    this.xor[link.id] = link;
+    this.relationXor[link.id] = link;
 }
 OPMProceduralLink.prototype.removeXor = function(link) {
-    delete this.xor[link.id];
+    delete this.relationXor[link.id];
 }
 OPMProceduralLink.prototype.getXor = function() {
-   return this.xor;
+   return this.relationXor;
 }
 OPMProceduralLink.prototype.addOr = function(link) {
-    this.or[link.id] = link;
+    this.relationOr[link.id] = link;
 }
 OPMProceduralLink.prototype.removeOr = function(link) {
-    delete this.or[link.id];
+    delete this.relationOr[link.id];
 }
 OPMProceduralLink.prototype.getOr = function() {
-   return this.or;
+   return this.relationOr;
 }
 /*Non-working functions*/
 OPMProceduralLink.prototype.destructor = function() {
     delete this.source.inLinks[this.id];
     delete this.destination.outLinks[this.id];
     delete this;
-}
-OPMProceduralLink.prototype.objForJson = function(){
-	var obj = new Object();
-	obj.id = this.id;
-    obj.description = this.description;
-    obj.source = this.source.id;
-    obj.destination = this.destination.id;
-    obj.category = this.category;
-    obj.type = this.type;
-    obj.diagrams = [];
-	var count=0;
-    for (var i in this.diagrams){
-    	obj.diagrams[count] = this.diagrams[i].id;
-     	count = count+1;
-    }
-	obj.xor = [];
-	count=0;
-    for (var i in this.xor){
-    	obj.xor[count] = this.xor[i].id;
-     	count = count+1;
-    }
-    obj.or = [];
-	count=0;
-    for (var i in this.or){
-    	obj.or[count] = this.or[i].id;
-     	count = count+1;
-    }
-    return obj;
 }
 
 OPMStructuralLink.prototype = new OPMLink();
@@ -874,6 +565,11 @@ function OPMStructuralLink() {
     this.participationVal = null;
     this.cardinality = 1;
     this.tag = null;                                                   //description shown on link itself - only for uni/bi-directional relations
+    
+    dictInst[this.id] = this;
+    
+    var msg = new Message("createStructuralLinkInstance", this , this.creator);
+    sendMessage(msg);
 }  
 /*Working function*/
 OPMStructuralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
