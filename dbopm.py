@@ -1,4 +1,5 @@
 import datetime
+import dictproperty
 from google.appengine.ext import db
 
 ##User Interface Classes
@@ -69,15 +70,16 @@ class SRVuser(db.Model):
     fisrtName = db.StringProperty()
     lastName = db.StringProperty()
     password = db.StringProperty()
-    models = db.StringListProperty() # dict. pickeled
+    models = db.StringListProperty() # List Keys
     lastLogin = db.DateTimeProperty()
     loginStatus = db.BooleanProperty()
 
 class SRVOPMdiagram(db.Model):
     id = db.StringProperty()
+	modelID = db.StringProperty()
     predecessor = db.StringProperty() # OPM Diagram Key
-    successors = db.StringProperty() # dict. pickeled
-    elements = db.StringProperty() # dict. pickeled
+    successors = db.StringListProperty() # List Keys
+    elements = db.StringListProperty() # List Keys
     name = db.StringProperty()
     number = db.IntegerProperty()
     OPL = db.BlobProperty()
@@ -89,14 +91,15 @@ class SRVOPMmodel(db.Model):
     creationDate = db.DateTimeProperty()
     name = db.StringProperty()
     type = db.StringProperty()
-    participants = db.StringProperty() # dict. pickeled
+    participants = db.StringListProperty() # List Keys
     SD = db.StringProperty() # OPM Diagram Key
+	diagrams = db.StringListProperty() # List Keys
     lastUpdate = db.DateTimeProperty()
 
 class SRVOPMProceduralLInk(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringProperty # dict. pickeled
+  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Link
   source = db.StringProperty # Object Key  
@@ -104,16 +107,16 @@ class SRVOPMProceduralLInk(db.Model):
   category = db.StringProperty()
   type = db.StringProperty()
   # OPM Procedural Link
-  xorRelation = db.StringProperty() # dict. pickeled
-  orRelation = db.StringProperty() # dict. pickeled
+  xorRelation = db.StringListProperty() # List Keys
+  orRelation = db.StringListProperty() # List Keys
   
-class SRVOPMProceduralLInk(db.Model):
+class SRVOPMStructuralLInk(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringProperty # dict. pickeled
+  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Link
-  source = db.StringProperty # Object Key  
+  source = db.StringProperty() # Object Key  
   destination = db.StringProperty() # Object Key
   category = db.StringProperty()
   type = db.StringProperty()
@@ -126,23 +129,23 @@ class SRVOPMProceduralLInk(db.Model):
 class SRVOPMState(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringProperty # dict. pickeled
+  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Entity
   name = db.StringProperty()
   # OPM State
   callsType = db.StringProperty()
   type = db.StringProperty()
-  parent = db.StringProperty() # Object Key
+  Sparent = db.StringProperty() # Object Key
   minActivationTime = db.IntegerProperty()
   maxActivationTime = db.IntegerProperty()
-  inLinks = db.StringProperty() # dict. pickeled
-  outLinks = db.StringProperty() # dict. pickeled
+  inLinks = db.StringListProperty() # List Keys
+  outLinks = db.StringListProperty() # List Keys
 
 class SRVOPMPRocess(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringProperty # dict. pickeled
+  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Entity
   name = db.StringProperty()
@@ -150,21 +153,21 @@ class SRVOPMPRocess(db.Model):
   essence = db.StringProperty()
   affiliation = db.StringProperty()
   scope = db.StringProperty()
-  unfoldDiag = db.StringProperty() # dict. pickeled
-  inzoomDiag = db.StringProperty() # dict. pickeled
-  things = db.StringProperty() # dict. pickeled
+  unfoldDiag = db.StringListProperty() # List Keys
+  inzoomDiag = db.StringListProperty() # List Keys
+  things = db.StringListProperty() # List Keys
   url = db.URLProperty()
   # OPM Process
   classType = db.StringProperty()
   minActivationTime = db.IntegerProperty()
   maxActivationTime = db.IntegerProperty()
-  inLinks = db.StringProperty() # dict. pickeled
-  outLinks = db.StringProperty() # dict. pickeled
+  inLinks = db.StringListProperty() # List Keys
+  outLinks = db.StringListProperty() # List Keys
 
 class SRVOPMObject(db.Model):
   # OPM ELement
   id = db.StringProperty()
-  diagrams = db.StringProperty # dict. pickeled
+  diagrams = db.StringListProperty() # List Keys
   description = db.StringProperty()
   # OPM Entity
   name = db.StringProperty()
@@ -172,13 +175,13 @@ class SRVOPMObject(db.Model):
   essence = db.StringProperty()
   affiliation = db.StringProperty()
   scope = db.StringProperty()
-  unfoldDiag = db.StringProperty() # dict. pickeled
-  inzoomDiag = db.StringProperty() # dict. pickeled
-  things = db.StringProperty() # dict. pickeled
+  unfoldDiag = db.StringListProperty() # List Keys
+  inzoomDiag = db.StringListProperty() # List Keys
+  things = db.StringListProperty() # List Keys
   url = db.URLProperty()
   # OPM Object
   classType = db.StringProperty()
   type = db.StringProperty()
-  states = db.StringProperty() # dict. pickeled
-  inLinks = db.StringProperty() # dict. pickeled
-  outLInks = db.StringProperty()  # dict. pickeled
+  states = db.StringListProperty() # List Keys
+  inLinks = db.StringListProperty() # List Keys
+  outLInks = db.StringListProperty() # List Keys
