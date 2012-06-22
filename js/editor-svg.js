@@ -12,9 +12,6 @@ var svg = document.getElementsByTagName('svg')[0];
 var svgNS = svg.getAttribute('xmlns');
 var xlinkNS = svg.getAttribute('xmlns:xlink');
 
-var activeSVGDiagram = document.getElementById('sd');
-var activeSVGElement = null;
-
 var currentX = 0;
 var currentY = 0;
 var currentMatrix = 0;
