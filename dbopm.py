@@ -78,18 +78,17 @@ class SRVOPMdiagram(db.Model):
     name = db.StringProperty()
     number = db.IntegerProperty()
     OPL = db.BlobProperty()
-    level = db.IntegerProperty()
 
 class SRVOPMmodel(db.Model):
     modelID = db.StringProperty()
-    creator = db.StringProperty() # User Key
+    creator = db.StringProperty()
     creationDate = db.DateTimeProperty()
     name = db.StringProperty()
     type = db.StringProperty()
     participants = db.StringListProperty() # List Keys
     lastUpdate = db.DateTimeProperty()
 
-class SRVOPMProceduralLInk(db.Model):
+class SRVOPMProceduralLink(db.Model):
   # OPM ELement
   id = db.StringProperty()
   description = db.StringProperty()
@@ -102,7 +101,7 @@ class SRVOPMProceduralLInk(db.Model):
   xorRelation = db.StringListProperty() # List Keys
   orRelation = db.StringListProperty() # List Keys
   
-class SRVOPMStructuralLInk(db.Model):
+class SRVOPMStructuralLink(db.Model):
   # OPM ELement
   id = db.StringProperty()
   description = db.StringProperty()
@@ -126,7 +125,6 @@ class SRVOPMState(db.Model):
   # OPM State
   callsType = db.StringProperty()
   type = db.StringProperty()
-  Sparent = db.StringProperty() # Object Key
   minActivationTime = db.IntegerProperty()
   maxActivationTime = db.IntegerProperty()
   inLinks = db.StringListProperty() # List Keys
