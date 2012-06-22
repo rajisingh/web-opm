@@ -1,7 +1,7 @@
 import dbopm
 
 def newUser(userClass):
-	nUser = dbopm.SRVuser(
+    nUser = dbopm.SRVuser(
 					userID = userClass.id,
 					provider = userClass.provider,
 					token = userClass.token,
@@ -16,11 +16,12 @@ def newUser(userClass):
     nUser.put() 
 
 def newModel(modelClass):
-	q = db.Query(dbopm.SRVuser, keys_only = True)
-	q.filter("userID = ",modelClass.creator)
-	for p in q.fetch(1):
-		creatorKey = p
-	nModel = dbopm.SRVOPMmodel(
+    q = db.Query(dbopm.SRVuser, keys_only = True)
+    q.filter("userID = ",modelClass.creator)
+    creatorKey = ""
+    for p in q.fetch(1):
+        creatorKey = p
+    nModel = dbopm.SRVOPMmodel(
 				parent = creatorKey,
 				modelID = modelClass.id,
 				creator = modelClass.creator,
@@ -28,44 +29,56 @@ def newModel(modelClass):
 				name = modelClass.name,
 				type = modelClass.type,
 				participants = modelClass.participants,
-				SD = modelClass.SD,
-				diagrams = modelClass.diagrams,
 				lastUpdate = modelClass.lastUpdate
 	)
     nModel.put() 
 	
 def newDiagram(diagClass):
-	if diagClass.predecessor = None:
-		q = db.Query(dbopm.SRVOPMmodel, keys_only = True)
-		q.filter("id = ",diagClass.modelID)
-	else:
-		q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
-		q.filter("id = ",diagClass.predecessor)
-	for p in q.fetch(1):
+    tempVar = diagClass.id.split(":")
+    del tempVar[-1]
+    parID = ":".join(tempVar)
+    parentKey = ""
+    q = db.Query(dbopm.SRVOPMmodel, keys_only = True)
+    q.filter("modelID = ",parID)
+    for p in q.fetch(1):
 		parentKey = p
-	nDiag = dbopm.SRVOPMdiagram(
+    if parentKey == "":
+		q = db.Query(dbopm.SRVOPMProceduralLInk, keys_only = True)
+		q.filter("id = ",parID)
+		for p in q.fetch(1):
+			parentKey = p
+    if parentKey == "":
+		q = db.Query(dbopm.SRVOPMObject, keys_only = True)
+		q.filter("id = ",parID)
+		for p in q.fetch(1):
+			parentKey = p
+    if parentKey == "":
+		q = db.Query(dbopm.SRVOPMPRocess, keys_only = True)
+		q.filter("id = ",parID)
+		for p in q.fetch(1):
+			parentKey = p
+    nDiag = dbopm.SRVOPMdiagram(
 				parent = parentKey,
 				id = diagClass.id,
-				modelID = diagClass.modelID,
-				predecessor = diagClass.predecessor,
-				successors = diagClass.successors,
-				elements = diagClass.elements,
 				name = diagClass.name,
 				number = diagClass.number,
 				OPL = diagClass.OPL,
 				level = diagClass.level
-	)
+                )
     nDiag.put()
 
 def newPLink(plinkClass):
-	q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
-	q.filter("id = ",plinkClass.diagrams[0])
-	for p in q.fetch(1):
+    tempVar = diagClass.id.split(":")
+    del tempVar[-1]
+    parID = ":".join(tempVar)
+    q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
+    q.filter("id = ",parID)
+    diagKey = ""
+    for p in q.fetch(1):
 		diagKey = p
-	nPLink = dbopm.SRVOPMProceduralLInk(
+    nPLink = dbopm.SRVOPMProceduralLInk(
 				parent = diagKey,
 				id = plinkClass.id,
-				diagrams = plinkClass.diagrams,
 				description = plinkClass.description,
 				source = plinkClass.source,
 				destination = plinkClass.destination,
@@ -77,22 +90,22 @@ def newPLink(plinkClass):
     nPLink.put() 
 
 def newProcess(processClass):
-	q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
-	q.filter("id = ",processClass.diagrams[0])
-	for p in q.fetch(1):
+    tempVar = diagClass.id.split(":")
+    del tempVar[-1]
+    parID = ":".join(tempVar)
+    q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
+    q.filter("id = ",parID)
+    diagKey = ""
+    for p in q.fetch(1):
 		diagKey = p
-	nProcess = dbopm.SRVOPMPRocess(
+    nProcess = dbopm.SRVOPMPRocess(
 				parent = diagKey,
 				id = processClass.id,
-				diagrams = processClass.diagrams,
 				description = processClass.description,
 				name = processClass.name,
 				essence = processClass.essence,
 				affiliation = processClass.affiliation,
 				scope = processClass.scope,
-				unfoldDiag = processClass.unfoldDiag,
-				inzoomDiag = processClass.inzoomDiag,
-				things = processClass.things,
 				url = processClass.url,
 				classType = processClass.classType,
 				minActivationTime = processClass.minActivationTime,
@@ -103,11 +116,15 @@ def newProcess(processClass):
     nProcess.put() 
 
 def newObject(objClass):
-	q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
-	q.filter("id = ",objClass.diagrams[0])
-	for p in q.fetch(1):
+    tempVar = diagClass.id.split(":")
+    del tempVar[-1]
+    parID = ":".join(tempVar)
+    q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
+    q.filter("id = ",parID)
+    diagKey = ""
+    for p in q.fetch(1):
 		diagKey = p
-	nObj = dbopm.SRVOPMObject(
+    nObj = dbopm.SRVOPMObject(
 				parent = diagKey,
 				id = objClass.id,
 				diagrams = objClass.diagrams,
@@ -116,14 +133,11 @@ def newObject(objClass):
 				essence = objClass.essence,
 				affiliation = objClass.affiliation,
 				scope = objClass.scope,
-				unfoldDiag = objClass.unfoldDiag,
-				inzoomDiag = objClass.inzoomDiag,
-				things = objClass.things,
 				url = objClass.url,
 				classType = objClass.classType,
 				type = objClass.type,
-				states = objClass.states,
 				inLinks = objClass.inLinks,
-				outLInks = objClass.outLinks
+				outLInks = objClass.outLinks,
+				initValue = objClass.initValue
 	)
     nObj.put() 
