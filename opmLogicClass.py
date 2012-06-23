@@ -1,6 +1,7 @@
 #OPM CLASS LOGIC
 
-
+import index
+import dbproc
 
 class PartyOrder():
 	dictInst= {}
@@ -12,8 +13,10 @@ class PartyOrder():
 			del temp[-1]
 			parent = ":".join(temp)
 			self.dictChildInst[parent]+=1
+		inst.db()
 	def update(self,inst):
 		self.dictInst[inst.id]=inst
+		inst.db()
 	def getInst(self,id):
 		return self.dictInst[id]
 	def remove(self,id):
@@ -41,6 +44,7 @@ class User():
 		self.models= []
 		self.lastLogin=lastLogin
 		self.loginStatus=False
+		index.activeClients.add(self)
 		
 	"""def objForJson(self):
 		obj = self
@@ -73,7 +77,7 @@ class User():
 		#Sets a new first and last name for the user
 		self.firstName=newFirstName
 		self.lastName=newLastName
-		
+		index.activeClients.add(self)
 	
 	def getModels (self):
 		#receives the  model id's list
@@ -82,10 +86,10 @@ class User():
 		#receives the  model id's list
 		return partyOrder.getInst(modelId)
 	
-	def addModel (self, model):
+	def addModel (self, modelId):
 		#adds a model to the list of models
-		self.models.append(model.id)
-		
+		self.models.append(modelId)
+		index.activeClients.add(self)
 		
 	
 	def getLastLogin (self):
@@ -95,10 +99,12 @@ class User():
 	def setLastLogin (self, newLoginDate):
 		#set new login date 
 		self.lastLogin=newLoginDate
+		index.activeClients.add(self)
 	
 	def setToken (self,newToken):
 		#sets the given token the user receives when he signs in via provider
 		self.token=newToken
+		index.activeClients.add(self)
 	
 	def getToken (self):
 		return self.token
@@ -106,6 +112,7 @@ class User():
 	def setPassword (self, newPassword):
 		#sets the new password if user wishes to update it
 		self.password=newPassword
+		index.activeClients.add(self)
 	
 	def getPassword (self):
 		#called if user forgets password
@@ -119,6 +126,7 @@ class User():
 	def setProvider (self, provider):
 		#token provider i.e FB LI Google etc
 		self.provider=provider
+		index.activeClients.add(self)
 	
 	def getProvider (self):
 		return self.provider
@@ -168,7 +176,7 @@ class OPMModel():
 		self.type = type
 		self.participants = []
 		self.lastUpdate = lastUpdate
-				
+		partyOrder.add(self)
 # working methods
 	
 	"""def objForJson(self):
@@ -183,6 +191,8 @@ class OPMModel():
 	 		obj.participants.append(self.participants[i].id)
  		return obj"""
 
+	def db(self):
+		dbproc.newModel(self)
 	def getId(self): 	
 	#ID of model
 		return self.id		
@@ -279,13 +289,16 @@ class Message():
 
 
 class OPMDiagram():
-	def __init__(self,id, level, name):
+	def __init__(self,id, name, number = None):
 		self.id=id
 		self.name = name
-		self.number = None
+		self.number = number
 		self.OPL = None
-		self.level = level
+		partyOrder.add(self)
 	#  Working functions
+	
+	def db(self):
+		dbproc.newDiagram(self)
 	"""def objForJson(self):
 		obj = self
 		obj.predecessor = self.predecessor.id
@@ -317,11 +330,11 @@ class OPMDiagram():
 		self.number = number
 		partyOrder.update(self)
 		
-	def getLevel(self):
-		return self.level
-	
 	def getOPL(self): #for future implementation
 		return self.OPL
+	def setOpl(self,OPL):
+		self.OPL=OPL
+		partyOrder.update(self)
 	
 # /*Non-working function*/
 #	def reLevel(self,levels):          
@@ -450,7 +463,9 @@ class OPMProceduralLink(OPMLink):
 		self.category="Procedural"
 		self.xorRelation=[]
 		self.orRelation=[]
-	
+		partyOrder.add(self)
+	def db(self):
+		dbproc.newPlink(self)
 	"""def objForJson(self):
 		obj = self
 		obj.source = self.source.id
@@ -555,6 +570,9 @@ class OPMStructuralLink(OPMLink):
 		self.participationVal=None
 		self.cardinality = 1
 		self.tag=None
+		partyOrder.add(self)
+	def db(self):
+		dbproc.newSlink(self)	
 	"""	def verifyLink(self):
 		#this function verifies if a link can be added between two entities
 		if ((self.source.outLinks[self.destination.id]== None) or (self.destination.inLinks[self.source.id] == None)) :
@@ -667,6 +685,10 @@ class OPMState(OPMEntity):
 		self.maxActivationTime=None
 		self.inLinks=[]
 		self.outLink=[]
+		partyOrder.add(self)
+		
+	def db(self):
+		dbproc.newState(self)
 	def getType(self):
 		return self.type
 	def setType(self, type):
@@ -698,6 +720,10 @@ class OPMProcess(OPMThing):
 		self.maxActivationTime=None
 		self.inLinks=[]
 		self.outLink=[]
+		partyOrder.add(self)
+	def db(self):
+		dbproc.newProcess(self)
+		
 	
 	"""def objForJson(self):
 		obj = self
@@ -759,7 +785,12 @@ class OPMObject(OPMThing):
 		self.type="Compound Object"
 		self.inLinks=[]
 		self.outLink=[]
+		self.states=[]
 		self.initValue=None
+		partyOrder.add(self)
+	
+	def db(self):
+		dbproc.newObject(self)
 	
 	"""def objForJson(self):
 		obj = self
@@ -805,7 +836,9 @@ class OPMObject(OPMThing):
 	def setType(self,newType):
 		self.type=newType
 		partyOrder.update(self)
-	
+	def addState(self,stateId):
+		self.states.append(stateId)
+		partyOrder.update(self)
 #Following funcs are meanwhile commented. Not in the clients side
 #	def getName(self):
 #		return self.name

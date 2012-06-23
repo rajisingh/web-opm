@@ -1,8 +1,50 @@
 import opmLogicClass
 from google.appengine.api import channel
 import datetime
+import threading
+import dbproc
+import index
 
-
+class actions(threading.Thread):
+    def __init__(self,action,data):
+        self.action=action
+        self.data=data
+        threading.Thread.__init__ ( self )
+    def run(self):
+        if self.action=="createUserInstance":
+            createUserInstance(data)
+            
+        elif self.action == "createModelInstance" :
+            result =createModelInstance(data)
+            activeClients.get(result.creator).addModel(result.id)
+            for user in result.participants :
+                activeClients.get(user).addModel(result.id)
+            
+        elif self.action == "createDiagramInstance" :
+            result =createDiagramInstance(data)
+            
+        elif self.action == "createObjectInstance" :
+            result =createObjectInstance(data)
+            
+        elif self.action == "createProcessInstance" :
+            result =createProcessInstance(data)
+            
+        elif self.action == "createStateInstance" :
+            result =createStateInstance(data)
+            temp = result.id.split(":")
+            del temp[-1]
+            parent = ":".join(temp)
+            opmLogicClass.partyOrder.getInst(parent).addState(result.id)
+        elif self.action == "createProceduralLinkInstance" :
+            result = createProceduralLinkInstance(data)
+            opmLogicClass.partyOrder.getInst(result.deestination).addLink(result)
+            opmLogicClass.partyOrder.getInst(result.source).addLink(result)
+        elif self.action == "createStructuralLinkInstance" :
+            result =createStructuralLinkInstance(data)
+            opmLogicClass.partyOrder.getInst(result.deestination).addLink(result)
+            opmLogicClass.partyOrder.getInst(result.source).addLink(result)
+        
+    
 def createUserInstance(data):
     date_lastLogin= datetime.datetime.strptime(str(data["lastLogin"]), '%Y-%m-%dT%H:%M:%S')
     #channel.send_message(str(data["id"]),str(date_lastLogin))
@@ -39,6 +81,7 @@ def createObjectInstance(data):
     object.initValue=data["initValue"]
     object.inLinks=data["inLinks"]
     object.outLinks=data["outLinks"]
+    object.states=data["states"]
     object.setDescription(data["description"])
     return object
 

@@ -13,6 +13,9 @@
 //User class instantiation
 var currentUser = new User('sergey@bolshchikov.net', null);
 
+
+
+
 //OPM classes instantiation
 var activeOPMModel = new OPMModel(currentUser);
 activeOPMModel.share(currentUser);

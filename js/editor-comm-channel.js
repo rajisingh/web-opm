@@ -1,7 +1,7 @@
 var channel = null;
 var channelOpen = function() {
 	// the method opens a channel with the server by GET request
-	obj = new Message("openChannel","",currentUser);
+	obj = new Message("openChannel","",currentUser.id);
 	jsonObj = JSON.encode(obj);
 	var request = encodeURIComponent(jsonObj);
 	JSONRequest.get("http://localhost:8080/rpc?JSONRequest="+request, function(sn, result, error){ 

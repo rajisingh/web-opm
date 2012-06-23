@@ -97,7 +97,7 @@ function aaa(x){
 		userData.firstName =currentUser.firstName
 		userData.lastName = currentUser.lastName
 		userData.password =currentUser.password 
-		userData.models = { }
+		userData.models = []
 		userData.lastLogin =currentUser.lastLogin	
 		userData.loginStatus =currentUser.loginStatus
 		obj=new Message( "createUserInstance", userData, currentUser);
