@@ -48,36 +48,25 @@ var addState = function() {
 	try {
 		//Check
 		if (activeSVGElement === null) {
-			var msg = "Please, click on the relevant object first";
-			var err = new Error(msg);
-			if (!err.message) {
-				err.message = msg;
-			}
+			var err = new Error("Please, click on the relevant object first");
 			throw err;
 		}
 		else {
-			var type = activeSVGElement.getAttributeNS(null, 'id').slice(0,3);
-			if (type == 'prc') {
-				var msg = "Process cannot have a state";
-				var err = new Error(msg);
-				if (!err.message) {
-					err.message = msg;
-				}
+			var type = activeSVGElement.getAttributeNS(null, 'type');
+			if (type == 'process') {
+				var err = new Error("Process cannot have a state");
 				throw err;
 			}
 			
-			//Execute this if error are caught
-			//Create instance of UIState class (GUI)
-			var stt = new UIState(activeUIElement);
+			
+			var parent = partyOrder.get(activeUIElement.id);
+			var opmstt = new OPMState(parent.id);
+			
+			var stt = new UIState(activeUIElement, opmstt);
 			activeUIElement.addState(stt);
 			stt.draw();
 			
-			//Create instance of OPMState class (Client-side Logic)
-			var parent = activeOPMDiagram.getElement(activeUIElement.id);
-			var opmstt = new OPMState(parent);
-			opmstt.id = stt.id;
-			opmstt.name = stt.name.value;
-			parent.addState(opmstt);
+
 			
 		}			
 	}

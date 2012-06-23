@@ -29,6 +29,10 @@ PartyOrder.prototype.add = function(inst) {
 	}
 }
 
+PartyOrder.prototype.get = function(id) {
+	return this.dictInst[id];
+}
+
 PartyOrder.prototype.update = function(inst) {
 //updating the instance id
 	this.dictInst[inst.id] = inst;

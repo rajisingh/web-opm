@@ -20,6 +20,7 @@ UIDiagram.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'transform', this.transform);
+	group.setAttributeNS(null, 'type', 'diagram');
 	svg.appendChild(group);
 }
 UIDiagram.prototype.addElement = function(element) {
@@ -81,6 +82,7 @@ UIObject.prototype.draw = function() {
 	group.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
 	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
+	group.setAttributeNS(null, 'type', 'object');
 	activeSVGDiagram.appendChild(group);
 	//Draw rectangle, appended to the group
 	var rect = document.createElementNS(svgNS, 'rect');
@@ -148,6 +150,7 @@ UIProcess.prototype.draw = function() {
 	group.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
 	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
+	group.setAttributeNS(null, 'type', 'process');
 	activeSVGDiagram.appendChild(group);
 	var ellipse = document.createElementNS(svgNS, 'ellipse');
 	ellipse.setAttributeNS(null, 'cx', this.x);
@@ -195,9 +198,8 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 
 var objHeightStep = 35;					//Amount of pixels to enlarge the object height when a new state is added
 var stateYDelta = 10;					//Distance between states
-function UIState(parent) {
-
-	this.id = 'stt' + (parent.statesAmount + 1).toString() ;
+function UIState(parent, inst) {
+	this.id = inst.id
 	this.x = activeSVGElement.firstChild.x.baseVal.value + 20;
 	this.y = activeSVGElement.firstChild.y.baseVal.value + 55;
 	this.rx = 6;			
@@ -207,7 +209,7 @@ function UIState(parent) {
 	this.fill = 'white';
 	this.stroke = '#002e00';
 	this.strokeWidth = 1;
-	this.name = new UIName(this);
+	this.name = new UIName(inst.name);
 	this.parent = parent;
 	this.icon = null;
 }
@@ -215,6 +217,7 @@ UIState.prototype.draw = function(){
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	group.setAttributeNS(null, 'type', 'state');
 	activeSVGElement.appendChild(group);
 	
 	//Increase height of parent rect
