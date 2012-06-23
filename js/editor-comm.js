@@ -100,7 +100,7 @@ function aaa(x){
 		userData.models = []
 		userData.lastLogin =currentUser.lastLogin	
 		userData.loginStatus =currentUser.loginStatus
-		obj=new Message( "createUserInstance", userData, currentUser);
+		obj=new Message( "createUserInstance", userData, currentUser.id);
 		
 	}
     sendMessage(obj);           

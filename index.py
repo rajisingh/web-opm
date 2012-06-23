@@ -135,7 +135,7 @@ class RPCHandler(webapp2.RequestHandler):
                 self.response.headers["Content-Type"] = "application/jsonrequest"
                 self.response.out.write(json.dumps(token))
             else :
-                scripts.action(msg.action,msg.data).start() 
+                scripts.actions(msg.action,msg.data).start() 
             
             """elif msg.action == "createUserInstance":
                 
