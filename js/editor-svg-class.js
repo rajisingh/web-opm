@@ -15,11 +15,13 @@ function UIDiagram(id) {
 	this.transform = 'matrix(1 0 0 1 0 0)';
 	this.active = true;
 	this.elements = { };
+	this.type = 'diagram';
 }
 UIDiagram.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'transform', this.transform);
+	group.setAttributeNS(null, 'type', 'diagram');
 	svg.appendChild(group);
 }
 UIDiagram.prototype.addElement = function(element) {
@@ -31,7 +33,7 @@ UIDiagram.prototype.returnElement = function(id) {
 	}
 }
 
-function UIName(el) {
+function UIName(name) {
 	//Class holding the name of any element
 	this.x = null;
 	this.y = null;
@@ -39,16 +41,7 @@ function UIName(el) {
 	this.fontFamily = 'Helvetica';
 	this.fontWeight = 'bold';
 	this.fontSize = '15';
-	switch(el.id.slice(0, 3)){
-	case 'obj':
-		this.value = 'Object ' + el.id.slice(3);
-		break;
-	case 'prc':
-		this.value = 'Process ' + el.id.slice(3);
-		break;
-	case 'stt':
-		this.value = 'State ' + el.id.slice(3);
-	}
+	this.value = name;
 }
 UIName.prototype.rename = function(newName) {
 	this.value = newName;
@@ -64,8 +57,8 @@ UIName.prototype.updateSize = function(newSize) {
 	this.fontSize = newSize;
 }
  
-function UIObject(id) {
-	this.id = 'obj' + id;
+function UIObject(obj) {
+	this.id = obj.id;
 	this.x = randomFromTo(90, 1150);
 	this.y = randomFromTo(5, 420);
 	this.width = 110;
@@ -73,10 +66,11 @@ function UIObject(id) {
 	this.fill = 'white';
 	this.stroke = 'limeGreen';
 	this.strokeWidth = 2;
-	this.name = new UIName(this);
+	this.name = new UIName(obj.name);
 	this.states = { }
 	this.statesAmount = 0;
 	this.icon = null;
+	this.type = 'object';
 }
 UIObject.prototype.addState = function(state) {
 	this.states[state.id] = state;
@@ -90,6 +84,7 @@ UIObject.prototype.draw = function() {
 	group.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
 	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
+	group.setAttributeNS(null, 'type', 'object');
 	activeSVGDiagram.appendChild(group);
 	//Draw rectangle, appended to the group
 	var rect = document.createElementNS(svgNS, 'rect');
@@ -138,8 +133,8 @@ UIObject.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if (newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-function UIProcess(id) {
-	this.id = 'prc'+ id;
+function UIProcess(prc) {
+	this.id = prc.id
 	this.x = randomFromTo(90, 1150);
 	this.y = randomFromTo(5, 420);
 	this.rx = 60;
@@ -147,8 +142,9 @@ function UIProcess(id) {
 	this.fill = 'white';
 	this.stroke = 'RoyalBlue';
 	this.strokeWidth = 2;
-	this.name = new UIName(this);
+	this.name = new UIName(prc.name);
 	this.icon = null;
+	this.type = 'process';
 }
 UIProcess.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
@@ -157,6 +153,7 @@ UIProcess.prototype.draw = function() {
 	group.setAttributeNS(null, 'onmousedown', 'setSrc(evt)');
 	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
+	group.setAttributeNS(null, 'type', 'process');
 	activeSVGDiagram.appendChild(group);
 	var ellipse = document.createElementNS(svgNS, 'ellipse');
 	ellipse.setAttributeNS(null, 'cx', this.x);
@@ -204,9 +201,8 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 
 var objHeightStep = 35;					//Amount of pixels to enlarge the object height when a new state is added
 var stateYDelta = 10;					//Distance between states
-function UIState(parent) {
-
-	this.id = 'stt' + (parent.statesAmount + 1).toString() ;
+function UIState(parent, inst) {
+	this.id = inst.id
 	this.x = activeSVGElement.firstChild.x.baseVal.value + 20;
 	this.y = activeSVGElement.firstChild.y.baseVal.value + 55;
 	this.rx = 6;			
@@ -216,14 +212,16 @@ function UIState(parent) {
 	this.fill = 'white';
 	this.stroke = '#002e00';
 	this.strokeWidth = 1;
-	this.name = new UIName(this);
+	this.name = new UIName(inst.name);
 	this.parent = parent;
 	this.icon = null;
+	this.type = 'state';
 }
 UIState.prototype.draw = function(){
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
 	group.setAttributeNS(null, 'transform', 'matrix(1 0 0 1 0 0)');
+	group.setAttributeNS(null, 'type', 'state');
 	activeSVGElement.appendChild(group);
 	
 	//Increase height of parent rect
@@ -281,13 +279,14 @@ UIState.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-function UILink(id) {
-	this.id = id;
+function UILink(parent) {
+	this.id = parent.id;
 	this.d = null;
 	this.fill = 'none';
 	this.stroke = 'DimGrey';
 	this.strokeWidth = 2;
 	this.name = null;
+	this.type = 'link';
 }
 UILink.prototype.updateLink = function(newD) {
 	this.d = newD;
@@ -327,13 +326,13 @@ UILink.prototype.draw = function(src, dest) {
 	
 	case 'rcl':
 
-		if (src.id.slice(0,3) === 'prc') { var srcCenter = [src.x, src.y]; }
+		if (src.type === 'process') { var srcCenter = [src.x, src.y]; }
 		else { 
 			var srcCenter = [src.x + src.width / 2, src.y + src.height / 2]; 
 			var srcSizeMin = [src.x, src.y];
 			var srcSizeMax = [src.x + src.width, src.y + src.height];
 		}
-		if (dest.id.slice(0,3) === 'prc') { var destCenter = [dest.x, dest.y]; }
+		if (dest.type === 'process') { var destCenter = [dest.x, dest.y]; }
 		else { 
 			var destCenter = [dest.x + dest.width / 2, dest.y + dest.height / 2]; 
 			var destSizeMin = [dest.x, dest.y];
@@ -341,7 +340,7 @@ UILink.prototype.draw = function(src, dest) {
 		}
 
 		
-		if (src.id.slice(0,3) === 'prc') { 
+		if (src.type === 'process') { 
 			var params = { cx: src.x, cy: src.y, rx: src.rx, ry: src.ry }
 			var srcBorderPoint = ellipClipping(srcCenter, destCenter, params);
 		}
@@ -349,7 +348,7 @@ UILink.prototype.draw = function(src, dest) {
 			var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
 		}
 		
-		if (dest.id.slice(0,3) === 'prc') { 
+		if (dest.type === 'process') { 
 			var params = { cx: dest.x, cy: dest.y, rx: dest.rx, ry: dest.ry }
 			var destBorderPoint = ellipClipping(srcCenter, destCenter, params);
 		}

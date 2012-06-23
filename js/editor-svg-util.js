@@ -31,7 +31,7 @@ var setDest = function(evt) {
 
 var select = function(evt) {
 	if (evt.currentTarget !== activeSVGElement) {
-		if (activeSVGElement == null) {
+		if (activeSVGElement === null) {
 			activeSVGElement = evt.currentTarget;
 			activeUIElement = activeUIDiagram.returnElement(evt.currentTarget.id);
 		}
