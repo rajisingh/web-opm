@@ -14,10 +14,9 @@
 var currentUser = new User('sergey@bolshchikov.net', null);						//User class instantiation
 var partyOrder = new PartyOrder();												//Main DS
 var activeOPMModel = new OPMModel(currentUser.id);
-activeOPMModel.share(currentUser);
-currentUser.addModel(activeOPMModel);
+activeOPMModel.share(currentUser.id);
+currentUser.addModel(activeOPMModel.id);
 var activeOPMDiagram = new OPMDiagram(activeOPMModel.id);
-activeOPMModel.addDiagram(activeOPMDiagram);
 
 
 //UI classes instantiation

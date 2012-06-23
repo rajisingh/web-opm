@@ -1,6 +1,6 @@
 /*   
  *    Web OPM: online case tool for Object-Process Methodology
- *    Copyright ɠ2012 Israel Institute of Technology - Technion
+ *    Copyright 2012 Israel Institute of Technology - Technion
  *    The code is licensed under GNU General Public License, v2
  * 
  *    File context description:
@@ -56,7 +56,6 @@ User.prototype.loadModel = function(modelId){
 User.prototype.addModel = function(model) {
    //add model to users model list
    this.models.push(model.id);
-   
 }
 User.prototype.getLastLogin = function() {
    return this.lastLogin;
@@ -65,8 +64,9 @@ User.prototype.setLastLogin = function() {
    this.lastLogin = new Date();
 }
 User.prototype.setToken = function(token) {
-   /*Token is given to the user after she signs in via provider. 
-    *Token is needed to be kep in order to sign in user automatically when she enters web-site repeatedly*/
+   /* Token is given to the user after she signs in via provider. 
+    * Token is needed to be kept in order to sign in user automatically when she enters web-site repeatedly
+    * */
    this.token = token;
 }
 User.prototype.getToken = function() {
@@ -101,25 +101,18 @@ User.prototype.logout = function() {
 }
 
 function OPMModel(creatorId) {                     
-   this.id = getId();
+   this.id = partyOrder.getId(null);
    this.creator = creatorId;
    this.name = 'New Model';                         //default value
    this.type = 'System';
    this.participants = [];
    this.lastUpdate = new Date();
    this.creationDate = new Date();
+   partyOrder.add(this);
    
-   
-   partyOrder.dictInst[this.id] = this;
-   var sd = new OPMDiagram(this.id);            //create first SD for model, with level=0
-   
-   var msg = new Message("createModelInstance", this , this.creator);
-   sendMessage(msg);
-   var msg2 = new Message ("createDiagramInstance", sd, this.creator);
-   sendMessage(msg2);
-   
-   delete msg;
-   delete msg2;
+   var msg = new Message("createModelInstance", this, creatorId);
+   msg.send();
+
 }
 
 /*Working functions*/
@@ -185,16 +178,15 @@ OPMModel.prototype.destructor = function(){
    }
 }
 
-function OPMDiagram(activeOPMModel) {   
-   this.id = getId(activeOPMModel.id);                          
+function OPMDiagram(modelId) {   
+   this.id = partyOrder.getId(modelId);                          
    this.name = 'New Diagram';                        //default value
    this.number = null;
-   this.OPL = null;
+   this.OPL = null;   
    
-   partyOrder.dictInst[this.id] = this;
-   
-   var msg = new Message("createDiagramInstance", this , null);
-   sendMessage(msg);
+   partyOrder.add(this);
+   var msg = new Message ("createDiagramInstance", this, currentUser.id);
+   msg.send();
 }
 /*Working functions*/
 OPMDiagram.prototype.returnId = function() {
