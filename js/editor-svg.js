@@ -12,33 +12,19 @@ var svg = document.getElementsByTagName('svg')[0];
 var svgNS = svg.getAttribute('xmlns');
 var xlinkNS = svg.getAttribute('xmlns:xlink');
 
-var activeSVGDiagram = document.getElementById('sd');
-var activeSVGElement = null;
-
 var currentX = 0;
 var currentY = 0;
 var currentMatrix = 0;
-var objId = 0; 
-var prcId = 0;
-var lnkId = 0;
+
 
 
 var addObject = function() {
 	try {
+		var opmobj = new OPMObject(activeOPMDiagram.id);
 		if (activeSVGElement !== null) { deselect(); }
-		objId++;
-		
-		//Create instance of UIObject class (GUI)
-		var obj = new UIObject(objId);
+		var obj = new UIObject(opmobj);
 		obj.draw();
 		activeUIDiagram.addElement(obj);
-		
-		//Create instance of OPMObject class (Client-side Logic)
-		var opmobj = new OPMObject();
-		opmobj.id = obj.id
-		opmobj.name = obj.name.value;
-		activeOPMDiagram.addElement(opmobj);
-		opmobj.addDiagram(activeOPMDiagram);
 	}
 	catch(e) {
 		alert(e.message);
@@ -47,20 +33,11 @@ var addObject = function() {
 
 var addProcess = function() {
 	try {
+		var opmprc = new OPMProcess(activeOPMDiagram.id);
 		if (activeSVGElement !== null) { deselect(); }
-		prcId++;
-		
-		//Create instance of UIProcess class (GUI)
-		var prc = new UIProcess(prcId);
+		var prc = new UIProcess(opmprc);
 		prc.draw();
 		activeUIDiagram.addElement(prc);
-		
-		//Create instance of OPMProcess class (Client-side Logic)
-		var opmprc = new OPMProcess();
-		opmprc.id = prc.id
-		opmprc.name = prc.name.value;
-		activeOPMDiagram.addElement(opmprc);
-		opmprc.addDiagram(activeOPMDiagram);
 	}
 	catch(e) {
 		alert(e.message);
@@ -71,36 +48,25 @@ var addState = function() {
 	try {
 		//Check
 		if (activeSVGElement === null) {
-			var msg = "Please, click on the relevant object first";
-			var err = new Error(msg);
-			if (!err.message) {
-				err.message = msg;
-			}
+			var err = new Error("Please, click on the relevant object first");
 			throw err;
 		}
 		else {
-			var type = activeSVGElement.getAttributeNS(null, 'id').slice(0,3);
-			if (type == 'prc') {
-				var msg = "Process cannot have a state";
-				var err = new Error(msg);
-				if (!err.message) {
-					err.message = msg;
-				}
+			var type = activeSVGElement.getAttributeNS(null, 'type');
+			if (type == 'process') {
+				var err = new Error("Process cannot have a state");
 				throw err;
 			}
 			
-			//Execute this if error are caught
-			//Create instance of UIState class (GUI)
-			var stt = new UIState(activeUIElement);
+			
+			var parent = partyOrder.get(activeUIElement.id);
+			var opmstt = new OPMState(parent.id);
+			
+			var stt = new UIState(activeUIElement, opmstt);
 			activeUIElement.addState(stt);
 			stt.draw();
 			
-			//Create instance of OPMState class (Client-side Logic)
-			var parent = activeOPMDiagram.getElement(activeUIElement.id);
-			var opmstt = new OPMState(parent);
-			opmstt.id = stt.id;
-			opmstt.name = stt.name.value;
-			parent.addState(opmstt);
+
 			
 		}			
 	}
@@ -130,66 +96,51 @@ var turnLinkOn = function(type) {
 	linkOn.type = type;
 }
 var addLink = function(src, dest) {
-	try {
-		lnkId++;
+	try {		
 		switch(linkOn.type) {
 		case 'udr':
-			var opmlink = new OPMStructuralLink();
-			opmlink.id = linkOn.type + lnkId;
+			var opmlink = new OPMStructuralLink(activeOPMDiagram.id);
 			opmlink.setType('Unidirectional');
-			if (src.id.slice(0,3) === 'stt') {
-				var parent = activeOPMDiagram.getElement(src.parent.id);
-				opmlink.setSource(parent.getState(src.id));
-			}
-			if (dest.id.slice(0,3) === 'stt') {
-				var parent = activeOPMDiagram.getElement(dest.parent.id);
-				opmlink.setDestination(parent.getState(dest.id))
-			}
-			opmlink.setSource(activeOPMDiagram.getElement(src.id));
-			opmlink.setDestination(activeOPMDiagram.getElement(dest.id));
+			opmlink.setSource(partyOrder.get(src.id));
+			opmlink.setDestination(partyOrder.get(dest.id));
 			if (opmlink.verifyLink()) {
-				var lnk = new UILink(opmlink.id);
+				var lnk = new UILink(opmlink);
 				lnk.draw(src, dest);
 				activeUIDiagram.addElement(lnk);
-				activeOPMDiagram.addElement(opmlink);
 				opmlink.source.addLink(opmlink);
 				opmlink.destination.addLink(opmlink);
+				partyOrder.add(opmlink);
+				var msg = new Message('createStructuralLinkInstance', opmlink, currentUser.id);
+				msg.send();
 				linkOn.off();
 			}
 			else {
 				delete opmlink;
-				lnkId--;
 				linkOn.off();
 				var err = new Error("You can't do it! Unidirectional relation can connect only objects or states.");
 				throw err;
 			}
 			break;
+			
 		case 'rcl':
-			var opmlink = new OPMProceduralLink();
-			opmlink.id = linkOn.type + lnkId;
+			var opmlink = new OPMProceduralLink(activeOPMDiagram.id);
 			opmlink.setType('Result-Consumption');
-			if (src.id.slice(0,3) === 'stt') {
-				var parent = activeOPMDiagram.getElement(src.parent.id);
-				opmlink.setSource(parent.getState(src.id));
-			}
-			if (dest.id.slice(0,3) === 'stt') {
-				var parent = activeOPMDiagram.getElement(dest);
-				opmlink.setDestination(parent.getState(dest.id));
-			}
-			opmlink.setSource(activeOPMDiagram.getElement(src.id));
-			opmlink.setDestination(activeOPMDiagram.getElement(dest.id));
+			opmlink.setSource(partyOrder.get(src.id));
+			opmlink.setDestination(partyOrder.get(dest.id));			
+			
 			if (opmlink.verifyLink()) {
-				var lnk = new UILink(opmlink.id);
+				var lnk = new UILink(opmlink);
 				lnk.draw(src, dest);
 				activeUIDiagram.addElement(lnk);
-				activeOPMDiagram.addElement(opmlink);
 				opmlink.source.addLink(opmlink);
 				opmlink.destination.addLink(opmlink);
+				partyOrder.add(opmlink);
+				var msg = new Message('createProceduralLinkInstance', opmlink, currentUser.id);
+				msg.send();
 				linkOn.off();
 			}
 			else {
 				delete opmlink;
-				lnkId--;
 				linkOn.off();
 				var err = new Error("You can't do it! Result-Consumption link connects only process with object or state");
 				throw err;
