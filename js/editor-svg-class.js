@@ -275,8 +275,8 @@ UIState.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-function UILink(id) {
-	this.id = id;
+function UILink(parent) {
+	this.id = parent.id;
 	this.d = null;
 	this.fill = 'none';
 	this.stroke = 'DimGrey';

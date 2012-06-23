@@ -261,12 +261,12 @@ OPMEntity.prototype.setName = function(name) {
    this.name = name;
 }
 OPMEntity.prototype.addLink = function(link) {
-        if (link.source.id === this.id) {
-                this.outLinks[link.destination.id] = link.destination;
-        }
-        else {
-                this.inLinks[link.source.id] = link.source;
-        }
+	if (link.source.id === this.id) {
+		this.outLinks.push(link.id);
+	}
+	else {
+		this.inLinks.push(link.id);
+	}
 }
 OPMEntity.prototype.removeLink = function(link) {
 //remove link from source and destination
@@ -439,11 +439,11 @@ OPMEntity.prototype.destructor = function() {//overloaded to delete State refere
 
 
 OPMLink.prototype = new OPMElement();
-function OPMLink(src, dest, category, type) {
-   this.source = src;
-   this.destination = dest;
-   this.category = category;                     //categories are strings, two values: "Structural" and "Procedural"
-   this.type = type;                           //types are strings, some values: "Instrument", "Agent" etc.
+function OPMLink() {
+   this.source = null;
+   this.destination = null;
+   this.category = null;                     //categories are strings, two values: "Structural" and "Procedural"
+   this.type = null;                           //types are strings, some values: "Instrument", "Agent" etc.
 }
 /*Working function*/
 OPMLink.prototype.getDestination = function() {
@@ -550,20 +550,17 @@ OPMProceduralLink.prototype.destructor = function() {
 }
 
 OPMStructuralLink.prototype = new OPMLink();
-function OPMStructuralLink() {
+function OPMStructuralLink(parentId) {
+	this.id = partyOrder.getId(parentId);
     this.category = 'Structural';
     this.participationConst = null;
     this.participationVal = null;
     this.cardinality = 1;
     this.tag = null;                                                   //description shown on link itself - only for uni/bi-directional relations
     
-    partyOrder.dictInst[this.id] = this;
-    
-    var msg = new Message("createStructuralLinkInstance", this , this.creator);
-    sendMessage(msg);
 }  
 /*Working function*/
-OPMStructuralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
+OPMStructuralLink.prototype.opmRulesCheck = function(src_chk, dest_chk){
   switch (src_chk.classType) {                                                      //rest of Logic rules using Switch, by source type.
   case "OPMObject":
       if (dest_chk.classType === "OPMProcess") {
@@ -581,21 +578,37 @@ OPMStructuralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
   }
 }
 OPMStructuralLink.prototype.verifyLink = function() {
-  if (typeof this.source.outLinks[this.destination.id] === 'undefined' || typeof this.destination.inLinks[this.source.id] === 'undefined') {  //check if two elements are linked
-                var x = (this.opmRulesCheck(this.source,this.destination));
-                return x;
-        }
-
-  else if (this.source.outLinks[this.destination.id].category ===  this.destination.inLinks[this.destination.id].category) {         //check for existing type of structural link between two entities
-        if (this.type === "Unidirectional" || this.type === "Bidirectional") { return true; }
-        else {
-                alert("Cannot connect two Objects with more than one " + this.type + " Link");
-                return false;
-        }
-    }
-        
-        this.opmRulesCheck(this.source,this.destination);
-        
+	var currentLinkId = null;
+	if (this.source.outLinks.length < this.destination.inLinks.length) {
+		for (var i = 0; i < this.source.outLinks.length; i++) {
+			if ( this.destination.inLinks.indexOf( this.source.outLinks[i] ) !== -1 ) {
+				currentLinkId =  this.source.outLinks[i];
+				break;
+			}
+		}
+	}
+	else {
+		for (var i = 0; i < this.destination.outLinks.length; i++) {
+			if (this.source.outLinks.indexOf( this.destination.inLinks[i] ) !== -1) {
+				currentLinkId = this.destination.outLinks[i];
+			}
+		}
+	}
+	
+	if (currentLinkId) {
+		var linkInst = partyOrder.get(currentLinkId);
+		if (linkInst.category === 'Unidirectional' || linkInst.category === 'Bidirectional') {
+			return false;
+		}
+		else {
+			var check = this.opmRulesCheck(this.source, this.destination);
+			return check;
+		}
+	}
+	else {
+		var check = this.opmRulesCheck(this.source, this.destination);
+		return check;
+	}
 }
 OPMStructuralLink.prototype.getCardinality = function() {
     return this.cardinality;
