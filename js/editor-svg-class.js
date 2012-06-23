@@ -31,7 +31,7 @@ UIDiagram.prototype.returnElement = function(id) {
 	}
 }
 
-function UIName(el) {
+function UIName(name) {
 	//Class holding the name of any element
 	this.x = null;
 	this.y = null;
@@ -39,16 +39,7 @@ function UIName(el) {
 	this.fontFamily = 'Helvetica';
 	this.fontWeight = 'bold';
 	this.fontSize = '15';
-	switch(el.id.slice(0, 3)){
-	case 'obj':
-		this.value = 'Object ' + el.id.slice(3);
-		break;
-	case 'prc':
-		this.value = 'Process ' + el.id.slice(3);
-		break;
-	case 'stt':
-		this.value = 'State ' + el.id.slice(3);
-	}
+	this.value = name;
 }
 UIName.prototype.rename = function(newName) {
 	this.value = newName;
@@ -64,8 +55,8 @@ UIName.prototype.updateSize = function(newSize) {
 	this.fontSize = newSize;
 }
  
-function UIObject(id) {
-	this.id = 'obj' + id;
+function UIObject(obj) {
+	this.id = obj.id;
 	this.x = randomFromTo(90, 1150);
 	this.y = randomFromTo(5, 420);
 	this.width = 110;
@@ -73,7 +64,7 @@ function UIObject(id) {
 	this.fill = 'white';
 	this.stroke = 'limeGreen';
 	this.strokeWidth = 2;
-	this.name = new UIName(this);
+	this.name = new UIName(obj.name);
 	this.states = { }
 	this.statesAmount = 0;
 	this.icon = null;

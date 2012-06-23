@@ -234,8 +234,8 @@ OPMDiagram.prototype.destructor = function() {
    //call destructor function of each element in diagram
 }
 
-function OPMElement(activeOPMDiagram) {
-    this.id = getId(activeOPMDiagram.id);
+function OPMElement() {
+	this.id = null;
 	this.description = null;
 }
 OPMElement.prototype.returnId = function() {
@@ -252,7 +252,6 @@ OPMElement.prototype.setDescription = function(description) {
 OPMEntity.prototype = new OPMElement();       //inheriting from OPMElement
 function OPMEntity() {
    this.name = null;
-   
 }
 /*Working functions*/
 OPMEntity.prototype.getName = function() {
@@ -333,18 +332,20 @@ OPMThing.prototype.setURL = function(newURL) {
 
 
 OPMObject.prototype = new OPMThing();
-function OPMObject() {
-   this.classType = 'OPMObject';
-   this.initValue = null;
-   this.type = "Compound Object";
-   this.inLinks = [ ];
-   this.outLinks = [ ];
-   
-   partyOrder.dictInst[this.id] = this;
-   
-   var msg = new Message("createObjectInstance", this , null);
-   sendMessage(msg);
+function OPMObject(parentId) {
+	this.id = partyOrder.getId(parentId);
+	var suff = this.id.split(':');
+	this.name = 'Object ' + suff[2];
+	this.classType = 'OPMObject';
+	this.initValue = null;
+	this.type = "Compound Object";
+	this.inLinks = [ ];
+	this.outLinks = [ ];	
+	partyOrder.add(this)
+	var msg = new Message("createObjectInstance", this , currentUser.id);
+	msg.send();
 }
+
 /*Working function*/
 OPMObject.prototype.getInitValue = function() {
    return this.initValue

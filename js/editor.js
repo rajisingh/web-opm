@@ -22,7 +22,7 @@ var activeOPMDiagram = new OPMDiagram(activeOPMModel.id);
 //UI classes instantiation
 var activeUIDiagram = new UIDiagram(activeOPMDiagram.id);
 activeUIDiagram.draw();
-UIDiagramList.addDiagram(activeUIDiagram);
+//UIDiagramList.addDiagram(activeUIDiagram);
 var activeUIElement = null;
 
 var activeSVGDiagram = document.getElementById(activeOPMDiagram.id);
