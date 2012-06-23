@@ -15,6 +15,7 @@ function UIDiagram(id) {
 	this.transform = 'matrix(1 0 0 1 0 0)';
 	this.active = true;
 	this.elements = { };
+	this.type = 'diagram';
 }
 UIDiagram.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
@@ -69,6 +70,7 @@ function UIObject(obj) {
 	this.states = { }
 	this.statesAmount = 0;
 	this.icon = null;
+	this.type = 'object';
 }
 UIObject.prototype.addState = function(state) {
 	this.states[state.id] = state;
@@ -142,6 +144,7 @@ function UIProcess(prc) {
 	this.strokeWidth = 2;
 	this.name = new UIName(prc.name);
 	this.icon = null;
+	this.type = 'process';
 }
 UIProcess.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
@@ -212,6 +215,7 @@ function UIState(parent, inst) {
 	this.name = new UIName(inst.name);
 	this.parent = parent;
 	this.icon = null;
+	this.type = 'state';
 }
 UIState.prototype.draw = function(){
 	var group = document.createElementNS(svgNS, 'g');
@@ -282,6 +286,7 @@ function UILink(parent) {
 	this.stroke = 'DimGrey';
 	this.strokeWidth = 2;
 	this.name = null;
+	this.type = 'link';
 }
 UILink.prototype.updateLink = function(newD) {
 	this.d = newD;
@@ -321,13 +326,13 @@ UILink.prototype.draw = function(src, dest) {
 	
 	case 'rcl':
 
-		if (src.id.slice(0,3) === 'prc') { var srcCenter = [src.x, src.y]; }
+		if (src.type === 'process') { var srcCenter = [src.x, src.y]; }
 		else { 
 			var srcCenter = [src.x + src.width / 2, src.y + src.height / 2]; 
 			var srcSizeMin = [src.x, src.y];
 			var srcSizeMax = [src.x + src.width, src.y + src.height];
 		}
-		if (dest.id.slice(0,3) === 'prc') { var destCenter = [dest.x, dest.y]; }
+		if (dest.type === 'process') { var destCenter = [dest.x, dest.y]; }
 		else { 
 			var destCenter = [dest.x + dest.width / 2, dest.y + dest.height / 2]; 
 			var destSizeMin = [dest.x, dest.y];
@@ -335,7 +340,7 @@ UILink.prototype.draw = function(src, dest) {
 		}
 
 		
-		if (src.id.slice(0,3) === 'prc') { 
+		if (src.type === 'process') { 
 			var params = { cx: src.x, cy: src.y, rx: src.rx, ry: src.ry }
 			var srcBorderPoint = ellipClipping(srcCenter, destCenter, params);
 		}
@@ -343,7 +348,7 @@ UILink.prototype.draw = function(src, dest) {
 			var srcBorderPoint = lssbClipping(srcCenter, destCenter, srcSizeMin, srcSizeMax);
 		}
 		
-		if (dest.id.slice(0,3) === 'prc') { 
+		if (dest.type === 'process') { 
 			var params = { cx: dest.x, cy: dest.y, rx: dest.rx, ry: dest.ry }
 			var destBorderPoint = ellipClipping(srcCenter, destCenter, params);
 		}

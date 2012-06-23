@@ -474,15 +474,11 @@ OPMLink.prototype.setCategory = function(newCategory) {
 
 
 OPMProceduralLink.prototype = new OPMLink();
-function OPMProceduralLink() {               //input source and destination Objects
-   this.category = 'Procedural';
-   this.relationXor = [ ];
-   this.relationOr = [ ];
-   
-   partyOrder.dictInst[this.id] = this;
-   
-   var msg = new Message("createProceduralLinkInstance", this , null);
-   sendMessage(msg);
+function OPMProceduralLink(parentId) {               //input source and destination Objects
+	this.id = partyOrder.getId(parentId);
+	this.category = 'Procedural';
+	this.relationXor = [ ];
+	this.relationOr = [ ];
 }
 /*Working functions*/
 OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
@@ -511,18 +507,37 @@ OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
   }
 }
 OPMProceduralLink.prototype.verifyLink = function() {
-        //check for existing type of procedural link between two entities
-    if (typeof this.source.outLinks[this.destination.id] === 'undefined' || typeof this.destination.inLinks[this.source.id] === 'undefined') {  //check if two elements are linked - if not, perform link check according to basic opm rules
-                var x = (this.opmRulesCheck(this.source,this.destination));
-                return x;
-    }
-   
-    else if (this.source.outLinks[ this.destination.id ].category ===  this.destination.inLinks[ this.source.id ].category) {
-        alert("Cannot connect two Objects with more than one " + this.type + " Link");
-                return false;
-    }
-    //rest of Logic rules using Switch, by source type. many more rules are to be added
-        this.opmRulesCheck(this.source, this.destination);
+	var currentLinkId = null;
+	if (this.source.outLinks.length < this.destination.inLinks.length) {
+		for (var i = 0; i < this.source.outLinks.length; i++) {
+			if ( this.destination.inLinks.indexOf( this.source.outLinks[i] ) !== -1 ) {
+				currentLinkId =  this.source.outLinks[i];
+				break;
+			}
+		}
+	}
+	else {
+		for (var i = 0; i < this.destination.outLinks.length; i++) {
+			if (this.source.outLinks.indexOf( this.destination.inLinks[i] ) !== -1) {
+				currentLinkId = this.destination.outLinks[i];
+			}
+		}
+	}
+	
+	if (currentLinkId) {
+		var linkInst = partyOrder.get(currentLinkId);
+		if (linkInst.category === 'Procedural') {
+			return false;
+		}
+		else {
+			var check = this.opmRulesCheck(this.source, this.destination);
+			return check;
+		}
+	}
+	else {
+		var check = this.opmRulesCheck(this.source, this.destination);
+		return check;
+	}
 }
 OPMProceduralLink.prototype.addXor = function(link) {
     this.relationXor[link.id] = link;
@@ -597,7 +612,7 @@ OPMStructuralLink.prototype.verifyLink = function() {
 	
 	if (currentLinkId) {
 		var linkInst = partyOrder.get(currentLinkId);
-		if (linkInst.category === 'Unidirectional' || linkInst.category === 'Bidirectional') {
+		if (linkInst.category === 'Structural') {
 			return false;
 		}
 		else {
