@@ -365,18 +365,20 @@ OPMObject.prototype.setInitValue = function(newInitValue) {
 
 
 OPMProcess.prototype = new OPMThing();
-function OPMProcess() {
-  this.classType = 'OPMProcess';
-  this.inLinks = [ ];
-  this.outLinks = [ ];
-  this.minActivationTime = null;
-  this.maxActivationTime = null;
-   
-  partyOrder.dictInst[this.id] = this;
-   
-  var msg = new Message("createProcessInstance", this , null);
-  sendMessage(msg);
+function OPMProcess(parentId) {
+	this.id = partyOrder.getId(parentId);
+	var suff = this.id.split(':');
+	this.name = 'Process ' + suff[2];
+	this.classType = 'OPMProcess';
+	this.inLinks = [ ];
+	this.outLinks = [ ];
+	this.minActivationTime = null;
+	this.maxActivationTime = null;
+	partyOrder.add(this);
+	var msg = new Message("createProcessInstance", this , currentUser.id);
+  	msg.send();
 }
+
 /*Working functions*/
 OPMProcess.prototype.getMinActivationTime = function() {
     return this.minActivationTime;

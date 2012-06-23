@@ -129,8 +129,8 @@ UIObject.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if (newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
-function UIProcess(id) {
-	this.id = 'prc'+ id;
+function UIProcess(prc) {
+	this.id = prc.id
 	this.x = randomFromTo(90, 1150);
 	this.y = randomFromTo(5, 420);
 	this.rx = 60;
@@ -138,7 +138,7 @@ function UIProcess(id) {
 	this.fill = 'white';
 	this.stroke = 'RoyalBlue';
 	this.strokeWidth = 2;
-	this.name = new UIName(this);
+	this.name = new UIName(prc.name);
 	this.icon = null;
 }
 UIProcess.prototype.draw = function() {
