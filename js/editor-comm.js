@@ -1,4 +1,4 @@
-function Message(action, data, user) {
+function Message(action, data, userId) {
 	/* this message is an input attr to the function sendMessage, where
 	 * action is a string with the accurate name of the method that needs 
 	 * to be activated on the server
@@ -7,7 +7,7 @@ function Message(action, data, user) {
 	this.id = randomFromTo(1, 1000); // need to generate unique id
 	this.action = action;
 	this.data = data;
-	this.clientId = user.id;
+	this.clientId = userId;
 }
 
 
