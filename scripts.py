@@ -12,35 +12,35 @@ class actions(threading.Thread):
         threading.Thread.__init__ ( self )
     def run(self):
         if self.action=="createUserInstance":
-            createUserInstance(data)
+            createUserInstance(self.data)
             
         elif self.action == "createModelInstance" :
-            result =createModelInstance(data)
+            result =createModelInstance(self.data)
             activeClients.get(result.creator).addModel(result.id)
             for user in result.participants :
                 activeClients.get(user).addModel(result.id)
             
         elif self.action == "createDiagramInstance" :
-            result =createDiagramInstance(data)
+            result =createDiagramInstance(self.data)
             
         elif self.action == "createObjectInstance" :
-            result =createObjectInstance(data)
+            result =createObjectInstance(self.data)
             
         elif self.action == "createProcessInstance" :
-            result =createProcessInstance(data)
+            result =createProcessInstance(self.data)
             
         elif self.action == "createStateInstance" :
-            result =createStateInstance(data)
+            result =createStateInstance(self.data)
             temp = result.id.split(":")
             del temp[-1]
             parent = ":".join(temp)
             opmLogicClass.partyOrder.getInst(parent).addState(result.id)
         elif self.action == "createProceduralLinkInstance" :
-            result = createProceduralLinkInstance(data)
+            result = createProceduralLinkInstance(self.data)
             opmLogicClass.partyOrder.getInst(result.deestination).addLink(result)
             opmLogicClass.partyOrder.getInst(result.source).addLink(result)
         elif self.action == "createStructuralLinkInstance" :
-            result =createStructuralLinkInstance(data)
+            result =createStructuralLinkInstance(self.data)
             opmLogicClass.partyOrder.getInst(result.deestination).addLink(result)
             opmLogicClass.partyOrder.getInst(result.source).addLink(result)
         
