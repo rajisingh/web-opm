@@ -10,21 +10,23 @@
  * Author: Sergey N. Bolshchikov
  * */
 
-//User class instantiation
-var currentUser = new User('sergey@bolshchikov.net', null);
-
-//OPM classes instantiation
-var activeOPMModel = new OPMModel(currentUser);
-activeOPMModel.share(currentUser);
-currentUser.addModel(activeOPMModel);
-var activeOPMDiagram = activeOPMModel.sd;
-activeOPMModel.addDiagram(activeOPMDiagram);
+//OPM classes initiation
+var currentUser = new User('sergey@bolshchikov.net', null);						//User class instantiation
+var partyOrder = new PartyOrder();												//Main DS
+var activeOPMModel = new OPMModel(currentUser.id);
+activeOPMModel.share(currentUser.id);
+currentUser.addModel(activeOPMModel.id);
+var activeOPMDiagram = new OPMDiagram(activeOPMModel.id);
 
 
 //UI classes instantiation
-var activeUIDiagram = new UIDiagram('sd');
-UIDiagramList.addDiagram(activeUIDiagram);
+var activeUIDiagram = new UIDiagram(activeOPMDiagram.id);
+activeUIDiagram.draw();
+//UIDiagramList.addDiagram(activeUIDiagram);
 var activeUIElement = null;
+
+var activeSVGDiagram = document.getElementById(activeOPMDiagram.id);
+var activeSVGElement = null;
 
 $(document).ready(function(){
 	$('.dropdown-toggle').dropdown();

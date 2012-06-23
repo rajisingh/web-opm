@@ -21,3 +21,6 @@ libraries:
   version: latest
 - name: setuptools
   version: latest
+  
+inbound_services:
+- channel_presence
