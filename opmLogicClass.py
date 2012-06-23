@@ -12,13 +12,16 @@ class PartyOrder():
 		if len(temp)>1:
 			del temp[-1]
 			parent = ":".join(temp)
-			self.dictChildInst[parent]+=1
+			if self.dictChildrenLen.__contains__(str(parent)):
+				self.dictChildrenLen[str(parent)]+=1
+			else:
+				self.dictChildrenLen[str(parent)]=1
 		inst.db()
 	def update(self,inst):
 		self.dictInst[inst.id]=inst
 		inst.db()
 	def getInst(self,id):
-		return self.dictInst[id]
+		return self.dictInst[str(id)]
 	def remove(self,id):
 		if self.dictInst.__contains__(id):
 			del dictInst[id]
@@ -332,7 +335,7 @@ class OPMDiagram():
 		
 	def getOPL(self): #for future implementation
 		return self.OPL
-	def setOpl(self,OPL):
+	def setOPL(self,OPL):
 		self.OPL=OPL
 		partyOrder.update(self)
 	
@@ -684,7 +687,7 @@ class OPMState(OPMEntity):
 		self.minActivationTime=None
 		self.maxActivationTime=None
 		self.inLinks=[]
-		self.outLink=[]
+		self.outLinks=[]
 		partyOrder.add(self)
 		
 	def db(self):
@@ -719,7 +722,7 @@ class OPMProcess(OPMThing):
 		self.minActivationTime=None
 		self.maxActivationTime=None
 		self.inLinks=[]
-		self.outLink=[]
+		self.outLinks=[]
 		partyOrder.add(self)
 	def db(self):
 		dbproc.newProcess(self)
@@ -784,7 +787,7 @@ class OPMObject(OPMThing):
 		self.classType="OPMObject"
 		self.type="Compound Object"
 		self.inLinks=[]
-		self.outLink=[]
+		self.outLinks=[]
 		self.states=[]
 		self.initValue=None
 		partyOrder.add(self)

@@ -477,8 +477,8 @@ OPMProceduralLink.prototype = new OPMLink();
 function OPMProceduralLink(parentId) {               //input source and destination Objects
 	this.id = partyOrder.getId(parentId);
 	this.category = 'Procedural';
-	this.relationXor = [ ];
-	this.relationOr = [ ];
+	this.xorRelation = [ ];
+	this.orRelation = [ ];
 }
 /*Working functions*/
 OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
@@ -540,22 +540,22 @@ OPMProceduralLink.prototype.verifyLink = function() {
 	}
 }
 OPMProceduralLink.prototype.addXor = function(link) {
-    this.relationXor[link.id] = link;
+    this.xorRelation[link.id] = link;
 }
 OPMProceduralLink.prototype.removeXor = function(link) {
-    delete this.relationXor[link.id];
+    delete this.xorRelation[link.id];
 }
 OPMProceduralLink.prototype.getXor = function() {
-   return this.relationXor;
+   return this.xorRelation;
 }
 OPMProceduralLink.prototype.addOr = function(link) {
-    this.relationOr[link.id] = link;
+    this.orRelation[link.id] = link;
 }
 OPMProceduralLink.prototype.removeOr = function(link) {
-    delete this.relationOr[link.id];
+    delete this.orRelation[link.id];
 }
 OPMProceduralLink.prototype.getOr = function() {
-   return this.relationOr;
+   return this.orRelation;
 }
 /*Non-working functions*/
 OPMProceduralLink.prototype.destructor = function() {

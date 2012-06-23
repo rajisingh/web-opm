@@ -1,8 +1,9 @@
+from google.appengine.ext import db
 import dbopm
 
 def newUser(userClass):
     nUser = dbopm.SRVuser(
-                    key_name = userClass.id,
+                    key_name = str(userClass.id),
 					userID = userClass.id,
 					provider = userClass.provider,
 					token = userClass.token,
@@ -63,7 +64,7 @@ def newDiagram(diagClass):
     nDiag.put()
 
 def newPlink(plinkClass):
-    tempVar = diagClass.id.split(":")
+    tempVar = plinkClass.id.split(":")
     del tempVar[-1]
     parID = ":".join(tempVar)
     q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
@@ -84,7 +85,7 @@ def newPlink(plinkClass):
     nPlink.put()
 
 def newSlink(slinkClass):
-    tempVar = diagClass.id.split(":")
+    tempVar = slinkClass.id.split(":")
     del tempVar[-1]
     parID = ":".join(tempVar)
     q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
@@ -107,7 +108,7 @@ def newSlink(slinkClass):
     nSlink.put()
 
 def newProcess(processClass):
-    tempVar = diagClass.id.split(":")
+    tempVar = processClass.id.split(":")
     del tempVar[-1]
     parID = ":".join(tempVar)
     q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
@@ -132,7 +133,7 @@ def newProcess(processClass):
     nProcess.put() 
 
 def newObject(objClass):
-    tempVar = diagClass.id.split(":")
+    tempVar = objClass.id.split(":")
     del tempVar[-1]
     parID = ":".join(tempVar)
     q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
@@ -151,20 +152,20 @@ def newObject(objClass):
 				classType = objClass.classType,
 				type = objClass.type,
 				inLinks = objClass.inLinks,
-				outLInks = objClass.outLinks,
+				outLinks = objClass.outLinks,
 				initValue = objClass.initValue,
                 states = objClass.states
 	)
     nObj.put()
 
 def newState(stateClass):
-    tempVar = diagClass.id.split(":")
+    tempVar = stateClass.id.split(":")
     del tempVar[-1]
     parID = ":".join(tempVar)
     q = db.Query(dbopm.SRVOPMObject, keys_only = True)
     q.filter("id = ",parID)
     diagKey = q.get()
-    nState = dbopm.SRVOPMObject(
+    nState = dbopm.SRVOPMState(
                 key_name = stateClass.id,
                 parent = diagKey,
                 id = stateClass.id,
