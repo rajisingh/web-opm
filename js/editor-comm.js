@@ -19,6 +19,14 @@ var actions = {
 	 *  */
 		
 		"add": 'POST',
+		"createUserInstance": 'GET',
+		"createModelInstance": 'GET',
+		"createDiagramInstance": 'GET',
+		"createObjectInstance": 'GET',
+		"createProcessInstance": 'GET',
+		"createStateInstance": 'GET',
+		"createProceduralLinkInstance": 'GET',
+		"createStructuralLinkInstance": 'GET',
 		"minus": 'GET',
 		"openChannel": 'GET',
 		addAction: function(action, method) {
@@ -64,7 +72,7 @@ var sendMessage = function(msg) {
 	}
 }
 
-/*
+
 function aaa(x){
 // sendMessage checks
 	if (x===1) {
@@ -75,12 +83,25 @@ function aaa(x){
 		
 	}
 	else if (x===2) {
+		/*
 		data= new Object();
 		data.arg1=1;
 		data.arg2=2;
 		obj=new Message("minus",data,currentUser);
+		*/
+		userData= new Object()
+		userData.id = currentUser.id
+		userData.provider =currentUser.provider 
+		userData.token =currentUser.token 
+		userData.email = currentUser.email
+		userData.firstName =currentUser.firstName
+		userData.lastName = currentUser.lastName
+		userData.password =currentUser.password 
+		userData.models = { }
+		userData.lastLogin =currentUser.lastLogin	
+		userData.loginStatus =currentUser.loginStatus
+		obj=new Message( "createUserInstance", userData, currentUser);
 		
 	}
     sendMessage(obj);           
 }
-*/
