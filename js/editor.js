@@ -10,7 +10,7 @@
  * Author: Sergey N. Bolshchikov
  * */
 
-
+//OPM classes initiation
 var currentUser = new User('sergey@bolshchikov.net', null);						//User class instantiation
 var partyOrder = new PartyOrder();												//Main DS
 var activeOPMModel = new OPMModel(currentUser.id);
@@ -20,11 +20,12 @@ var activeOPMDiagram = new OPMDiagram(activeOPMModel.id);
 
 
 //UI classes instantiation
-var activeUIDiagram = new UIDiagram('sd');
+var activeUIDiagram = new UIDiagram(activeOPMDiagram.id);
+activeUIDiagram.draw();
 UIDiagramList.addDiagram(activeUIDiagram);
 var activeUIElement = null;
 
-var activeSVGDiagram = document.getElementById('sd');
+var activeSVGDiagram = document.getElementById(activeOPMDiagram.id);
 var activeSVGElement = null;
 
 $(document).ready(function(){
