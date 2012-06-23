@@ -33,20 +33,11 @@ var addObject = function() {
 
 var addProcess = function() {
 	try {
+		var opmprc = new OPMProcess(activeOPMDiagram.id);
 		if (activeSVGElement !== null) { deselect(); }
-		prcId++;
-		
-		//Create instance of UIProcess class (GUI)
-		var prc = new UIProcess(prcId);
+		var prc = new UIProcess(opmprc);
 		prc.draw();
 		activeUIDiagram.addElement(prc);
-		
-		//Create instance of OPMProcess class (Client-side Logic)
-		var opmprc = new OPMProcess();
-		opmprc.id = prc.id
-		opmprc.name = prc.name.value;
-		activeOPMDiagram.addElement(opmprc);
-		opmprc.addDiagram(activeOPMDiagram);
 	}
 	catch(e) {
 		alert(e.message);
