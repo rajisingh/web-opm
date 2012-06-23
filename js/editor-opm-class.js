@@ -22,7 +22,6 @@ function User(email, password) {
    this.lastLogin = new Date();                //timestamp
    this.loginStatus = null;                   //boolean
    
-   //dict[this.id] = this;
    var msg = new Message("createUserInstance", this , this);
    sendMessage(msg);
    
