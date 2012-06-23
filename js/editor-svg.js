@@ -116,38 +116,31 @@ var addLink = function(src, dest) {
 			}
 			else {
 				delete opmlink;
-				linkoOn.off();
+				linkOn.off();
 				var err = new Error("You can't do it! Unidirectional relation can connect only objects or states.");
 				throw err;
 			}
 			break;
 			
 		case 'rcl':
-			var opmlink = new OPMProceduralLink();
-			opmlink.id = linkOn.type + lnkId;
+			var opmlink = new OPMProceduralLink(activeOPMDiagram.id);
 			opmlink.setType('Result-Consumption');
-			if (src.id.slice(0,3) === 'stt') {
-				var parent = activeOPMDiagram.getElement(src.parent.id);
-				opmlink.setSource(parent.getState(src.id));
-			}
-			if (dest.id.slice(0,3) === 'stt') {
-				var parent = activeOPMDiagram.getElement(dest);
-				opmlink.setDestination(parent.getState(dest.id));
-			}
-			opmlink.setSource(activeOPMDiagram.getElement(src.id));
-			opmlink.setDestination(activeOPMDiagram.getElement(dest.id));
+			opmlink.setSource(partyOrder.get(src.id));
+			opmlink.setDestination(partyOrder.get(dest.id));			
+			
 			if (opmlink.verifyLink()) {
-				var lnk = new UILink(opmlink.id);
+				var lnk = new UILink(opmlink);
 				lnk.draw(src, dest);
 				activeUIDiagram.addElement(lnk);
-				activeOPMDiagram.addElement(opmlink);
 				opmlink.source.addLink(opmlink);
 				opmlink.destination.addLink(opmlink);
+				partyOrder.add(opmlink);
+				var msg = new Message('createProceduralLinkInstance', opmlink, currentUser.id);
+				msg.send();
 				linkOn.off();
 			}
 			else {
 				delete opmlink;
-				lnkId--;
 				linkOn.off();
 				var err = new Error("You can't do it! Result-Consumption link connects only process with object or state");
 				throw err;
