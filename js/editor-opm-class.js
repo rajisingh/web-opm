@@ -395,24 +395,22 @@ OPMProcess.prototype.setMaxActivationTime = function(maxTime) {
 
 
 OPMState.prototype = new OPMEntity();
-function OPMState(parent) {                           //parent is an object which contains the state
-  this.classType = 'OPMState';  
-  this.type = null;                              //final, default, initial
-  this.minActivationTime = null;
-  this.maxActivationTime = null;
-  this.inLinks = [ ];
-  this.outLinks = [ ];
-  
-  partyOrder.dictInst[this.id] = this;
-  
-  var msg = new Message("createStateInstance", this , null);
-  sendMessage(msg);
+function OPMState(parentId) {                           //parent is an object which contains the state
+	this.id = partyOrder.getId(parentId);
+	var suff = this.id.split(':');
+	this.name = 'State ' + suff[3];
+	this.classType = 'OPMState';  
+	this.type = null;                              //final, default, initial
+	this.minActivationTime = null;
+	this.maxActivationTime = null;
+	this.inLinks = [ ];
+	this.outLinks = [ ];
+	partyOrder.add(this);
+	var msg = new Message("createStateInstance", this , currentUser.id);
+	msg.send();
 }
 
 /*Working functions*/
-OPMState.prototype.getParent = function() {
-   return this.parent;
-}
 OPMState.prototype.getType = function() {
     return this.type;
 }  
