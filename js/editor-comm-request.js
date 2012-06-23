@@ -1,3 +1,14 @@
+/*   
+ *    Web OPM: online case tool for Object-Process Methodology
+ *    Copyright 2012 Israel Institute of Technology - Technion
+ *    The code is licensed under GNU General Public License, v2
+ * 
+ *    File context description:
+ *    File contains implementation of XHR
+ * 
+ *    Author: Michael Krasnopolsky
+ * */
+
 var httpRequestPost = function(obj) {
 // receives Message object and send it to server via JSONRequest POST
 	var body = obj;	
