@@ -12,18 +12,18 @@
 
 function User(email, password) {
    this.id = randomFromTo(1, 1000);
-   this.provider = null;                     //mechanism used for oauth2.0: {google, facebook, twitter}
-   this.token = null;                        //used for oauth2.0
+   this.provider = null;                     	//mechanism used for oauth2.0: {google, facebook, twitter}
+   this.token = null;                        	//used for oauth2.0
    this.email = email;
    this.firstName = null;
    this.lastName = null;
    this.password = password;
    this.models = [];
-   this.lastLogin = new Date();                //timestamp
-   this.loginStatus = null;                   //boolean
+   this.lastLogin = new Date();                	//timestamp
+   this.loginStatus = null;                   	//boolean
    
-   var msg = new Message("createUserInstance", this , this);
-   sendMessage(msg);
+   var msg = new Message("createUserInstance", this , this.id);
+   msg.send();
    
 }
 
