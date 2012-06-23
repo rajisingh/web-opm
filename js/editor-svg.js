@@ -96,40 +96,32 @@ var turnLinkOn = function(type) {
 	linkOn.type = type;
 }
 var addLink = function(src, dest) {
-	try {
-		lnkId++;
+	try {		
 		switch(linkOn.type) {
 		case 'udr':
-			var opmlink = new OPMStructuralLink();
-			opmlink.id = linkOn.type + lnkId;
+			var opmlink = new OPMStructuralLink(activeOPMDiagram.id);
 			opmlink.setType('Unidirectional');
-			if (src.id.slice(0,3) === 'stt') {
-				var parent = activeOPMDiagram.getElement(src.parent.id);
-				opmlink.setSource(parent.getState(src.id));
-			}
-			if (dest.id.slice(0,3) === 'stt') {
-				var parent = activeOPMDiagram.getElement(dest.parent.id);
-				opmlink.setDestination(parent.getState(dest.id))
-			}
-			opmlink.setSource(activeOPMDiagram.getElement(src.id));
-			opmlink.setDestination(activeOPMDiagram.getElement(dest.id));
+			opmlink.setSource(partyOrder.get(src.id));
+			opmlink.setDestination(partyOrder.get(dest.id));
 			if (opmlink.verifyLink()) {
-				var lnk = new UILink(opmlink.id);
+				var lnk = new UILink(opmlink);
 				lnk.draw(src, dest);
 				activeUIDiagram.addElement(lnk);
-				activeOPMDiagram.addElement(opmlink);
 				opmlink.source.addLink(opmlink);
 				opmlink.destination.addLink(opmlink);
+				partyOrder.add(opmlink);
+				var msg = new Message('createStructuralLinkInstance', opmlink, currentUser.id);
+				msg.send();
 				linkOn.off();
 			}
 			else {
 				delete opmlink;
-				lnkId--;
-				linkOn.off();
+				linkoOn.off();
 				var err = new Error("You can't do it! Unidirectional relation can connect only objects or states.");
 				throw err;
 			}
 			break;
+			
 		case 'rcl':
 			var opmlink = new OPMProceduralLink();
 			opmlink.id = linkOn.type + lnkId;
