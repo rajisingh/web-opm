@@ -150,14 +150,16 @@ class RPCHandler(webapp2.RequestHandler):
 
     def post(self):
         obj = json.loads(self.request.body)
-        msg= Message(obj["id"],obj["action"],obj["clientId"],obj["data"])
-        channel.send_message(str(msg.userId), "in the handler"+str(msg.userId))
+        msg = Message(obj["id"],obj["action"],obj["clientId"],obj["data"])
+#        channel.send_message(str(msg.userId), "in the handler"+str(msg.userId))
         if msg.action:
             if msg.action[0] == '_':
                 self.error(403) # access denied
                 return
-            msg.action="script1"
-            add_task(msg)
+            else:
+                scripts.actions(msg.action,msg.data).start() 
+#            msg.action="script1"
+#            add_task(msg)
             
            # thread.start_new_thread(schedule,(1,))
         else:

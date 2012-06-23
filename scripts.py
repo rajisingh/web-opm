@@ -16,7 +16,7 @@ class actions(threading.Thread):
             
         elif self.action == "createModelInstance" :
             result =createModelInstance(self.data)
-            activeClients.get(result.creator).addModel(result.id)
+            index.activeClients.get(result.creator).addModel(result.id)
             for user in result.participants :
                 activeClients.get(user).addModel(result.id)
             
@@ -30,18 +30,18 @@ class actions(threading.Thread):
             result =createProcessInstance(self.data)
             
         elif self.action == "createStateInstance" :
-            result =createStateInstance(self.data)
+            result = createStateInstance(self.data)
             temp = result.id.split(":")
             del temp[-1]
             parent = ":".join(temp)
             opmLogicClass.partyOrder.getInst(parent).addState(result.id)
         elif self.action == "createProceduralLinkInstance" :
             result = createProceduralLinkInstance(self.data)
-            opmLogicClass.partyOrder.getInst(result.deestination).addLink(result)
+            opmLogicClass.partyOrder.getInst(result.destination).addLink(result)
             opmLogicClass.partyOrder.getInst(result.source).addLink(result)
         elif self.action == "createStructuralLinkInstance" :
             result =createStructuralLinkInstance(self.data)
-            opmLogicClass.partyOrder.getInst(result.deestination).addLink(result)
+            opmLogicClass.partyOrder.getInst(result.destination).addLink(result)
             opmLogicClass.partyOrder.getInst(result.source).addLink(result)
         
     
@@ -81,7 +81,7 @@ def createObjectInstance(data):
     object.initValue=data["initValue"]
     object.inLinks=data["inLinks"]
     object.outLinks=data["outLinks"]
-    object.states=data["states"]
+   ## object.states=data["states"]
     object.setDescription(data["description"])
     return object
 
@@ -101,21 +101,21 @@ def createProcessInstance(data):
 def createProceduralLinkInstance(data):
     
         
-    link = opmLogicClass.OPMProceduralLink(data["id"], src, dest, data["category"], data["type"])
+    link = opmLogicClass.OPMProceduralLink(data["id"], data["source"]["id"], data["destination"]["id"], data["category"], data["type"])
     link.xorRelation=data["xorRelation"]
     link.orRelation=["orRelation"]
     link.setDescription(data["description"])
     return link
     
 def createStructuralLinkInstance(data):
-    link = opmLogicClass.OPMStructuralLink(data["id"], src, dest, data["category"], data["type"])
+    link = opmLogicClass.OPMStructuralLink(data["id"], data["source"]["id"], data["destination"]["id"], data["category"], data["type"])
     link.participationConst=data["participationConst"]
     link.participationVal=data["participationVal"]
     link.cardinality = data["cardinality"]
     link.setTag(data["tag"])
     return link
 
-def createStateInstance():
+def createStateInstance(data):
     state = opmLogicClass.OPMState(data["id"],data["name"])
     state.classType=data["classType"]
     state.minActivationTime=data["minActivationTime"]

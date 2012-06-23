@@ -62,7 +62,7 @@ class UIState (db.Model):
 ##Server Classes
 
 class SRVuser(db.Model):
-    userID = db.StringProperty()
+    userID = db.IntegerProperty()
     provider = db.StringProperty()
     token = db.StringProperty()
     email = db.StringProperty()
@@ -77,11 +77,11 @@ class SRVOPMdiagram(db.Model):
     id = db.StringProperty()
     name = db.StringProperty()
     number = db.IntegerProperty()
-    OPL = db.BlobProperty()
+    OPL = db.StringProperty()
 
 class SRVOPMmodel(db.Model):
     modelID = db.StringProperty()
-    creator = db.StringProperty()
+    creator = db.IntegerProperty()
     creationDate = db.DateTimeProperty()
     name = db.StringProperty()
     type = db.StringProperty()
@@ -113,7 +113,7 @@ class SRVOPMStructuralLink(db.Model):
   # OPM Structural Link
   participationConst = db.StringProperty()
   participationVal = db.StringProperty()
-  cardinality = db.StringProperty()
+  cardinality = db.IntegerProperty()
   tag = db.StringProperty()
 
 class SRVOPMState(db.Model):
@@ -163,6 +163,6 @@ class SRVOPMObject(db.Model):
   classType = db.StringProperty()
   type = db.StringProperty()
   inLinks = db.StringListProperty() # List Keys
-  outLInks = db.StringListProperty() # List Keys
+  outLinks = db.StringListProperty() # List Keys
   initValue = db.StringProperty()
   states = db.StringListProperty() # List Keys
