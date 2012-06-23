@@ -5,15 +5,15 @@ function PartyOrder(){
 	this.dictInst = {};   //holds the id's to the instances
 	this.dictChildLen = {}; //holds the number of the children that the parent instance has
 }
-PartyOrder.prototype.getId = function(id) {
+PartyOrder.prototype.getId = function(parentId) {
 //Creates the id of the the instance of a new element by adding a new suffix to the parent id
-	var DEFAULT = 1000; //case its a new father id 
-	if (!id) {
+	var DEFAULT = '1000'; //case its a new father id 
+	if (!parentId) {
 		return DEFAULT;
 	}
 	else {
-		var newsuff = this.dictChildLen[id] + 1;   //checking for the first available suffix
-		var newId = id.toString() + ':' + newsuff.toString();  //assigning the suffix of the new element 
+		var newsuff = this.dictChildLen[parentId] + 1;   //checking for the first available suffix
+		var newId = parentId.toString() + ':' + newsuff.toString();  //assigning the suffix of the new element 
 		return newId; 
 	}
 }
@@ -25,7 +25,7 @@ PartyOrder.prototype.add = function(inst) {
 	if (temp.length !== 1) {
 		temp.pop();
 		parentId = temp.join(':');
-		dictChildLen[parentId]++;
+		this.dictChildLen[parentId]++;
 	}
 }
 
