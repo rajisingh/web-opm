@@ -165,4 +165,6 @@ var diagramZoom = function(scale) {
 	scaleMatrix[5] += (1 - scale) * diagramHeight/2;
 	var newMatrix = "matrix(" + scaleMatrix.join(' ') + ")";
 	activeSVGDiagram.setAttributeNS(null, 'transform', newMatrix);
+	
+
 }
