@@ -85,6 +85,7 @@ UIObject.prototype.draw = function() {
 	group.setAttributeNS(null, 'onmouseup', 'setDest(evt)');
 	group.setAttributeNS(null, 'onclick', 'select(evt)');
 	group.setAttributeNS(null, 'type', 'object');
+	
 	activeSVGDiagram.appendChild(group);
 	//Draw rectangle, appended to the group
 	var rect = document.createElementNS(svgNS, 'rect');
@@ -95,6 +96,7 @@ UIObject.prototype.draw = function() {
 	rect.setAttributeNS(null, 'fill', this.fill);
 	rect.setAttributeNS(null, 'stroke', this.stroke);
 	rect.setAttributeNS(null, 'stroke-width', this.strokeWidth);
+	rect.setAttributeNS(null, 'class', 'context-menu-one');
 	group.appendChild(rect);
 	//Draw grip
 	var grip = document.createElementNS(svgNS, 'image');
@@ -163,6 +165,7 @@ UIProcess.prototype.draw = function() {
 	ellipse.setAttributeNS(null, 'fill', this.fill);
 	ellipse.setAttributeNS(null, 'stroke', this.stroke);
 	ellipse.setAttributeNS(null, 'stroke-width', this.strokeWidth);
+	ellipse.setAttributeNS(null, 'class', 'context-menu-one');
 	group.appendChild(ellipse);
 	var grip = document.createElementNS(svgNS, 'image');
 	grip.setAttributeNS(null, 'x', this.x + 51);
@@ -376,6 +379,7 @@ UILink.prototype.draw = function(src, dest) {
 	}
 
 }
+
 
 //Data Structure Implementation
 //Data Structure 
