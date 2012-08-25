@@ -28,7 +28,6 @@ class ActiveClients():
         self.userDict={}
     def add(self,user):
         self.userDict[user.id]=user
-        dbproc.newUser(user)
     def remove(self,userId):
         del self.userDict[userId]
     def get(self,id):

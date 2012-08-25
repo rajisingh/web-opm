@@ -16,10 +16,10 @@ class PartyOrder():
 				self.dictChildrenLen[str(parent)]+=1
 			else:
 				self.dictChildrenLen[str(parent)]=1
-		inst.db()
+		
 	def update(self,inst):
 		self.dictInst[inst.id]=inst
-		inst.db()
+		
 	def getInst(self,id):
 		return self.dictInst[str(id)]
 	def remove(self,id):
@@ -57,7 +57,8 @@ class User():
   		return obj"""
 
  
-	
+	def db(self):
+		dbproc.newUser(user)
 	def getId(self):
 		#Returns user id
 		return self.id	
@@ -223,7 +224,7 @@ class OPMModel():
 				self.participants.remove(i)
 		else :
 			self.participants.remove(users)
-		dictionary[self.id]=self
+		partyOrder.update(self)
 	def getParticipants(self):
 		return self.participants
 		
@@ -231,10 +232,10 @@ class OPMModel():
 		return self.type
 	def setType (self, type):					#Setting a type
 		self.type=type
-		dictionary[self.id]=self
+		partyOrder.update(self)
 	def setLastUpdate(self,date):
 		self.lastUpdate = date
-		dictionary[self.id]=self
+		partyOrder.update(self)
 	def getCreationDate(self):
 		return self.creationDate	
 	# not working								#Save the model

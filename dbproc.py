@@ -1,6 +1,27 @@
 from google.appengine.ext import db
 import dbopm
 
+def getModelObj(modelID):
+  q = db.GqlQuery("SELECT * FROM SRVOPMmodel WHERE modelID = :1",modelID,keys_only = True)
+  objects = q.run()
+  objList = []
+  for obj in objects:
+    ancObj = db.Query()
+    ancObj.ancestor(obj)
+    finalObj = ancObj.run()
+    for fo in finalObj:
+     objList.append([type(fo),fo])
+  return(objList)
+
+def getUserModels(creatorID):
+    q = db.GqlQuery("SELECT * FROM SRVOPMmodel WHERE creator = :1",creatorID)
+    result = q.run()
+    userModels = []
+    for p in result:
+      uModel = [p.modelID,p.name]
+      userModels.append(uModel)
+    return(userModels)
+
 def newUser(userClass):
     nUser = dbopm.SRVuser(
                     key_name = str(userClass.id),

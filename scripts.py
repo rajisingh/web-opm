@@ -4,30 +4,54 @@ import datetime
 import threading
 import dbproc
 import index
+import json
+
 
 class actions(threading.Thread):
-    def __init__(self,action,data):
+    def __init__(self,action,data,save=True):
         self.action=action
+        self.save=save
         self.data=data
         threading.Thread.__init__ ( self )
     def run(self):
-        if self.action=="createUserInstance":
-            createUserInstance(self.data)
+        if self.action=="getUserModels":
+            models=dbproc.getUserModels(self.data) # MUST to have userId  = data field
+            index.channel.send_message(self.data,json.dumps(models))
+            
+            
+            """
+        elif self.action=="loadModel":
+            """
+        elif self.action=="createUserInstance":
+            result = createUserInstance(self.data)
+            if self.save :
+                result.db()
+                
             
         elif self.action == "createModelInstance" :
             result =createModelInstance(self.data)
             index.activeClients.get(result.creator).addModel(result.id)
             for user in result.participants :
                 activeClients.get(user).addModel(result.id)
-            
+                if self.save :
+                    activeClients.get(user).db()
+            if self.save :
+                result.db()
+                
         elif self.action == "createDiagramInstance" :
             result =createDiagramInstance(self.data)
+            if self.save :
+                result.db()
             
         elif self.action == "createObjectInstance" :
             result =createObjectInstance(self.data)
+            if self.save :
+                result.db()
             
         elif self.action == "createProcessInstance" :
             result =createProcessInstance(self.data)
+            if self.save :
+                result.db()
             
         elif self.action == "createStateInstance" :
             result = createStateInstance(self.data)
@@ -35,15 +59,28 @@ class actions(threading.Thread):
             del temp[-1]
             parent = ":".join(temp)
             opmLogicClass.partyOrder.getInst(parent).addState(result.id)
+            if self.save :
+                result.db()
+                opmLogicClass.partyOrder.getInst(parent).db()
+                
         elif self.action == "createProceduralLinkInstance" :
             result = createProceduralLinkInstance(self.data)
             opmLogicClass.partyOrder.getInst(result.destination).addLink(result)
             opmLogicClass.partyOrder.getInst(result.source).addLink(result)
+            if self.save :
+                result.db()
+                opmLogicClass.partyOrder.getInst(result.destination).db()
+                opmLogicClass.partyOrder.getInst(result.source).db()
+                
         elif self.action == "createStructuralLinkInstance" :
             result =createStructuralLinkInstance(self.data)
             opmLogicClass.partyOrder.getInst(result.destination).addLink(result)
             opmLogicClass.partyOrder.getInst(result.source).addLink(result)
-        
+            if self.save :
+                result.db()
+                opmLogicClass.partyOrder.getInst(result.destination).db()
+                opmLogicClass.partyOrder.getInst(result.source).db()
+            
     
 def createUserInstance(data):
     date_lastLogin= datetime.datetime.strptime(str(data["lastLogin"]), '%Y-%m-%dT%H:%M:%S')
