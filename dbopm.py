@@ -81,8 +81,7 @@ class SRVOPMdiagram(db.Model):
 
 class SRVOPMmodel(db.Model):
     modelID = db.StringProperty()
-    creator = db.IntegerProperty()
-    creationDate = db.DateTimeProperty()
+    creator = db.IntegerProperty(indexed=True)
     name = db.StringProperty()
     type = db.StringProperty()
     participants = db.StringListProperty() # List Keys
