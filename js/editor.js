@@ -13,11 +13,12 @@
 //OPM classes initiation
 var currentUser = new User('sergey@bolshchikov.net', null);						//User class instantiation
 var partyOrder = new PartyOrder();												//Main DS
-var activeOPMModel = new OPMModel(currentUser.id);
+var testModelData = { creatorId: currentUser.id, loaderType: "empty" }//TODO: switch with LOAD request option here
+var activeOPMModel = new OPMModel(testModelData);
 activeOPMModel.share(currentUser.id);
 currentUser.addModel(activeOPMModel.id);
-var activeOPMDiagram = new OPMDiagram(activeOPMModel.id);
-
+var diagramData = { modelId: activeOPMModel.id, loaderType: "empty" }  //TODO: switch with LOAD request option here
+var activeOPMDiagram = new OPMDiagram(diagramData);
 
 //UI classes instantiation
 var activeUIDiagram = new UIDiagram(activeOPMDiagram.id);
@@ -46,4 +47,15 @@ function rename() {
 	$('#model-rename').modal('show');
 }
 
-	
+function loadList() {
+	//open list of saved User models
+	$('#loadModel').modal('show');
+	alert("test - loading User Models");
+	currentUser.getModels();
+}
+
+function loadSpecModel(){
+	//loads specific model from list
+	var sel = document.getElementById("modelList");
+	alert(sel.options[sel.selectedIndex].value);//TODO: replace with function to get model list
+}

@@ -17,6 +17,7 @@ var actions = {
 	 *  */
 		
 		"add": 'POST',
+		"getUserModels": 'GET',
 		"createUserInstance": 'GET',
 		"createModelInstance": 'GET',
 		"createDiagramInstance": 'GET',

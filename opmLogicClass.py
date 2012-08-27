@@ -58,7 +58,7 @@ class User():
 
  
 	def db(self):
-		dbproc.newUser(user)
+		dbproc.newUser(self)
 	def getId(self):
 		#Returns user id
 		return self.id	

@@ -83,7 +83,7 @@
                                                         <ul class="dropdown-menu">
                                                                 <li><a href="#">New Model...</a></li>
                                                                 <li><a href="#">Open Model...</a></li>
-                                                                <li><a href="#">Load Model from Repository</a></li>
+                                                                <li><a href="#loadModel" onclick="loadList();">Load Model from Repository</a></li>
                                                                 <li><a href="#">Close Model</a></li>
                                                                 <li class="divider"></li>
                                                                 <li><a href="#">Save Model...</a></li>
@@ -158,6 +158,30 @@
                                 <div class="modal-footer">
                                         <a class="btn" data-dismiss="modal">Cancel</a>
                                         <a class="btn btn-success">Apply</a>
+                                </div>
+                        </div>
+                        <div class="modal hide" id="loadModel">
+                                <div class="modal-header">
+                                        <a class="close" data-dismiss="modal">&times;</a>
+                                        <h2>Load Your Model, Horse! <img src="http://i45.tinypic.com/qqzn1x.jpg", align=right , width=45 ></img></h2>
+                                </div>
+                                <div class="modal-body">
+                                        <p>Select model:</p>
+											<table width=100%>
+												<th>Model ID/Name (TRIAL!)</th>
+												<tr>
+													<td>
+														<select id="modelList" size="10" width=200>
+															<option>MODEL #1</option>
+															<option>MODEL #2</option>
+														</select>
+													</td>
+												</tr>
+											</table>
+                                </div>
+                                <div class="modal-footer">
+                                        <a class="btn" data-dismiss="modal">Cancel</a>
+                                        <a class="btn btn-success" onclick="loadSpecModel();">Load</a>
                                 </div>
                         </div>
                         
