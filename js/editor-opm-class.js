@@ -1,5 +1,5 @@
 /*   
- *    Web OPM: online case tool for Object-Process Methodology
+  *    Web OPM: online case tool for Object-Process Methodology
  *    Copyright 2012 Israel Institute of Technology - Technion
  *    The code is licensed under GNU General Public License, v2
  * 
@@ -11,7 +11,8 @@
 
 
 function User(email, password) {
-   this.id = randomFromTo(1, 1000);
+   var temp = randomFromTo(1,1000);
+   this.id = temp.toString();
    this.provider = null;                     	//mechanism used for oauth2.0: {google, facebook, twitter}
    this.token = null;                        	//used for oauth2.0
    this.email = email;
@@ -45,13 +46,13 @@ User.prototype.setName = function(newFirstName, newLastName) {
    this.lastName = newLastName;
 }
 User.prototype.getModels = function() {
-  //need to add call from SVG, which will display a list of models, check bootstrap for suitable GUI
   var msg = new Message("getUserModels", this.id, null);
-  sendMessage(msg);
+  msg.send();
 }
 User.prototype.loadModel = function(modelId){
-  var msg = new Message("getModel", modelId, this);
-  sendMessage(msg);
+	var data = { modelId: modelId,userId:currentUser.id }
+	var msg = new Message( "loadModel" , data , this.id );
+	sendMessage(msg);
 }
 User.prototype.addModel = function(model) {
    //add model to users model list
@@ -100,19 +101,31 @@ User.prototype.logout = function() {
    this.loginStatus = false;
 }
 
-function OPMModel(creatorId) {                     
-   this.id = partyOrder.getId(null);
-   this.creator = creatorId;
-   this.name = 'New Model';                         //default value
-   this.type = 'System';
-   this.participants = [];
-   this.lastUpdate = new Date();
-   this.creationDate = new Date();
-   partyOrder.add(this);
-   
-   var msg = new Message("createModelInstance", this, creatorId);
-   msg.send();
-
+function OPMModel(modelData) {                     
+	   
+	switch(modelData.loaderType){
+	case "load":
+	   this.id = modelData.id;
+	   this.name = modelData.name;                         //default value
+	   this.type = modelData.type;
+	   this.participants = modelData.participants;
+	   this.lastUpdate = modelData.lastUpdate;
+	   this.creationDate = modelData.creationDate;
+	   partyOrder.add(this);
+	   break;
+	default:
+		this.id = partyOrder.getId(null);
+	   this.creator = modelData.creatorId;   
+	   this.name = 'New Model';                         //default value
+	   this.type = 'System';
+	   this.participants = [];
+	   this.lastUpdate = new Date();
+	   this.creationDate = new Date();
+	   partyOrder.add(this);
+	   var msg = new Message("createModelInstance", this, this.creator);
+	   msg.send();
+	   break;
+   }
 }
 
 /*Working functions*/
@@ -178,15 +191,26 @@ OPMModel.prototype.destructor = function(){
    }
 }
 
-function OPMDiagram(modelId) {   
-   this.id = partyOrder.getId(modelId);                          
-   this.name = 'New Diagram';                        //default value
-   this.number = null;
-   this.OPL = null;   
+function OPMDiagram(diagramData) {   
    
-   partyOrder.add(this);
-   var msg = new Message ("createDiagramInstance", this, currentUser.id);
-   msg.send();
+	switch(diagramData.loaderType){
+	case "load":
+		this.id = diagramData.id;                          
+	   this.name = diagramData.name;                        //default value
+	   this.number = diagramData.number;
+	   this.OPL = diagramData.OPL;
+	   partyOrder.add(this);
+	   break;
+	default:
+		this.id = partyOrder.getId(diagramData.modelId);                          
+	   this.name = 'New Diagram';                        //default value
+	   this.number = null;
+	   this.OPL = null;
+	   partyOrder.add(this);
+	   var msg = new Message ("createDiagramInstance", this, currentUser.id);
+	   msg.send();
+	   break;
+	}
 }
 /*Working functions*/
 OPMDiagram.prototype.returnId = function() {
@@ -332,18 +356,34 @@ OPMThing.prototype.setURL = function(newURL) {
 
 
 OPMObject.prototype = new OPMThing();
-function OPMObject(parentId) {
-	this.id = partyOrder.getId(parentId);
-	var suff = this.id.split(':');
-	this.name = 'Object ' + suff[2];
+function OPMObject(OPMObjectData) {
 	this.classType = 'OPMObject';
-	this.initValue = null;
-	this.type = "Compound Object";
-	this.inLinks = [ ];
-	this.outLinks = [ ];	
-	partyOrder.add(this)
-	var msg = new Message("createObjectInstance", this , currentUser.id);
-	msg.send();
+	switch(OPMObjectData.loaderType){
+	case "load":
+		this.id = OPMObjectData.id;
+		this.description = OPMObjectData.description;
+		this.essence = OPMObjectData.essence;
+		this.affiliation = OPMObjectData.affiliation;
+		this.scope = OPMObjectData.scope;
+		this.url = OPMObjectData.url;
+		this.name = OPMObjectData.name;
+		this.initValue = OPMObjectData.initValue;
+		this.type = OPMObjectData.type;
+		this.inLinks = OPMObjectData.inLinks;
+		this.outLinks = OPMObjectData.outLinks;	
+		partyOrder.add(this)
+	default:
+		this.id = partyOrder.getId(OPMObjectData.parentId);
+		var suff = this.id.split(':');
+		this.name = 'Object ' + suff[2];
+		this.initValue = null;
+		this.type = "Compound Object";
+		this.inLinks = [ ];
+		this.outLinks = [ ];	
+		partyOrder.add(this)
+		var msg = new Message("createObjectInstance", this , currentUser.id);
+		msg.send();
+	}
 }
 
 /*Working function*/
@@ -365,18 +405,34 @@ OPMObject.prototype.setInitValue = function(newInitValue) {
 
 
 OPMProcess.prototype = new OPMThing();
-function OPMProcess(parentId) {
-	this.id = partyOrder.getId(parentId);
-	var suff = this.id.split(':');
-	this.name = 'Process ' + suff[2];
+function OPMProcess(OPMProcessData) {
 	this.classType = 'OPMProcess';
-	this.inLinks = [ ];
-	this.outLinks = [ ];
-	this.minActivationTime = null;
-	this.maxActivationTime = null;
-	partyOrder.add(this);
-	var msg = new Message("createProcessInstance", this , currentUser.id);
-  	msg.send();
+	switch(OPMProcessData.loaderType){
+	case "load":
+		this.id = OPMProcessData.parentId;
+		this.description = OPMProcessData.description;
+		this.essence = OPMProcessData.essence;
+		this.affiliation = OPMProcessData.affiliation;
+		this.scope = OPMProcessData.scope;
+		this.url = OPMProcessData.url;
+		this.name = OPMProcessData.name;
+		this.inLinks = OPMProcessData.inLinks;
+		this.outLinks = OPMProcessData.outLinks;
+		this.minActivationTime = OPMProcessData.minActivationTime;
+		this.maxActivationTime = OPMProcessData.maxActivationTime;
+		partyOrder.add(this);
+	default:
+		this.id = partyOrder.getId(OPMProcessData.parentId);
+		var suff = this.id.split(':');
+		this.name = 'Process ' + suff[2];
+		this.inLinks = [ ];
+		this.outLinks = [ ];
+		this.minActivationTime = null;
+		this.maxActivationTime = null;
+		partyOrder.add(this);
+		var msg = new Message("createProcessInstance", this , currentUser.id);
+	  	msg.send();
+	}
 }
 
 /*Working functions*/
@@ -395,19 +451,35 @@ OPMProcess.prototype.setMaxActivationTime = function(maxTime) {
 
 
 OPMState.prototype = new OPMEntity();
-function OPMState(parentId) {                           //parent is an object which contains the state
-	this.id = partyOrder.getId(parentId);
-	var suff = this.id.split(':');
-	this.name = 'State ' + suff[3];
+function OPMState(OPMStateData) {                           //parent is an object which contains the state
 	this.classType = 'OPMState';  
-	this.type = null;                              //final, default, initial
-	this.minActivationTime = null;
-	this.maxActivationTime = null;
-	this.inLinks = [ ];
-	this.outLinks = [ ];
-	partyOrder.add(this);
-	var msg = new Message("createStateInstance", this , currentUser.id);
-	msg.send();
+	switch(OPMStateData.loaderType){
+	case "load":
+		this.id = OPMStateData.parentId;
+		this.description = OPMStateData.description;
+		this.name = OPMStateData.name;
+		this.type = OPMStateData.type;                              //final, default, initial
+		this.minActivationTime = OPMStateData.minActivationTime;
+		this.maxActivationTime = OPMStateData.maxActivationTime;
+		this.inLinks = OPMStateData.inLinks;
+		this.outLinks = OPMStateData.outLinks;
+		partyOrder.add(this);
+		break;
+		
+	default:
+		this.id = partyOrder.getId(OPMStateData.parentId);
+		var suff = this.id.split(':');
+		this.name = 'State ' + suff[3];
+		this.type = null;                              //final, default, initial
+		this.minActivationTime = null;
+		this.maxActivationTime = null;
+		this.inLinks = [ ];
+		this.outLinks = [ ];
+		partyOrder.add(this);
+		var msg = new Message("createStateInstance", this , currentUser.id);
+		msg.send();
+		break;
+	}
 }
 
 /*Working functions*/
@@ -474,11 +546,24 @@ OPMLink.prototype.setCategory = function(newCategory) {
 
 
 OPMProceduralLink.prototype = new OPMLink();
-function OPMProceduralLink(parentId) {               //input source and destination Objects
-	this.id = partyOrder.getId(parentId);
+function OPMProceduralLink(OPMProcLinkData) {               //input source and destination Objects
 	this.category = 'Procedural';
-	this.xorRelation = [ ];
-	this.orRelation = [ ];
+	
+	switch(OPMProcLinkData.loaderType){
+	case "load":
+		this.id = OPMProcLinkData.id;
+		this.source = OPMProcLinkData.source;
+		this.destination = OPMProcLinkData.destination;                    //categories are strings, two values: "Structural" and "Procedural"
+		this.type = OPMProcLinkData.type; 
+		this.xorRelation = OPMProcLinkData.xorRelation;
+		this.orRelation = OPMProcLinkData.orRelation;
+		break;
+	default:
+		this.id = partyOrder.getId(OPMProcLinkData.parentId);
+		this.xorRelation = [ ];
+		this.orRelation = [ ];
+		break;
+	}
 }
 /*Working functions*/
 OPMProceduralLink.prototype.opmRulesCheck = function(src_chk,dest_chk){
@@ -565,13 +650,25 @@ OPMProceduralLink.prototype.destructor = function() {
 }
 
 OPMStructuralLink.prototype = new OPMLink();
-function OPMStructuralLink(parentId) {
-	this.id = partyOrder.getId(parentId);
+function OPMStructuralLink(OPMStructLinkData) {
     this.category = 'Structural';
-    this.participationConst = null;
-    this.participationVal = null;
-    this.cardinality = 1;
-    this.tag = null;                                                   //description shown on link itself - only for uni/bi-directional relations
+    
+	switch(OPMStructLinkData.loaderType){
+	case "load":
+		this.id = OPMStructLinkData.id;
+	    this.participationConst = OPMStructLinkData.participationConst;
+	    this.participationVal = OPMStructLinkData.participationVal;
+	    this.cardinality = OPMStructLinkData.cardinality;
+	    this.tag = OPMStructLinkData.tag;
+	default:
+		this.id = partyOrder.getId(OPMStructLinkData.parentId);
+	    this.participationConst = null;
+	    this.participationVal = null;
+	    this.cardinality = 1;
+	    this.tag = null;
+	}
+	
+                                                //description shown on link itself - only for uni/bi-directional relations
     
 }  
 /*Working function*/

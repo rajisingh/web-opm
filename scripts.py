@@ -16,7 +16,8 @@ class actions(threading.Thread):
     def run(self):
         if self.action=="getUserModels":
             models=dbproc.getUserModels(self.data) # MUST to have userId  = data field
-            index.channel.send_message(self.data,json.dumps(models))
+            msg = index.Message(1111,"getUserModels",self.data,models[0])
+            index.channel.send_message(self.data,index.MyEncoder().encode(msg))
             
             
             
@@ -27,7 +28,8 @@ class actions(threading.Thread):
                 [actionName,dataForm] = convertToData(inst)
                 modelList.append([actionName,dataForm])
                 actions(actionName,dataForm,False).start()
-            index.channel.send_message(self.data[userId],json.dumps(modelList))
+            msg = index.Message(2222,"loadModel",self.data[userId],modelList)
+            index.channel.send_message(self.data[userId],msg)
                 
                 
             

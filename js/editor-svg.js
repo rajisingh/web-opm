@@ -20,7 +20,8 @@ var currentMatrix = 0;
 
 var addObject = function() {
 	try {
-		var opmobj = new OPMObject(activeOPMDiagram.id);
+		var OPMObjectData = { parentId: activeOPMDiagram.id, loaderType: "test" }//TODO: change when LOADING
+		var opmobj = new OPMObject(OPMObjectData);
 		if (activeSVGElement !== null) { deselect(); }
 		var obj = new UIObject(opmobj);
 		obj.draw();
@@ -33,7 +34,8 @@ var addObject = function() {
 
 var addProcess = function() {
 	try {
-		var opmprc = new OPMProcess(activeOPMDiagram.id);
+		var OPMProcessData = { parentId: activeOPMDiagram.id, loaderType: "test" }//TODO: change when LOADING
+		var opmprc = new OPMProcess(OPMProcessData);
 		if (activeSVGElement !== null) { deselect(); }
 		var prc = new UIProcess(opmprc);
 		prc.draw();
@@ -60,14 +62,12 @@ var addState = function() {
 			
 			
 			var parent = partyOrder.get(activeUIElement.id);
-			var opmstt = new OPMState(parent.id);
+			var OPMStateData = { parentId: parent, loaderType: "test" }//TODO: add LOADING option here
+			var opmstt = new OPMState(OPMStateData);
 			
 			var stt = new UIState(activeUIElement, opmstt);
 			activeUIElement.addState(stt);
 			stt.draw();
-			
-
-			
 		}			
 	}
 	catch(e) {
@@ -99,7 +99,8 @@ var addLink = function(src, dest) {
 	try {		
 		switch(linkOn.type) {
 		case 'udr':
-			var opmlink = new OPMStructuralLink(activeOPMDiagram.id);
+			var OPMStructLinkData = { parentId: activeOPMDiagram.id, loaderType: "test" }
+			var opmlink = new OPMStructuralLink(OPMStructLinkData);
 			opmlink.setType('Unidirectional');
 			opmlink.setSource(partyOrder.get(src.id));
 			opmlink.setDestination(partyOrder.get(dest.id));
@@ -123,7 +124,8 @@ var addLink = function(src, dest) {
 			break;
 			
 		case 'rcl':
-			var opmlink = new OPMProceduralLink(activeOPMDiagram.id);
+			var OPMProcLinkData = { parentId: activeOPMDiagram.id, loaderType: "test" }
+			var opmlink = new OPMProceduralLink(OPMProcLinkData);
 			opmlink.setType('Result-Consumption');
 			opmlink.setSource(partyOrder.get(src.id));
 			opmlink.setDestination(partyOrder.get(dest.id));			
