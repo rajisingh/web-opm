@@ -19,9 +19,19 @@ class actions(threading.Thread):
             index.channel.send_message(self.data,json.dumps(models))
             
             
-            """
+            
         elif self.action=="loadModel":
-            """
+            models = dbproc.getModelObj(self.data[modelId])
+            modelList=[]
+            for inst in models :
+                [actionName,dataForm] = convertToData(inst)
+                modelList.append([actionName,dataForm])
+                actions(actionName,dataForm,False).start()
+            index.channel.send_message(self.data[userId],json.dumps(modelList))
+                
+                
+            
+            
         elif self.action=="createUserInstance":
             result = createUserInstance(self.data)
             if self.save :
@@ -82,9 +92,102 @@ class actions(threading.Thread):
                 opmLogicClass.partyOrder.getInst(result.source).db()
             
     
+def convertToData(inst):
+    [actionName,data]=["",{}]
+    answer = [actionName,dataForm]
+    if isinstance(inst,dbopm.SRVOPMmodel):
+        actionName = "createModelInstance" 
+        data["id"] = inst.modelID 
+        data["creator"] = inst.creator 
+        data["name"] = inst.name
+        data["type"] = inst.type
+        data["participants"] = inst.participants
+             #   inst.creationDate
+             #   inst.lastUpdate
+        return answer
+    elif isinstance(inst,dbopm.SRVOPMmodel):
+        actionName = "createDiagramInstance"
+        data["id"] = inst.id
+        data["name"] = inst.name 
+        data["number"] = inst.number 
+        data["OPL"] = inst.OPL  
+        return answer
+    elif isinstance(inst,dbopm.SRVOPMObject):
+        actionName = "createObjectInstance"
+        data["id"] = inst.id
+        data["name"] = inst.name 
+        data["essence"] = inst.essence
+        data["affiliation"] = inst.affiliation
+        data["scope"] = inst.scope 
+        data["url"] = inst.url
+        data["description"] = inst.description
+        data["classType"] = inst.classType
+        data["type"] =inst.type 
+        data["inLinks"] = inst.inLinks 
+        data["outLInks"] = inst.outLInks
+        data["initValue"] = inst.initValue
+        return answer
+    elif isinstance(inst,dbopm.SRVOPMPRocess):
+        actionName = "createProcessInstance"
+        data["id"] = inst.id
+        data["name"] = inst.name 
+        data["essence"] = inst.essence
+        data["affiliation"] = inst.affiliation
+        data["scope"] = inst.scope 
+        data["url"] = inst.url
+        data["description"] = inst.description
+        data["classType"] = inst.classType
+        data["type"] =inst.type 
+        data["inLinks"] = inst.inLinks 
+        data["outLInks"] = inst.outLInks
+        data["maxActivationTime"] = inst.maxActivationTime
+        data["minActivationTime"] = inst.minActivationTime
+        return answer
+    elif isinstance(inst,dbopm.SRVOPMPState):
+        actionName = "createStateInstance"
+        data["id"] = inst.id
+        data["name"] = inst.name 
+        data["description"] = inst.description
+        data["classType"] = inst.classType
+        data["type"] =inst.type 
+        data["inLinks"] = inst.inLinks 
+        data["outLInks"] = inst.outLInks
+        data["maxActivationTime"] = inst.maxActivationTime
+        data["minActivationTime"] = inst.minActivationTime
+        return answer
+    elif isinstance(inst,dbopm.SRVOPMStructuralLink):
+        actionName = "createStructuralLinkInstance"
+        data["id"] = inst.id
+        data["description"] = inst.description
+        data["type"] =inst.type 
+        data["participationConst"] = inst.participationConst
+        data["participationVal"] = inst.participationVal
+        data["cardinality"] = inst.cardinality
+        data["tag"] = inst.tag
+        data["category"] = inst.category
+        source = {"id":inst.source}
+        destination = {"id":inst.destination}
+        data["source"] = source 
+        data["destination"] = destination
+        return answer
+    elif isinstance(inst,dbopm.SRVOPMProceduralLink):
+        actionName = "createProceduralLinkInstance"
+        data["id"] = inst.id
+        data["description"] = inst.description
+        data["type"] =inst.type 
+        source = {"id":inst.source}
+        destination = {"id":inst.destination}
+        data["source"] = source 
+        data["destination"] = destination
+        data["category"] = inst.category
+        data["xorRelation"] = inst.xorRelation
+        data["orRelation"] = inst.orRelation
+    
+        return answer
+
+
 def createUserInstance(data):
     date_lastLogin= datetime.datetime.strptime(str(data["lastLogin"]), '%Y-%m-%dT%H:%M:%S')
-    #channel.send_message(str(data["id"]),str(date_lastLogin))
     user = opmLogicClass.User(data["id"],data["email"],data["password"],date_lastLogin)
     user.setProvider(data["provider"])
     user.setName(data["firstName"],data["lastName"])
@@ -94,7 +197,7 @@ def createUserInstance(data):
     return user
 
 def createModelInstance(data):
-    date_creationDate =datetime.datetime.strptime(str(data["creationDate"]), '%Y-%m-%dT%H:%M:%S')
+    date_creationDate =datetime.datetime.strptime(str(data["creationDate"]),'%Y-%m-%dT%H:%M:%S')
     date_lastUpdate=datetime.datetime.strptime(str(data["lastUpdate"]), '%Y-%m-%dT%H:%M:%S')
     
     model = opmLogicClass.OPMModel(data["id"], data["creator"], date_creationDate,
@@ -103,7 +206,6 @@ def createModelInstance(data):
     return model
 
 def createDiagramInstance(data):
-    
     diagram = opmLogicClass.OPMDiagram(data["id"],data["name"],data["number"]) 
     diagram.setOPL(data["OPL"])
     return diagram
@@ -140,7 +242,7 @@ def createProceduralLinkInstance(data):
         
     link = opmLogicClass.OPMProceduralLink(data["id"], data["source"]["id"], data["destination"]["id"], data["category"], data["type"])
     link.xorRelation=data["xorRelation"]
-    link.orRelation=["orRelation"]
+    link.orRelation=data["orRelation"]
     link.setDescription(data["description"])
     return link
     

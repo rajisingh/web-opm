@@ -10,7 +10,7 @@ def getModelObj(modelID):
     ancObj.ancestor(obj)
     finalObj = ancObj.run()
     for fo in finalObj:
-     objList.append([type(fo),fo])
+     objList.append(fo)
   return(objList)
 
 def getUserModels(creatorID):
