@@ -84,6 +84,7 @@ def pop_task():
             return task
     raise KeyError('pop from an empty priority queue') 
 # this will serve as a queue for processing            
+
 class Message():
     #Defines the message class picked off the API channel. 
     def __init__(self, id, action, userId, data, priority=3):        #!!!!!!!!!shouldn't it be msgID?!
@@ -99,6 +100,10 @@ class Message():
         self.priority=priority
     def getPriority(self):
         return self.priority
+
+class MyEncoder(json.JSONEncoder):
+    def default(self, o):
+        return o.__dict__
         
 ################################################################
 
