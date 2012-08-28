@@ -24,64 +24,8 @@ var channelOpen = function() {
 		 * onerror: receives object with 2 fields , "code" - the http error code , and "description"
 		 * */
 		socket.onopen = function() { alert("channel opened"); }
-		socket.onmessage = function(msg) {alert("MSG RECEIVED"); msgHandler(msg); 	}
-		socket.onerror = function(err) {alert("ERROR MSG RECEIVED"); alert(err.code + ":" + err.description )};
+		socket.onmessage = function(msg) { alert("answer :"+ msg.data ); }
+		socket.onerror = function(err) { alert(err.code + ":" + err.description )};
   		socket.onclose = function() { alert("channel closed"); };
 	});
-}
-
-var loadActions = [
-      	"checkUser",
-      	"getUserModels",
-      	"loadModel",
-          ];
-function msgHandler(msg){
-	this.action = null;
-    this.data = null;
-	var msgData = JSON.decode(msg);
-	this.action = msg["action"];
-    this.data = msg["data"];
-    
-    if(!action){ alert("no action provided in message");}
-    else{
-    	switch(action){
-    	case "checkUser":
-    		
-    		break;
-    	case"getUserModels":
-            var models = this.data;;
-    		alert(models[1]);
-    		for(var i=0; i<=models.length(); i++){
-        		// Add an Option object to Drop Down/List Box
-                document.getElementById("modelList").options.add(opt);
-                // Assign text and value to Option object
-                opt.text = "MODEL_ID"+i;
-                opt.value = "MODEL"+i;
-    		}
-    		break;
-    	case "loadModel":
-    		
-    		break;
-    	}
-    }
-}
-
-msgHandler.prototype.receive = function(){
-  	try {
-  		if (actions.hasOwnProperty(this.action)) {
-  			if (this.action === 'GET') {
-			httpRequestGet(this);
-		}
-		else {
-			httpRequestPost(this);
-		}
-	}
-	else {
-		var err = new Error ('No such action exist in the Action Dictionary\n dependency: editor-comm.js');
-  			throw err;
-  		}
-  	}
-  	catch(e) {
-  		alert(e.message);
-  	}
 }

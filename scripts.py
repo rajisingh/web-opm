@@ -5,6 +5,7 @@ import threading
 import dbproc
 import index
 import json
+import jsonpickle
 
 
 class actions(threading.Thread):
@@ -17,7 +18,7 @@ class actions(threading.Thread):
         if self.action=="getUserModels":
             models=dbproc.getUserModels(self.data) # MUST to have userId  = data field
             msg = index.Message(1111,"getUserModels",self.data,models[0])
-            index.channel.send_message(self.data,index.MyEncoder().encode(msg))
+            index.channel.send_message(self.data,jsonpickle.encode(msg))
             
             
             
