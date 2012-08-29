@@ -83,7 +83,7 @@
                                                         <ul class="dropdown-menu">
                                                                 <li><a href="#">New Model...</a></li>
                                                                 <li><a href="#">Open Model...</a></li>
-                                                                <li><a href="#loadModel" onclick="loadList();">Load Model from Repository</a></li>
+                                                                <li><a href="#loadModel" onclick="currentUser.getModels();">Load Model from Repository</a></li>
                                                                 <li><a href="#">Close Model</a></li>
                                                                 <li class="divider"></li>
                                                                 <li><a href="#">Save Model...</a></li>
@@ -162,19 +162,29 @@
                         </div>
                         <div class="modal hide" id="loadModel">
                                 <div class="modal-header">
+                                
                                         <a class="close" data-dismiss="modal">&times;</a>
                                         <h2>Load Your Model, Horse! <img src="http://i45.tinypic.com/qqzn1x.jpg", align=right , width=45 ></img></h2>
                                 </div>
-                                <div class="modal-body">
+                                <div class="modal-body" id="innerWindow">
                                         <p>Select model:</p>
-											<table width=100%>
+											<table width=100% id="table">
 												<th>Model ID/Name (TRIAL!)</th>
 												<tr>
 													<td>
-														<select id="modelList" size="10" width=200>
-															<option>MODEL #1</option>
-															<option>MODEL #2</option>
+														<select id="modelList" size="10">
+														<option></option>
 														</select>
+														<script type="text/javascript">
+														var select = document.getElementById('modelList');
+											    		for(var model in models){
+											        		// Add an Option object to Drop Down/List Box
+											                // Assign text and value to Option object
+											                //select.options[select.options.length] = new Option('index', 'index');
+											    			select.options[select.options.length] = new Option(model[0],model[0]);
+											                //opt.text = "MODEL_ID";
+											               // opt.value = "MODEL"+i;
+											    		}</script>
 													</td>
 												</tr>
 											</table>
@@ -346,6 +356,8 @@
     <script src="js/json/JSONError.js"></script>
     <script src="js/json/JSONRequestError.js"></script>
     <script src="js/json/JSONRequest.js"></script>
+    <script src="js/json/json2.js"></script>
+
 
     <!-- Google -->
                 <script src="/_ah/channel/jsapi"></script>
@@ -360,6 +372,7 @@
                 <script src="js/editor-svg-util.js"></script>
                 <script src="js/editor-svg.js"></script>
                 
+    <script src="js/editor-msg-handler.js"></script> 
     <script src="js/editor-opm-class.js"></script>  
     <script src="js/editor-opm.js"></script>  
     <script src="js/editor.js"></script>  
