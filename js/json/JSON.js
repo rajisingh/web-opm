@@ -122,7 +122,7 @@ JSON = new function(){
 					self = this;
 					break;
 			};
-			if(rc.test(self)){
+			//if(rc.test(self)){
 				try{
 					result = e("(".concat(self, ")"));
 					if(filter && result !== null && (tmp = $[typeof result](result)) && (tmp === Array || tmp === Object)){
@@ -131,10 +131,10 @@ JSON = new function(){
 					}
 				}
 				catch(z){}
-			}
-			else {
-				throw new JSONError("bad data");
-			}
+			//}
+			//else {
+			//	throw new JSONError("bad data");
+			//}
 		};
 		return result;
 	};

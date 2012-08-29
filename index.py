@@ -100,11 +100,11 @@ class Message():
         self.priority=priority
     def getPriority(self):
         return self.priority
-
+"""
 class MyEncoder(json.JSONEncoder):
     def default(self, o):
         return o.__dict__
-        
+  """      
 ################################################################
 
 

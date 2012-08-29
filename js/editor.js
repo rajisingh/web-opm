@@ -47,13 +47,6 @@ function rename() {
 	$('#model-rename').modal('show');
 }
 
-function loadList() {
-	//open list of saved User models
-	$('#loadModel').modal('show');
-	alert("test - loading User Models");
-	currentUser.getModels();
-}
-
 function loadSpecModel(){
 	//loads specific model from list
 	var sel = document.getElementById("modelList");
