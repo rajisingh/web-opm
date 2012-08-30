@@ -1,4 +1,4 @@
-/*	
+/**@fileOverview	
  * Web OPM: online case tool for Object-Process Methodology
  * Copyright © 2012 Israel Institute of Technology - Technion
  * The code is licensed under GNU General Public License, v2
@@ -6,20 +6,29 @@
  * File context description:
  * Set of util functions for work w/ SVG canvas
  * 
- * Author: Sergey N. Bolshchikov  
+ * @author Sergey N. Bolshchikov  
  * */
+
 
 var randomFromTo =  function(from, to) {
 	return Math.floor(Math.random() * (to - from + 1) + from);
 }
 
 //Set of utility function to identify source and destination elements to draw the link
+/**@function
+ * @description identify source elements to draw a link.
+ * @param {event} evt
+ */
 var setSrc = function(evt) {
 	if (linkOn.status) {
 		src = null;							//Make it null if it wasn't
 		src = activeUIDiagram.returnElement(evt.currentTarget.id);
 	}
 }
+/**@function
+ * @description identify destination elements to draw a link.
+ * @param {event} evt
+ */
 var setDest = function(evt) {
 	if (linkOn.status) {
 		dest = null;
@@ -29,6 +38,10 @@ var setDest = function(evt) {
 }
 //End
 
+/**@function
+ * @description select an element.
+ * @param {event} evt
+ */
 var select = function(evt) {
 	if (evt.currentTarget !== activeSVGElement) {
 		if (activeSVGElement == null) {
@@ -51,6 +64,10 @@ var select = function(evt) {
 		alert('Error: Element is not selected');
 	}
 }
+/**@function
+ * @description deselect an element.
+ * @param {event} evt
+ */
 var deselect =  function(evt) {
 	if (activeSVGElement !== null) {
 		activeSVGElement.firstChild.setAttributeNS(null, 'fill', 'white');
@@ -64,6 +81,10 @@ var deselect =  function(evt) {
 }
 
 //Set of utility function for dragging mechanism
+/**@function
+ * @description pick an element.
+ * @param {event} evt
+ */
 var pick = function(evt) {
 	activeSVGElement.setAttributeNS(null, 'onmousemove', 'dragging(evt)');
 	currentX = evt.clientX;
@@ -71,6 +92,10 @@ var pick = function(evt) {
 	currentMatrix = activeSVGElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
 	for (var i = 0; i < currentMatrix.length; i++) { currentMatrix[i] = parseFloat(currentMatrix[i]); }
 }
+/**@function
+ * @description drag an element.
+ * @param {event} evt
+ */
 var dragging = function(evt) {
 	activeSVGElement.setAttributeNS(null, 'onmouseup', 'drop(evt)');
 	dx = evt.clientX - currentX;
@@ -82,15 +107,19 @@ var dragging = function(evt) {
 	currentX = evt.clientX;
 	currentY = evt.clientY;
 }
-var drop = function(evt) {
-	/* Update element coordinates of UI Element
+/**@function
+ * @description drop an element.
+ * Update element coordinates of UI Element
 	 * Algorithm:
 	 * 1. Extract matrix transformation from SVG Element
 	 * 2. Update element XY coordinates
 	 * 3. Update element name XY coordinates
 	 * 4. If type is object and statesAmount is not 0
 	 * 5. 	Run the loop over all states
-	 * 6. 		Change XY of states*/
+	 * 6. 		Change XY of states
+ * @param {event} evt
+ */
+var drop = function(evt) {
 	
 	var coord_change = activeSVGElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
 	activeUIElement.updateLocation(parseInt(activeUIElement.x) + parseInt(coord_change[4]), parseInt(activeUIElement.y) + parseInt(coord_change[5]));
@@ -106,10 +135,21 @@ var drop = function(evt) {
 }
 //End
 
-//LSSB algorithm for line segment clipping
-//Function is needed in order to connect nearest borders of objects instead of centers
+
+/**@function
+ * @description LSSB algorithm for line segment clipping. 
+ * @description Function is needed in order to connect nearest borders of objects instead of centers.
+ * @param {number} srcCenter
+ * @param {number} destCenter
+ * @param {number} rectSizeMin
+ * @param {number} rectSizeMax
+ */
 var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
-	//Utility function for LSSB alg to identify code of code of quadrant
+
+	/**@function
+	 * @description Utility function for LSSB alg to identify code of code of quadrant.
+	 * @param {number} point
+	 */
 	var code = function(point) {
 		var c = 0;
 		if (point[0] < rectSizeMin[0]) { c = 1; }
@@ -278,10 +318,16 @@ var lssbClipping = function(srcCenter, destCenter, rectSizeMin, rectSizeMax) {
 		}
 	}
 }
+
+/**@function
+ * @description Ellipse clipping algorithm intended to find intersection.
+ * @description point between line and ellipse and return coordinates of the point.
+ * @param {number} srcCenter
+ * @param {number} destCenter
+ * @param {number[]} params
+ */
 var ellipClipping = function(srcCenter, destCenter, params) {
-	/* Ellipse clipping algorithm intended to find intersection
-	 * point between line and ellipse and return coordinates of the point
-	 * */
+
 
 	try {
 

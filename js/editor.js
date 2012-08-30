@@ -1,4 +1,4 @@
-/*	
+/**@fileOverview	
  * Web OPM: online case tool for Object-Process Methodology
  * Copyright © 2012 Israel Institute of Technology - Technion
  * The code is licensed under GNU General Public License, v2
@@ -7,7 +7,7 @@
  * Bindings of initial events for interactive GUI,
  * Initial class instantiation
  *
- * Author: Sergey N. Bolshchikov
+ * @author Sergey N. Bolshchikov
  * */
 
 
@@ -40,9 +40,10 @@ $(document).ready(function(){
 		$("#opl-panel").slideToggle("slow");
 	});
 });
-
+/**@function
+ * @description Rename Model.
+ */
 function rename() {
-	//Rename Model
 	$('#model-rename').modal('show');
 }
 
