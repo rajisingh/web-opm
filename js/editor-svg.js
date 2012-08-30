@@ -1,11 +1,11 @@
-/*	
+/**@fileOverview	
  * Web OPM: online case tool for Object-Process Methodology
  * Copyright © 2012 Israel Institute of Technology - Technion
  * The code is licensed under GNU General Public License, v2
  * 
  * Context: set of functions for work w/ SVG canvas
  * 
- * Author: Sergey N. Bolshchikov  
+ * @author Sergey N. Bolshchikov  
  * */
 
 var svg = document.getElementsByTagName('svg')[0];
@@ -19,7 +19,9 @@ var objId = 0;
 var prcId = 0;
 var lnkId = 0;
 
-
+/**@function
+ * @description add object.
+ */
 var addObject = function() {
 	try {
 		if (activeSVGElement !== null) { deselect(); }
@@ -42,6 +44,9 @@ var addObject = function() {
 	}
 }
 
+/**@function
+ * @description add process.
+ */
 var addProcess = function() {
 	try {
 		if (activeSVGElement !== null) { deselect(); }
@@ -64,6 +69,9 @@ var addProcess = function() {
 	}
 }
 
+/**@function
+ * @description add state.
+ */
 var addState = function() {
 	try {
 		//Check
@@ -112,7 +120,10 @@ var addState = function() {
 var src = null;
 var dest = null;
 
-//Flag that the link is on/off and its type
+/**@function
+ * @description Flag that the link is on/off and its type.
+ */
+
 var linkOn = {
 		status: false,
 		type: null,
@@ -126,6 +137,11 @@ var turnLinkOn = function(type) {
 	linkOn.status = true;
 	linkOn.type = type;
 }
+/**@function
+ * @description add link.
+ * @param {OPMThing} src
+ * @param {OPMThing} dest
+ */
 var addLink = function(src, dest) {
 	try {
 		lnkId++;
@@ -199,7 +215,10 @@ var addLink = function(src, dest) {
 	}
 }
 
-
+/**@function
+ * @description diagram zoom.
+ * @param {number} scale
+ */
 var diagramZoom = function(scale) {
 	deselect();
 	var diagramWidth = activeSVGDiagram.getBBox().width + 2;
