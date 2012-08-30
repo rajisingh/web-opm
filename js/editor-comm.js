@@ -1,4 +1,4 @@
-/*   
+/** @fileOverview   
  *    Web OPM: online case tool for Object-Process Methodology
  *    Copyright 2012 Israel Institute of Technology - Technion
  *    The code is licensed under GNU General Public License, v2
@@ -6,7 +6,7 @@
  *    File context description:
  *    File contains message class which is instantiated to send the update to the server
  * 
- *    Author: Michael Krasnopolsky
+ * @author Michael Krasnopolsky
  * */
 
 var actions = { 
@@ -50,19 +50,33 @@ var actions = {
 		}
 }
 
-
+/**
+ * @Class 
+ * @description this message is an input attr to the function sendMessage, where
+ * action is a string with the accurate name of the method that needs 
+ * to be activated on the server.
+ * data will be received by the server is input parameter for corresponding actions.
+ * @constructor
+ * @this {Message}
+ * @param {string} action
+ * @param {data} data
+ * @param {string} userId
+ */
 function Message(action, data, userId) {
-	/* this message is an input attr to the function sendMessage, where
-	 * action is a string with the accurate name of the method that needs 
-	 * to be activated on the server
-	 * data will be received by the server is input parameter for corresponding actions
-	 * */
 	
+	/** @field *//** Holds the ID number of a message.*/
 	this.id = randomFromTo(1, 1000); 							//need to generate unique id
+	/** @field *//** Indicates the action required to perform.*/
 	this.action = action;
+	/** @field *//** Holds the data of the message.*/
 	this.data = data;
+	/** @field *//** Indicates the client that sent the message.*/
 	this.clientId = userId;
 }
+/**
+ * Send the message.
+ * @this {Message}
+ */
 Message.prototype.send = function(){
 	try {
 		if (actions.hasOwnProperty(this.action)) {

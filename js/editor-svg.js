@@ -1,12 +1,13 @@
-/*	
+/**@fileOverview	
  * Web OPM: online case tool for Object-Process Methodology
  * Copyright © 2012 Israel Institute of Technology - Technion
  * The code is licensed under GNU General Public License, v2
  * 
  * Context: set of functions for work w/ SVG canvas
  * 
- * Author: Sergey N. Bolshchikov  
+ * @author Sergey N. Bolshchikov  
  * */
+
 
 var svg = document.getElementsByTagName('svg')[0];
 var svgNS = svg.getAttribute('xmlns');
@@ -17,7 +18,9 @@ var currentY = 0;
 var currentMatrix = 0;
 
 
-
+/**@function
+ * @description add object.
+ */
 var addObject = function() {
 	try {
 		var OPMObjectData = { parentId: activeOPMDiagram.id, loaderType: "test" }//TODO: change when LOADING
@@ -32,6 +35,9 @@ var addObject = function() {
 	}
 }
 
+/**@function
+ * @description add process.
+ */
 var addProcess = function() {
 	try {
 		var OPMProcessData = { parentId: activeOPMDiagram.id, loaderType: "test" }//TODO: change when LOADING
@@ -45,7 +51,9 @@ var addProcess = function() {
 		alert(e.message);
 	}
 }
-
+/**@function
+ * @description add state.
+ */
 var addState = function() {
 	try {
 		//Check
@@ -81,7 +89,9 @@ var addState = function() {
 var src = null;
 var dest = null;
 
-//Flag that the link is on/off and its type
+/**@function
+ * @description Flag that the link is on/off and its type.
+ */
 var linkOn = {
 		status: false,
 		type: null,
@@ -89,12 +99,20 @@ var linkOn = {
 			this.status = false;
 			this.type = null;
 			}
-}; 			
+};
+/**@function
+ * @description change the state of link.
+ */
 var turnLinkOn = function(type) {
 	if(activeSVGElement) { deselect(); }
 	linkOn.status = true;
 	linkOn.type = type;
 }
+/**@function
+ * @description add link.
+ * @param {OPMThing} src
+ * @param {OPMThing} dest
+ */
 var addLink = function(src, dest) {
 	try {		
 		switch(linkOn.type) {
@@ -155,7 +173,10 @@ var addLink = function(src, dest) {
 	}
 }
 
-
+/**@function
+ * @description diagram zoom.
+ * @param {number} scale
+ */
 var diagramZoom = function(scale) {
 	deselect();
 	var diagramWidth = activeSVGDiagram.getBBox().width + 2;
