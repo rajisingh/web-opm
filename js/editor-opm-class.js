@@ -102,10 +102,12 @@ User.prototype.getModels = function() {
  * @this {User}
  * @param {string} modelId
  */
-User.prototype.loadModel = function(modelId){
-	var data = { modelId: modelId,userId:currentUser.id }
+User.prototype.loadModel = function(id){
+	data = new Object();
+	data.modelId = id;
+	data.userId = currentUser.id;
 	var msg = new Message( "loadModel" , data , this.id );
-	sendMessage(msg);
+	msg.send();
 }
 /**
  * Add model to the model map of the user.
