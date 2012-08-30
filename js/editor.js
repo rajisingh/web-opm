@@ -56,6 +56,7 @@ function rename() {
  */
 function loadSpecModel(){
 	//loads specific model from list
-	var sel = document.getElementById("modelList");
-	alert(sel.options[sel.selectedIndex].value);//TODO: replace with function to get model list
+	var sel = document.getElementById("innerList");
+	var sel2 = sel.options[sel.selectedIndex].value;
+	currentUser.loadModel(sel2);
 }

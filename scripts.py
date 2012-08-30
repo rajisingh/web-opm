@@ -3,6 +3,7 @@ from google.appengine.api import channel
 import datetime
 import threading
 import dbproc
+import dbopm
 import index
 import json
 import jsonpickle
@@ -23,14 +24,16 @@ class actions(threading.Thread):
             
             
         elif self.action=="loadModel":
-            models = dbproc.getModelObj(self.data[modelId])
+            models = dbproc.getModelObj(self.data["modelId"])
             modelList=[]
             for inst in models :
-                [actionName,dataForm] = convertToData(inst)
+                temp = convertToData(inst)
+                actionName = temp[0]
+                dataForm = temp[1]
                 modelList.append([actionName,dataForm])
                 actions(actionName,dataForm,False).start()
-            msg = index.Message(2222,"loadModel",self.data[userId],modelList)
-            index.channel.send_message(self.data[userId],msg)
+            msg = index.Message(2222,"loadModel",self.data["userId"],modelList)
+            index.channel.send_message(self.data["userId"],jsonpickle.encode(msg))
                 
                 
             
@@ -96,8 +99,8 @@ class actions(threading.Thread):
             
     
 def convertToData(inst):
-    [actionName,data]=["",{}]
-    answer = [actionName,dataForm]
+    actionName = ""
+    data = {}
     if isinstance(inst,dbopm.SRVOPMmodel):
         actionName = "createModelInstance" 
         data["id"] = inst.modelID 
@@ -105,15 +108,20 @@ def convertToData(inst):
         data["name"] = inst.name
         data["type"] = inst.type
         data["participants"] = inst.participants
-             #   inst.creationDate
-             #   inst.lastUpdate
+        
+        creationDate = datetime.datetime.strftime(inst.creationDate,'%Y-%m-%dT%H:%M:%S')
+        lastUpdate = datetime.datetime.strftime(inst.lastUpdate,'%Y-%m-%dT%H:%M:%S')
+        data["creationDate"] = creationDate
+        data["lastUpdate"] = lastUpdate
+        answer=[actionName,data]
         return answer
-    elif isinstance(inst,dbopm.SRVOPMmodel):
+    elif isinstance(inst,dbopm.SRVOPMdiagram):
         actionName = "createDiagramInstance"
         data["id"] = inst.id
         data["name"] = inst.name 
         data["number"] = inst.number 
         data["OPL"] = inst.OPL  
+        answer=[actionName,data]
         return answer
     elif isinstance(inst,dbopm.SRVOPMObject):
         actionName = "createObjectInstance"
@@ -127,8 +135,9 @@ def convertToData(inst):
         data["classType"] = inst.classType
         data["type"] =inst.type 
         data["inLinks"] = inst.inLinks 
-        data["outLInks"] = inst.outLInks
+        data["outLinks"] = inst.outLinks
         data["initValue"] = inst.initValue
+        answer=[actionName,data]
         return answer
     elif isinstance(inst,dbopm.SRVOPMPRocess):
         actionName = "createProcessInstance"
@@ -140,13 +149,14 @@ def convertToData(inst):
         data["url"] = inst.url
         data["description"] = inst.description
         data["classType"] = inst.classType
-        data["type"] =inst.type 
         data["inLinks"] = inst.inLinks 
-        data["outLInks"] = inst.outLInks
+        data["outLinks"] = inst.outLinks
         data["maxActivationTime"] = inst.maxActivationTime
         data["minActivationTime"] = inst.minActivationTime
+        answer=[actionName,data]
         return answer
-    elif isinstance(inst,dbopm.SRVOPMPState):
+        
+    elif isinstance(inst,dbopm.SRVOPMState):
         actionName = "createStateInstance"
         data["id"] = inst.id
         data["name"] = inst.name 
@@ -154,10 +164,13 @@ def convertToData(inst):
         data["classType"] = inst.classType
         data["type"] =inst.type 
         data["inLinks"] = inst.inLinks 
-        data["outLInks"] = inst.outLInks
+        data["outLinks"] = inst.outLinks
         data["maxActivationTime"] = inst.maxActivationTime
         data["minActivationTime"] = inst.minActivationTime
+        answer=[actionName,data]
         return answer
+        
+        
     elif isinstance(inst,dbopm.SRVOPMStructuralLink):
         actionName = "createStructuralLinkInstance"
         data["id"] = inst.id
@@ -172,6 +185,7 @@ def convertToData(inst):
         destination = {"id":inst.destination}
         data["source"] = source 
         data["destination"] = destination
+        answer=[actionName,data]
         return answer
     elif isinstance(inst,dbopm.SRVOPMProceduralLink):
         actionName = "createProceduralLinkInstance"
@@ -185,9 +199,8 @@ def convertToData(inst):
         data["category"] = inst.category
         data["xorRelation"] = inst.xorRelation
         data["orRelation"] = inst.orRelation
-    
+        answer=[actionName,data]
         return answer
-
 
 def createUserInstance(data):
     date_lastLogin= datetime.datetime.strptime(str(data["lastLogin"]), '%Y-%m-%dT%H:%M:%S')

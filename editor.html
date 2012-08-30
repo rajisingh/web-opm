@@ -168,26 +168,9 @@
                                 </div>
                                 <div class="modal-body" id="innerWindow">
                                         <p>Select model:</p>
-											<table width=100% id="table">
-												<th>Model ID/Name (TRIAL!)</th>
-												<tr>
-													<td>
-														<select id="modelList" size="10">
-														<option></option>
-														</select>
-														<script type="text/javascript">
-														var select = document.getElementById('modelList');
-											    		for(var model in models){
-											        		// Add an Option object to Drop Down/List Box
-											                // Assign text and value to Option object
-											                //select.options[select.options.length] = new Option('index', 'index');
-											    			select.options[select.options.length] = new Option(model[0],model[0]);
-											                //opt.text = "MODEL_ID";
-											               // opt.value = "MODEL"+i;
-											    		}</script>
-													</td>
-												</tr>
-											</table>
+                                        <select id="innerList" size=10>
+                                        </select>
+											
                                 </div>
                                 <div class="modal-footer">
                                         <a class="btn" data-dismiss="modal">Cancel</a>

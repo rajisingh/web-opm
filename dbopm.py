@@ -163,5 +163,5 @@ class SRVOPMObject(db.Model):
   classType = db.StringProperty()
   type = db.StringProperty()
   inLinks = db.StringListProperty() # List Keys
-  outLInks = db.StringListProperty() # List Keys
+  outLinks = db.StringListProperty() # List Keys
   initValue = db.StringProperty()
