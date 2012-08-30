@@ -1,4 +1,4 @@
-/*	
+/**	@fileOverview
  * 	Web OPM: online case tool for Object-Process Methodology
  * 	Copyright © 2012 Israel Institute of Technology - Technion
  * 	The code is licensed under GNU General Public License, v2
@@ -6,17 +6,32 @@
  * 	File context description:
  * 	File contains classes description used for GUI
  * 
- *  Author: Sergey N. Bolshchikov
+ *  @author: Sergey N. Bolshchikov
  * */
 
-
+/**
+ * @Class
+ * @description User Interface Diagram
+ * @constructor
+ * @this {UIDiagram}
+ * @param {string} id
+*/
 function UIDiagram(id) {
+	/** @field *//** holds the id's to the UI diagram .*/
 	this.id = id;
+	/** @field *//** holds a matrix for location usage.*/
 	this.transform = 'matrix(1 0 0 1 0 0)';
+	/** @field *//** indicates if the UI diagram is active.*/
 	this.active = true;
+	/** @field *//** holds the elements of the UI diagram.*/
 	this.elements = { };
+	/** @field *//** holds the type of the UI diagram.*/
 	this.type = 'diagram';
 }
+/**
+ * create a new diagram.
+ * @this {UIDiagram}
+ */
 UIDiagram.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
@@ -24,58 +39,131 @@ UIDiagram.prototype.draw = function() {
 	group.setAttributeNS(null, 'type', 'diagram');
 	svg.appendChild(group);
 }
+/**
+ * adds an element to the diagram.
+ * @this {UIDiagram}
+ * @param {OPMElement} element
+ */
 UIDiagram.prototype.addElement = function(element) {
 	this.elements[element.id] = element;
 }
+/**
+ * removes an element from the diagram.
+ * @this {UIDiagram}
+ * @param {string} id
+ */
 UIDiagram.prototype.returnElement = function(id) {
 	for (el in this.elements) {
 		if (this.elements[el].id == id) { return this.elements[el]; }
 	}
 }
 
+/**
+ * @Class
+ * @description Class holding the name of any element
+ * @constructor
+ * @this {UIName}
+ * @param {string} name
+*/
 function UIName(name) {
-	//Class holding the name of any element
+	/** @field *//** holds the X axis of the element.*/
 	this.x = null;
+	/** @field *//** holds the Y axis of the element.*/
 	this.y = null;
+	/** @field *//** Indicates the color of the element's name.*/
 	this.fill = 'black';
+	/** @field *//** Indicates the font of the element's name.*/
 	this.fontFamily = 'Helvetica';
+	/** @field *//** Indicates the weight of the element's name.*/
 	this.fontWeight = 'bold';
+	/** @field *//** Indicates the size of the element's name.*/
 	this.fontSize = '15';
+	/** @field *//** Indicates the value of the element.*/
 	this.value = name;
 }
+/**
+ * rename an element.
+ * @this {UIDiagram}
+ * @param {string} newName
+ */
 UIName.prototype.rename = function(newName) {
 	this.value = newName;
 }
+/**
+ * updates the location of an element.
+ * @this {UIDiagram}
+ * @param {number} newX
+ * @param {number} newY
+ */
 UIName.prototype.updateLocation = function(newX, newY) {
 	this.x = newX;
 	this.y = newY;
 }
+/**
+ * updates the font of an element.
+ * @this {UIDiagram}
+ * @param {string} newFont
+ */
 UIName.prototype.updateFont = function(newFont) {
 	this.fontFamily = newFont;
 }
+/**
+ * updates the size of an element.
+ * @this {UIDiagram}
+ * @param {number} newSize
+ */
 UIName.prototype.updateSize = function(newSize) {
 	this.fontSize = newSize;
 }
- 
+
+/**
+ * @Class
+ * @description User Interface Object
+ * @constructor
+ * @this {UIObject}
+ * @param {OPMObject} obj
+*/
 function UIObject(obj) {
+	/** @field *//** Indicates the ID of the object.*/
 	this.id = obj.id;
+	/** @field *//** Indicates the X axis for the object.*/
 	this.x = randomFromTo(90, 1150);
+	/** @field *//** Indicates the Y axis for the object.*/
 	this.y = randomFromTo(5, 420);
+	/** @field *//** Indicates the width of the object.*/
 	this.width = 110;
+	/** @field *//** Indicates the height of the object.*/
 	this.height = 70;
+	/** @field *//** Indicates the fill color of the object.*/
 	this.fill = 'white';
+	/** @field *//** Indicates the stroke color of the object.*/
 	this.stroke = 'limeGreen';
+	/** @field *//** Indicates the stroke width of the object.*/
 	this.strokeWidth = 2;
+	/** @field *//** Indicates the name of the object.*/
 	this.name = new UIName(obj.name);
+	/** @field *//** Holds the states for the object.*/
 	this.states = { }
+	/** @field *//** Indicates the amount of states for the object.*/
 	this.statesAmount = 0;
+	/** @field *//** Holds the icon of the object.*/
 	this.icon = null;
+	/** @field *//** Holds the type of the OPM element.*/
 	this.type = 'object';
 }
+/**
+ * adds a state to the object.
+ * @this {UIObject}
+ * @param {UIState} state
+ */
 UIObject.prototype.addState = function(state) {
 	this.states[state.id] = state;
 	this.statesAmount++;
 }
+/**
+ * draws an object.
+ * @this {UIObject}
+ */
 UIObject.prototype.draw = function() {
 	//Draw a group first
 	var group = document.createElementNS(svgNS, 'g');
@@ -117,35 +205,80 @@ UIObject.prototype.draw = function() {
 	rectName.appendChild(caption);
 	group.appendChild(rectName);
 }
+/**
+ * updates the location of an object.
+ * @this {UIObject}
+ * @param {number} newX
+ * @param {number} newY
+ */
 UIObject.prototype.updateLocation = function(newX, newY) {
 	if (newX) { this.x = newX; }
 	if (newY) { this.y = newY; }
 }
+/**
+ * updates the size of an object.
+ * @this {UIObject}
+ * @param {number} newWidth
+ * @param {number} newHeight
+ */
 UIObject.prototype.updateSize = function(newWidth, newHeight) {
 	if (newWidth) { this.width = newWidth; }
 	if (newHeight) { this.height = newHeight; }
 }
+/**
+ * updates the color of an object.
+ * @this {UIObject}
+ * @param {string} color
+ */
 UIObject.prototype.updateColor = function(color) {
 	this.fill = color
 }
+/**
+ * updates the border for an object.
+ * @this {UIObject}
+ * @param {string} newStroke
+ * @param {number} newStrokeWidth
+ */
 UIObject.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if (newStroke) { this.stroke = newStroke; }
 	if (newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
+/**
+ * @Class
+ * @description User Interface Process
+ * @constructor
+ * @this {UIProcess}
+ * @param {OPMProcess} prc
+*/
 function UIProcess(prc) {
+	/** @field *//** Indicates the ID of the process.*/
 	this.id = prc.id
+	/** @field *//** Indicates the X axis for the process.*/
 	this.x = randomFromTo(90, 1150);
+	/** @field *//** Indicates the Y axis for the process.*/
 	this.y = randomFromTo(5, 420);
+	/** @field *//** Indicates the radios on X axis for the process.*/
 	this.rx = 60;
+	/** @field *//** Indicates the radios on Y axis for the process.*/
 	this.ry = 40;
+	/** @field *//** Indicates the fill color of the process.*/
 	this.fill = 'white';
+	/** @field *//** Indicates the stroke of the process.*/
 	this.stroke = 'RoyalBlue';
+	/** @field *//** Indicates the stroke width of the process.*/
 	this.strokeWidth = 2;
+	/** @field *//** Holds the name of the process.*/
 	this.name = new UIName(prc.name);
+	/** @field *//** Holds the icon of the process.*/
 	this.icon = null;
+	/** @field *//** Holds the type of OPM element.*/
 	this.type = 'process';
 }
+/**
+ * draws a process.
+ * @this {UIProcess}
+ */
 UIProcess.prototype.draw = function() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
@@ -183,17 +316,40 @@ UIProcess.prototype.draw = function() {
 	elName.appendChild(caption);
 	group.appendChild(elName);
 }
+/**
+ * updates the location of a process.
+ * @this {UIProcess}
+ * @param {number} newX
+ * @param {number} newY
+ */
 UIProcess.prototype.updateLocation = function(newX, newY) {
 	if (newX) { this.x = newX; }
 	if (newY) { this.y = newY; }
 }
+/**
+ * updates the size of a process.
+ * @this {UIProcess}
+ * @param {number} newRx
+ * @param {number} newRy
+ */
 UIProcess.prototype.updateSize = function(newRx, newRy) {
 	if (newRx) { this.rx = newRx; }
 	if (newRy) { this.ry = newRy; }
 }
+/**
+ * updates the color of a process.
+ * @this {UIProcess}
+ * @param {string} color
+ */
 UIProcess.prototype.updateColor = function(color) {
 	this.fill = color
 }
+/**
+ * updates the border for a process.
+ * @this {UIProcess}
+ * @param {string} newStroke
+ * @param {number} newStrokeWidth
+ */
 UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	if (newStroke) { this.stroke = newStroke; }
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
@@ -201,22 +357,48 @@ UIProcess.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 
 var objHeightStep = 35;					//Amount of pixels to enlarge the object height when a new state is added
 var stateYDelta = 10;					//Distance between states
+/**
+ * @Class
+ * @description User Interface State
+ * @constructor
+ * @this {UIState}
+ * @param {UIObject} parent
+ * @param {instance} inst
+*/
 function UIState(parent, inst) {
+	/** @field *//** Indicates the ID of the state.*/
 	this.id = inst.id
+	/** @field *//** Indicates the X axis for the state.*/
 	this.x = activeSVGElement.firstChild.x.baseVal.value + 20;
+	/** @field *//** Indicates the Y axis for the state.*/	
 	this.y = activeSVGElement.firstChild.y.baseVal.value + 55;
-	this.rx = 6;			
-	this.ry = 6;			
+	/** @field *//** Indicates the radios on X axis for the state.*/
+	this.rx = 6;	
+	/** @field *//** Indicates the radios on Y axis for the state.*/
+	this.ry = 6;
+	/** @field *//** Holds the width of the state. */
 	this.width = 70;	
+	/** @field *//** Holds the height of the state. */
 	this.height = 25; 	
+	/** @field *//** Indicates the fill color of the state. */
 	this.fill = 'white';
+	/** @field *//** Indicates the stroke of the process.*/
 	this.stroke = '#002e00';
+	/** @field *//** Indicates the stroke width of the process.*/
 	this.strokeWidth = 1;
+	/** @field *//** Indicates the name of the process.*/
 	this.name = new UIName(inst.name);
+	/** @field *//** Holds the parent object of the state. */
 	this.parent = parent;
+	/** @field *//** Holds the icon of the process.*/
 	this.icon = null;
+	/** @field *//** Holds the type of OPM element.*/
 	this.type = 'state';
 }
+/**
+ * draws a state.
+ * @this {UIState}
+ */
 UIState.prototype.draw = function(){
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'id', this.id);
@@ -261,39 +443,94 @@ UIState.prototype.draw = function(){
 	rectName.appendChild(caption);
 	group.appendChild(rectName);
 }
+/**
+ * updates the location of a state.
+ * @this {UIState}
+ * @param {number} newX
+ * @param {number} newY
+ */
 UIState.prototype.updateLocation = function(newX, newY) {
 	this.x = newX;
 	this.y = newY;
 }
+/**
+ * updates the size of a state.
+ * @this {UIState}
+ * @param {number} newRx
+ * @param {number} newRy
+ * @param {number} newWidth
+ * @param {number} newHeight
+ */
 UIState.prototype.updateSize = function(newRx, newRy, newWidth, newHeight) {
 	this.rx = newRx;
 	this.ry = newRy;
 	this.width = newWidth;
 	this.height = newHeight;
 }
+/**
+ * updates the color of a state.
+ * @this {UIState}
+ * @param {string} color
+ */
 UIState.prototype.updateColor = function(color) {
 	this.fill = color;
 }
+/**
+ * updates the border for a state.
+ * @this {UIState}
+ * @param {string} newStroke
+ * @param {string} newStrokeWidth
+ */
 UIState.prototype.updateBorder = function(newStroke, newStrokeWidth) {
 	this.stroke = newStroke;
 	if(newStrokeWidth) { this.strokeWidth = newStrokeWidth; }
 }
 
+/**
+ * @Class
+ * @description User Interface Link
+ * @constructor
+ * @this {UILink}
+ * @param {OPMThing} parent
+*/
 function UILink(parent) {
+	/** @field *//** Indicates the ID of the link.*/
 	this.id = parent.id;
+	/** @field *//** Indicates the destination of the link.*/
 	this.d = null;
+	/** @field *//** Indicates the fill of the link.*/
 	this.fill = 'none';
+	/** @field *//** Indicates the stroke of the link.*/
 	this.stroke = 'DimGrey';
+	/** @field *//** Indicates the stroke width of the link.*/
 	this.strokeWidth = 2;
+	/** @field *//** Indicates the name of the link.*/
 	this.name = null;
+	/** @field *//** Holds the type of OPM element.*/
 	this.type = 'link';
 }
+/**
+ * updates link to new destination.
+ * @this {UILink}
+ * @param {UIObject} newD
+ */
 UILink.prototype.updateLink = function(newD) {
 	this.d = newD;
 }
+/**
+ * updates the color of a link.
+ * @this {UILink}
+ * @param {string} color
+ */
 UILink.prototype.updateColor = function(color) {
 	this.stroke = color;
 }
+/**
+ * draws a link.
+ * @this {UILink}
+ * @param {UIObject} src
+ * @param {UIObject} dest
+ */
 UILink.prototype.draw = function(src, dest) {
 	//Calculating coordinates of connection point
 	switch(linkOn.type) {
@@ -377,13 +614,21 @@ UILink.prototype.draw = function(src, dest) {
 
 }
 
-//Data Structure Implementation
+/** @description Data Structure Implementation */
 //Data Structure 
 var UIDiagramList = { };
 //Data Structure Methods
+/**@function
+ * @description add diagram.
+ * @param {UIDiagram} diagram
+ */
 UIDiagramList.addDiagram = function(diagram) {	
 	this[diagram.id] = diagram;
 }
+/**@function
+ * @description returns the active diagram.
+ * @returns {UIDiagram} d
+ */
 UIDiagramList.returnActive = function() {
 	for (d in this) {
 		if (this[d].active === true) { return this[d]; }

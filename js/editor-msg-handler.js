@@ -1,8 +1,16 @@
+/** @fileOverview set of functions to handle message sending and receiving via the channel.
+ *  @author Michael Krasnopolsky
+ * 
+ */
+
 var loadActions = [
       	"checkUser",
       	"getUserModels",
       	"loadModel",
           ];
+/**@function
+ * @description message handler.
+ */
 function msgHandler(msgChannel){
 	this.action = null;
     this.data = null;
@@ -32,7 +40,10 @@ function msgHandler(msgChannel){
     }
 }
 
+/**@function
+ * @description open list of saved User models
+ */
 function loadList() {
-	//open list of saved User models
+	
 	$('#loadModel').modal('show');
 }
