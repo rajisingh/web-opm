@@ -24,7 +24,7 @@ class actions(threading.Thread):
             
             
         elif self.action=="loadModel":
-            models = dbproc.getModelObj(self.data["modelId"])
+            models = dbproc.getModelObj(self.data["modelId"],self.data["userId"])
             modelList=[]
             for inst in models :
                 temp = convertToData(inst)
@@ -37,7 +37,24 @@ class actions(threading.Thread):
                 
                 
             
-            
+        elif self.action=="createUIObject":
+            if self.save :
+                dbproc.newUIObject(self.data)
+        elif self.action=="createUIDiagram":
+            if self.save :
+                dbproc.newUIDiag(self.data)
+        elif self.action=="createUIProcess":
+            if self.save :
+                dbproc.newUIProc(self.data)
+        elif self.action=="createUILink":
+            if self.save :
+                dbproc.newUILink(self.data)
+        elif self.action=="createUIState":
+            if self.save :
+                dbproc.newUIState(self.data)
+        
+        
+                    
         elif self.action=="createUserInstance":
             result = createUserInstance(self.data)
             if self.save :
@@ -101,7 +118,37 @@ class actions(threading.Thread):
 def convertToData(inst):
     actionName = ""
     data = {}
-    if isinstance(inst,dbopm.SRVOPMmodel):
+    if isinstance(inst,dbopm.UIObject) :
+        actionName = "createUIObject"
+        data=jsonpickle.decode(jsonpickle.encode(inst))
+        answer=[actionName,data]
+        return answer
+    elif isinstance(inst,dbopm.UIProcess) :
+        actionName = "createUIProcess"
+        data=jsonpickle.decode(jsonpickle.encode(inst))
+        answer=[actionName,data]
+        return answer
+    elif isinstance(inst,dbopm.UIState) :
+        actionName = "createUIState"
+        data=jsonpickle.decode(jsonpickle.encode(inst))
+        answer=[actionName,data]
+        return answer
+    elif isinstance(inst,dbopm.UILink) :
+        actionName = "createUILink"
+        data=jsonpickle.decode(jsonpickle.encode(inst))
+        answer=[actionName,data]
+        return answer
+    elif isinstance(inst,dbopm.UIDiagram) :
+        actionName = "createUIDiagram"
+        data=jsonpickle.decode(jsonpickle.encode(inst))
+        answer=[actionName,data]
+        return answer
+    
+    
+    
+    
+    
+    elif isinstance(inst,dbopm.SRVOPMmodel):
         actionName = "createModelInstance" 
         data["id"] = inst.modelID 
         data["creator"] = inst.creator 

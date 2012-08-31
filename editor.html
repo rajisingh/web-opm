@@ -66,7 +66,7 @@
                 })();
         </script>
         
-        <body onload='channelOpen()'>
+        <body onload='	channelOpen(); loadMain(null);'>
                 <div class="navbar navbar-fixed-top">
                         <div class="navbar-inner">
                                 <div class="container-fluid">
@@ -174,7 +174,7 @@
                                 </div>
                                 <div class="modal-footer">
                                         <a class="btn" data-dismiss="modal">Cancel</a>
-                                        <a class="btn btn-success" onclick="loadSpecModel();">Load</a>
+                                        <a class="btn btn-success" data-dismiss="modal" onclick="loadSpecModel();">Load</a>
                                 </div>
                         </div>
                         
@@ -230,9 +230,9 @@
                                         <div class="well sidebar-nav" style="padding: 0px;">
                                         <table style="">
                                                 <tr><th colspan="2"><h6>Things</h6></th></tr>
-                                                <tr><td colspan="2"><a href="#" rel="tooltip" title="Object" onclick="addObject();"><img src="img/glyphicons/glyphicons_094_vector_path_square.png" alt="object"/></a></td></tr>
-                                                <tr><td colspan="2"><a href="#" rel="tooltip" title="Process" onclick="addProcess();"><img src="img/glyphicons/glyphicons_095_vector_path_circle.png" alt="process"/></a></td></tr>
-                                                <tr><td colspan="2"><a href="#" rel="tooltip" title="State" onclick="addState();"><img src="img/glyphicons/glyphicons_094_vector_path_square.png" alt="state"/></a></td></tr>
+                                                <tr><td colspan="2"><a href="#" rel="tooltip" title="Object" onclick="addObject('empty');"><img src="img/glyphicons/glyphicons_094_vector_path_square.png" alt="object"/></a></td></tr>
+                                                <tr><td colspan="2"><a href="#" rel="tooltip" title="Process" onclick="addProcess('empty');"><img src="img/glyphicons/glyphicons_095_vector_path_circle.png" alt="process"/></a></td></tr>
+                                                <tr><td colspan="2"><a href="#" rel="tooltip" title="State" onclick="addState('empty');"><img src="img/glyphicons/glyphicons_094_vector_path_square.png" alt="state"/></a></td></tr>
                                                 <tr><td colspan="2"></td></tr>
                                                 <tr><th colspan="2"><h6>Links</h6></th></tr>
                                                 <tr>

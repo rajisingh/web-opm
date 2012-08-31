@@ -24,7 +24,6 @@ function PartyOrder(){
  * @return {number} New ID
  */
 PartyOrder.prototype.getId = function(parentId) {
-
 	var DEFAULT = '1000'; //case its a new father id 
 	if (!parentId) {
 		return DEFAULT;
@@ -72,7 +71,15 @@ PartyOrder.prototype.update = function(inst) {
 	this.dictInst[inst.id] = inst;
 }
 
+PartyOrder.prototype.empty = function(){
+	for(var index in this.dictInst){
+		delete this.dictInst[index];
+	}
+	for(var index in this.dictChildren){
+		delete this.dictChildLen[index];
+	}
+}
+
 PartyOrder.prototype.remove = function(id) {}
 
 //End of Topological handling function
-	

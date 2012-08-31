@@ -13,6 +13,7 @@ class UIName(db.Model):
     value = db.StringProperty()
 
 class UIObject(db.Model):
+    objID = db.StringProperty()
     x = db.FloatProperty()
     y = db.FloatProperty()
     width = db.FloatProperty()
@@ -20,35 +21,43 @@ class UIObject(db.Model):
     fill = db.StringProperty()
     stroke = db.StringProperty()
     strokeWidth = db.FloatProperty()
-
-class UIGroup(db.Model):
-    transform = db.StringProperty()
-    shape = UIObject()
-    name = UIName()
-    grip = db.StringProperty()
+    name = db.StringProperty()
+    states = db.StringListProperty()
+    sataesAmount = db.IntegerProperty()
+    icon = db.BlobProperty()
+    objType = db.StringProperty()
     
 class UIDiagram(db.Model):
     diagramID = db.IntegerProperty()
-    width = db.FloatProperty()
-    height = db.FloatProperty()
+    active = db.BooleanProperty()
     transform = db.StringProperty()
-    elements = UIGroup()    
+    elements = db.StringProperty()
+    diagramType = db.StringProperty()
 
 class UIProcess(db.Model):
-    cx = db.FloatProperty()
-    cy = db.FloatProperty()
+    procID = db.StringProperty()
+    x = db.FloatProperty()
+    y = db.FloatProperty()
     rx = db.FloatProperty()
     ry = db.FloatProperty()
     fill = db.StringProperty()
     stroke = db.StringProperty()
     strokeWidth = db.FloatProperty()
+    name = db.StringProperty()
+    icon = db.BlobProperty()
+    procType = db.StringProperty()
 
-class UILInk(db.Model):
+class UILink(db.Model):
+    linkID = db.StringProperty()
     fill = db.StringProperty()
     stroke = db.StringProperty()
+    strokeWidth = db.FloatProperty()
+    name = db.StringProperty()
+    linkType = db.StringProperty()
     d = db.StringProperty()
 
 class UIState (db.Model):
+    stateID = db.StringProperty()
     x = db.FloatProperty()
     y = db.FloatProperty()
     rx = db.FloatProperty()
@@ -58,7 +67,10 @@ class UIState (db.Model):
     fill = db.StringProperty()
     stroke = db.StringProperty()
     strokeWidth = db.FloatProperty()
-    
+    name = db.StringProperty()
+    stateParent = db.StringProperty() ## Cannot use parent - it's a saved word
+    icon = db.BlobProperty()
+    stateType = db.StringProperty()    
 ##Server Classes
 
 class SRVuser(db.Model):
