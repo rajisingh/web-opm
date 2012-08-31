@@ -9,26 +9,61 @@
  *
  * @author Sergey N. Bolshchikov
  * */
+	var currentUser = new User('sergey@bolshchikov.net', null);						//User class instantiation
+	var partyOrder = new PartyOrder();												//Main DS
+	var activeOPMModel = null;
+	var activeOPMDiagram = null;
+	var activeUIDiagram = null;
+	var activeSVGDiagram = null;
+	var activeSVGElement = null;
+	var activeUIElement = null;
 
+function loadMain(pageLoader){
+	if(pageLoader === null){
+		pageLoader = new Object();
+		pageLoader.type = 'newPage';
+	}
+	switch(pageLoader.type){
+	case 'newPage':
+		//OPM classes initiation
+		var testModelData = new Object();
+		testModelData.creatorId = currentUser.id;
+		testModelData.loaderType = null;
+		activeOPMModel = new OPMModel(testModelData);
+		activeOPMModel.share(currentUser.id);
+		currentUser.addModel(activeOPMModel.id);
+		var diagramData = new Object();
+		diagramData.modelId = activeOPMModel.id;
+		diagramData.loaderType = null;
+		activeOPMDiagram = new OPMDiagram(diagramData);		
+		//UI classes instantiation
+		var UIDiagramData = new Object();
+		UIDiagramData.id = activeOPMDiagram.id;
+		activeUIDiagram = new UIDiagram(UIDiagramData);
+		activeUIDiagram.draw();
+		//UIDiagramList.addDiagram(activeUIDiagram);
+		var activeUIElement = null;
+		
+		activeSVGDiagram = document.getElementById(activeOPMDiagram.id);
+		activeSVGElement = null;
+		break;
+	
+	case "load":
+		clearMain();
+		 activeOPMModel = pageLoader.activeOPMModel;
+		 activeOPMDiagram = pageLoader.activeOPMDiagram;
+		
+		 activeUIDiagram = new UIDiagram(activeOPMDiagram.id);
+		 activeUIDiagram.draw();
+		 activeUIElement = null;
+		
+		 activeSVGDiagram = document.getElementById(activeOPMDiagram.id);
+		//loadElements();
+		 activeSVGElement = null;
+		break;
+	}
 
-//OPM classes initiation
-var currentUser = new User('sergey@bolshchikov.net', null);						//User class instantiation
-var partyOrder = new PartyOrder();												//Main DS
-var testModelData = { creatorId: currentUser.id, loaderType: "empty" }//TODO: switch with LOAD request option here
-var activeOPMModel = new OPMModel(testModelData);
-activeOPMModel.share(currentUser.id);
-currentUser.addModel(activeOPMModel.id);
-var diagramData = { modelId: activeOPMModel.id, loaderType: "empty" }  //TODO: switch with LOAD request option here
-var activeOPMDiagram = new OPMDiagram(diagramData);
-
-//UI classes instantiation
-var activeUIDiagram = new UIDiagram(activeOPMDiagram.id);
-activeUIDiagram.draw();
-//UIDiagramList.addDiagram(activeUIDiagram);
-var activeUIElement = null;
-
-var activeSVGDiagram = document.getElementById(activeOPMDiagram.id);
-var activeSVGElement = null;
+}
 
 $(document).ready(function(){
 	$('.dropdown-toggle').dropdown();
@@ -49,6 +84,15 @@ $(document).ready(function(){
 function rename() {
 	//Rename Model
 	$('#model-rename').modal('show');
+}
+
+function clearMain(){
+	activeOPMModel = null;
+	activeOPMDiagram = null;
+	activeUIDiagram = null;
+	activeSVGDiagram = null;
+	activeSVGElement = null;
+	activeUIElement = null;
 }
 
 /**@function

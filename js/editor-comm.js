@@ -19,14 +19,19 @@ var actions = {
 		"add": 'POST',
 		"getUserModels": 'GET',
 		"loadModel": 'GET',
-		"createUserInstance": 'GET',
-		"createModelInstance": 'GET',
-		"createDiagramInstance": 'GET',
-		"createObjectInstance": 'GET',
-		"createProcessInstance": 'GET',
-		"createStateInstance": 'GET',
-		"createProceduralLinkInstance": 'GET',
-		"createStructuralLinkInstance": 'GET',
+		"createUserInstance": 'POST',
+		"createModelInstance": 'POST',
+		"createDiagramInstance": 'POST',
+		"createObjectInstance": 'POST',
+		"createProcessInstance": 'POST',
+		"createStateInstance": 'POST',
+		"createProceduralLinkInstance": 'POST',
+		"createStructuralLinkInstance": 'POST',
+		"createUIDiagram": 'POST',
+		"createUIObject": 'POST',
+		"createUIProcess": 'POST',
+		"createUIState": 'POST',
+		"createUILink": 'POST',
 		"minus": 'GET',
 		"openChannel": 'GET',
 		
@@ -81,7 +86,7 @@ function Message(action, data, userId) {
 Message.prototype.send = function(){
 	try {
 		if (actions.hasOwnProperty(this.action)) {
-			if (this.action === 'GET') {
+			if (actions[this.action] === 'GET') {
 				httpRequestGet(this);
 			}
 			else {

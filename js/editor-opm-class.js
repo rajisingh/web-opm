@@ -20,7 +20,7 @@
 
 function User(email, password) {
 	/** @field *//**temp variable that holds ID number.*/
-   var temp = randomFromTo(1,1000);
+   var temp = 333;
    /** @field *//**Indicates the ID number of the user.*/
    this.id = temp.toString();
    /** @field *//**Indicates the provider of the alien login (if exists)*/
@@ -202,17 +202,17 @@ User.prototype.logout = function() {
 
 /**
  * @Class 
- * @description Represents an OPM Model.
+ * @description Represents an OPM Model - Logic.
  * @constructor
  * @this {OPMModel}
  * @param {data} modelData
  */
 function OPMModel(modelData) {                     
-	   
+	/** @description *//**loaderType defines constructor method (load/new)*/   
 	switch(modelData.loaderType){
 	case "load":
 	   this.id = modelData.id;
-	   this.name = modelData.name;                         //default value
+	   this.name = modelData.name;
 	   this.type = modelData.type;
 	   this.participants = modelData.participants;
 	   this.lastUpdate = modelData.lastUpdate;
@@ -384,7 +384,7 @@ function OPMDiagram(diagramData) {
 		break;
 	default:
 		/** @field *//**Indicates ID of the OPM diagram*/
-		this.id = partyOrder.getId(diagramData.modelId); 
+		this.id = partyOrder.getId(diagramData.modelId);
 		/** @field *//**Indicates the name of the diagram*/
 	   this.name = 'New Diagram';                        //default value
 	   /** @field *//**Indicates number of the diagram*/
@@ -1217,7 +1217,7 @@ function OPMStructuralLink(OPMStructLinkData) {
 	    /** @field *//**Indicates the participation value for the OPM structural link*/
 	    this.participationVal = null;
 	    /** @field *//**Indicates the cardinality of the OPM structural link*/
-	    this.cardinality = 1;
+	    this.cardinality = "1";
 	    /** @field *//**Indicates the tag for the OPM structural link*/
 	    this.tag = null;
 	}

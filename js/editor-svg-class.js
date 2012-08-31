@@ -16,17 +16,37 @@
  * @this {UIDiagram}
  * @param {string} id
 */
-function UIDiagram(id) {
-	/** @field *//** holds the id's to the UI diagram .*/
-	this.id = id;
-	/** @field *//** holds a matrix for location usage.*/
-	this.transform = 'matrix(1 0 0 1 0 0)';
-	/** @field *//** indicates if the UI diagram is active.*/
-	this.active = true;
-	/** @field *//** holds the elements of the UI diagram.*/
-	this.elements = { };
-	/** @field *//** holds the type of the UI diagram.*/
-	this.type = 'diagram';
+function UIDiagram(UIDiagramData) {
+	if(UIDiagramData === null){
+		var UIDiagramData = new Object();
+		UIDiagramData.loaderType = null;
+	}
+	switch(UIDiagramData.loaderType){
+	case "load":
+		this.id = UIDiagramData.id;
+		this.transform = UIDiagramData.transform;
+		this.active = UIDiagramData.active;
+		this.elements = UIDiagramData.elements;
+		break;
+		
+	default:
+		/** @field *//** holds the id's to the UI diagram .*/
+		this.id = UIDiagramData.id;
+		/** @field *//** holds a matrix for location usage.*/
+		this.transform = 'matrix(1 0 0 1 0 0)';
+		/** @field *//** indicates if the UI diagram is active.*/
+		this.active = true;
+		/** @field *//** holds the elements of the UI diagram.*/
+		this.elements = { };
+		/** @field *//** holds the type of the UI diagram.*/
+		this.type = 'diagram';
+		
+		var msg = new Message("createUIDiagram",this, currentUser.id);
+		msg.send();
+		break;
+	}
+	
+
 }
 /**
  * create a new diagram.
@@ -65,7 +85,7 @@ UIDiagram.prototype.returnElement = function(id) {
  * @this {UIName}
  * @param {string} name
 */
-function UIName(name) {
+function UIName(name) {	
 	/** @field *//** holds the X axis of the element.*/
 	this.x = null;
 	/** @field *//** holds the Y axis of the element.*/
@@ -123,33 +143,61 @@ UIName.prototype.updateSize = function(newSize) {
  * @this {UIObject}
  * @param {OPMObject} obj
 */
-function UIObject(obj) {
-	/** @field *//** Indicates the ID of the object.*/
-	this.id = obj.id;
-	/** @field *//** Indicates the X axis for the object.*/
-	this.x = randomFromTo(90, 1150);
-	/** @field *//** Indicates the Y axis for the object.*/
-	this.y = randomFromTo(5, 420);
-	/** @field *//** Indicates the width of the object.*/
-	this.width = 110;
-	/** @field *//** Indicates the height of the object.*/
-	this.height = 70;
-	/** @field *//** Indicates the fill color of the object.*/
-	this.fill = 'white';
-	/** @field *//** Indicates the stroke color of the object.*/
-	this.stroke = 'limeGreen';
-	/** @field *//** Indicates the stroke width of the object.*/
-	this.strokeWidth = 2;
-	/** @field *//** Indicates the name of the object.*/
-	this.name = new UIName(obj.name);
-	/** @field *//** Holds the states for the object.*/
-	this.states = { }
-	/** @field *//** Indicates the amount of states for the object.*/
-	this.statesAmount = 0;
-	/** @field *//** Holds the icon of the object.*/
-	this.icon = null;
+function UIObject(UIObjectData) {
 	/** @field *//** Holds the type of the OPM element.*/
 	this.type = 'object';
+	if(UIObjectData === "empty"){
+		UIObjectData = null;
+		UIObjectData = new Object();
+		UIObjectData.loaderType = null;
+	}
+	
+	switch(UIObjectData.loaderType){
+	case "load":
+		this.id = UIObjectData.id;
+		this.x = UIObjectData.x;
+		this.y = UIObjectData.y;
+		this.width = UIObjectData.width;
+		this.height = UIObjectData.height;
+		this.fill = UIObjectData.fill;
+		this.stroke = UIObjectData.stroke;
+		this.strokeWidth = UIObjectData.strokeWidth;
+		this.name = UIObjectData.name;
+		this.states = UIObjectData.states;
+		this.statesAmount = UIObjectData.statesAmount;
+		this.icon = UIObjectData.icon;
+		break;
+	
+	default:
+		
+		/** @field *//** Indicates the ID of the object.*/
+		this.id = UIObjectData.id;
+		/** @field *//** Indicates the X axis for the object.*/
+		this.x = randomFromTo(90, 1150);
+		/** @field *//** Indicates the Y axis for the object.*/
+		this.y = randomFromTo(5, 420);
+		/** @field *//** Indicates the width of the object.*/
+		this.width = 110;
+		/** @field *//** Indicates the height of the object.*/
+		this.height = 70;
+		/** @field *//** Indicates the fill color of the object.*/
+		this.fill = 'white';
+		/** @field *//** Indicates the stroke color of the object.*/
+		this.stroke = 'limeGreen';
+		/** @field *//** Indicates the stroke width of the object.*/
+		this.strokeWidth = 2;
+		/** @field *//** Indicates the name of the object.*/
+		this.name = new UIName(UIObjectData.name);
+		/** @field *//** Holds the states for the object.*/
+		this.states = { }
+		/** @field *//** Indicates the amount of states for the object.*/
+		this.statesAmount = 0;
+		/** @field *//** Holds the icon of the object.*/
+		this.icon = null;
+
+		break;
+	}
+
 }
 /**
  * adds a state to the object.
@@ -251,29 +299,53 @@ UIObject.prototype.updateBorder = function(newStroke, newStrokeWidth) {
  * @this {UIProcess}
  * @param {OPMProcess} prc
 */
-function UIProcess(prc) {
-	/** @field *//** Indicates the ID of the process.*/
-	this.id = prc.id
-	/** @field *//** Indicates the X axis for the process.*/
-	this.x = randomFromTo(90, 1150);
-	/** @field *//** Indicates the Y axis for the process.*/
-	this.y = randomFromTo(5, 420);
-	/** @field *//** Indicates the radios on X axis for the process.*/
-	this.rx = 60;
-	/** @field *//** Indicates the radios on Y axis for the process.*/
-	this.ry = 40;
-	/** @field *//** Indicates the fill color of the process.*/
-	this.fill = 'white';
-	/** @field *//** Indicates the stroke of the process.*/
-	this.stroke = 'RoyalBlue';
-	/** @field *//** Indicates the stroke width of the process.*/
-	this.strokeWidth = 2;
-	/** @field *//** Holds the name of the process.*/
-	this.name = new UIName(prc.name);
-	/** @field *//** Holds the icon of the process.*/
-	this.icon = null;
-	/** @field *//** Holds the type of OPM element.*/
-	this.type = 'process';
+function UIProcess(UIProcessData) {
+	if(UIProcessData === "empty"){
+		UIProcessData.loaderType = null;
+	}
+	switch(UIProcessData.loaderType){
+	case "load":
+		this.id = UIProcessData.id;
+		this.x = UIProcessData.x;
+		this.y = UIProcessData.y;
+		this.rx = UIProcessData.rx;
+		this.ry = UIProcessData.ry;
+		this.fill = UIProcessData.fill;
+		this.stroke = UIProcessData.stroke;
+		this.strokeWidth = UIProcessData.strokeWidth;
+		this.name = UIProcessData.name;
+		this.icon = UIProcessData.icon;
+		this.type = UIProcessData.type;
+		break;
+		
+	default:
+		/** @field *//** Indicates the ID of the process.*/
+		this.id = UIProcessData.id
+		/** @field *//** Indicates the X axis for the process.*/
+		this.x = randomFromTo(90, 1150);
+		/** @field *//** Indicates the Y axis for the process.*/
+		this.y = randomFromTo(5, 420);
+		/** @field *//** Indicates the radios on X axis for the process.*/
+		this.rx = 60;
+		/** @field *//** Indicates the radios on Y axis for the process.*/
+		this.ry = 40;
+		/** @field *//** Indicates the fill color of the process.*/
+		this.fill = 'white';
+		/** @field *//** Indicates the stroke of the process.*/
+		this.stroke = 'RoyalBlue';
+		/** @field *//** Indicates the stroke width of the process.*/
+		this.strokeWidth = 2;
+		/** @field *//** Holds the name of the process.*/
+		this.name = new UIName(UIProcessData.name);
+		/** @field *//** Holds the icon of the process.*/
+		this.icon = null;
+		/** @field *//** Holds the type of OPM element.*/
+		this.type = 'process';
+		break;
+	
+	}
+	
+	
 }
 /**
  * draws a process.
@@ -365,35 +437,63 @@ var stateYDelta = 10;					//Distance between states
  * @param {UIObject} parent
  * @param {instance} inst
 */
-function UIState(parent, inst) {
-	/** @field *//** Indicates the ID of the state.*/
-	this.id = inst.id
-	/** @field *//** Indicates the X axis for the state.*/
-	this.x = activeSVGElement.firstChild.x.baseVal.value + 20;
-	/** @field *//** Indicates the Y axis for the state.*/	
-	this.y = activeSVGElement.firstChild.y.baseVal.value + 55;
-	/** @field *//** Indicates the radios on X axis for the state.*/
-	this.rx = 6;	
-	/** @field *//** Indicates the radios on Y axis for the state.*/
-	this.ry = 6;
-	/** @field *//** Holds the width of the state. */
-	this.width = 70;	
-	/** @field *//** Holds the height of the state. */
-	this.height = 25; 	
-	/** @field *//** Indicates the fill color of the state. */
-	this.fill = 'white';
-	/** @field *//** Indicates the stroke of the process.*/
-	this.stroke = '#002e00';
-	/** @field *//** Indicates the stroke width of the process.*/
-	this.strokeWidth = 1;
-	/** @field *//** Indicates the name of the process.*/
-	this.name = new UIName(inst.name);
-	/** @field *//** Holds the parent object of the state. */
-	this.parent = parent;
-	/** @field *//** Holds the icon of the process.*/
-	this.icon = null;
-	/** @field *//** Holds the type of OPM element.*/
-	this.type = 'state';
+function UIState(UIStateData) {
+	//if(UIStateData === "empty"){
+	//	UIStateData = new Object();
+		//UIStateData.loaderType = null;
+	//}
+	switch(UIStateData.loaderType){
+	case "load":
+		this.id = UIStateData.instId;
+		this.x = UIStateData.x;
+		this.y = UIStateData.y;
+		this.rx = UIStateData.rx;
+		this.ry = UIStateData.ry;
+		this.width = UIStateData.width;
+		this.height = UIStateData.height;
+		this.fill = UIStateData.fill;
+		this.stroke = UIStateData.stroke;
+		this.strokeWidth = UIStateData.strokeWidth;
+		this.name = UIStateData.name;
+		this.parent = UIStateData.parent;
+		this.icon = UIStateData.icon;
+		this.type = UIStateData.type;
+		break;
+		
+	default:
+		/** @field *//** Indicates the ID of the state.*/
+		this.id = UIStateData.instId
+		/** @field *//** Indicates the X axis for the state.*/
+		this.x = activeSVGElement.firstChild.x.baseVal.value + 20;
+		/** @field *//** Indicates the Y axis for the state.*/	
+		this.y = activeSVGElement.firstChild.y.baseVal.value + 55;
+		/** @field *//** Indicates the radios on X axis for the state.*/
+		this.rx = 6;	
+		/** @field *//** Indicates the radios on Y axis for the state.*/
+		this.ry = 6;
+		/** @field *//** Holds the width of the state. */
+		this.width = 70;	
+		/** @field *//** Holds the height of the state. */
+		this.height = 25; 	
+		/** @field *//** Indicates the fill color of the state. */
+		this.fill = 'white';
+		/** @field *//** Indicates the stroke of the process.*/
+		this.stroke = '#002e00';
+		/** @field *//** Indicates the stroke width of the process.*/
+		this.strokeWidth = 1;
+		/** @field *//** Indicates the name of the process.*/
+		this.name = new UIName(UIStateData.name);
+		/** @field *//** Holds the parent object of the state. */
+		this.parent = UIStateData.parent;
+		/** @field *//** Holds the icon of the process.*/
+		this.icon = null;
+		/** @field *//** Holds the type of OPM element.*/
+		this.type = 'state';
+		break;
+	
+	}
+	
+	
 }
 /**
  * draws a state.
@@ -410,7 +510,7 @@ UIState.prototype.draw = function(){
 	var oldHeight = this.parent.height;
 	var newHeight = oldHeight + objHeightStep;
 	activeSVGElement.firstChild.setAttributeNS(null, 'height', newHeight);
-	this.parent.updateSize(null, newHeight);
+	activeUIElement.updateSize(null, newHeight);
 	var grip = activeSVGElement.getElementsByTagNameNS(svgNS, 'image').item(0);
 	var gripY = grip.y.baseVal.value;
 	grip.setAttributeNS(null, 'y', gripY + (newHeight - oldHeight));
@@ -494,7 +594,10 @@ UIState.prototype.updateBorder = function(newStroke, newStrokeWidth) {
  * @param {OPMThing} parent
 */
 function UILink(parent) {
-	/** @field *//** Indicates the ID of the link.*/
+	
+	
+	
+	/** @field *//** Indicates the ID of the diagram containing the link.*/
 	this.id = parent.id;
 	/** @field *//** Indicates the destination of the link.*/
 	this.d = null;

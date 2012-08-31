@@ -21,14 +21,27 @@ var currentMatrix = 0;
 /**@function
  * @description add object.
  */
-var addObject = function() {
+var addObject = function(UIObjectData) {
 	try {
-		var OPMObjectData = { parentId: activeOPMDiagram.id, loaderType: "test" }//TODO: change when LOADING
-		var opmobj = new OPMObject(OPMObjectData);
-		if (activeSVGElement !== null) { deselect(); }
-		var obj = new UIObject(opmobj);
-		obj.draw();
-		activeUIDiagram.addElement(obj);
+		switch(UIObjectData.loaderType){
+		case "load":
+			var obj = new UIObject(UIObjectData);
+			obj.draw();
+			
+			break;
+			
+		default:
+			var OPMObjectData = { parentId: activeOPMDiagram.id, loaderType: "empty" }//TODO: change when LOADING
+			var opmobj = new OPMObject(OPMObjectData);
+			if (activeSVGElement !== null) { deselect(); }
+			var obj = new UIObject(opmobj);
+			obj.draw();
+			activeUIDiagram.addElement(obj);
+			var msg = new Message("createUIObject",obj,currentUser.id);
+			msg.send();
+			break;
+		}
+
 	}
 	catch(e) {
 		alert(e.message);
@@ -38,7 +51,7 @@ var addObject = function() {
 /**@function
  * @description add process.
  */
-var addProcess = function() {
+var addProcess = function(UIProcessData) {
 	try {
 		var OPMProcessData = { parentId: activeOPMDiagram.id, loaderType: "test" }//TODO: change when LOADING
 		var opmprc = new OPMProcess(OPMProcessData);
@@ -46,6 +59,8 @@ var addProcess = function() {
 		var prc = new UIProcess(opmprc);
 		prc.draw();
 		activeUIDiagram.addElement(prc);
+		var msg = new Message("createUIProcess",prc, currentUser.id);
+		msg.send();
 	}
 	catch(e) {
 		alert(e.message);
@@ -54,7 +69,7 @@ var addProcess = function() {
 /**@function
  * @description add state.
  */
-var addState = function() {
+var addState = function(UIStateData) {
 	try {
 		//Check
 		if (activeSVGElement === null) {
@@ -70,12 +85,21 @@ var addState = function() {
 			
 			
 			var parent = partyOrder.get(activeUIElement.id);
-			var OPMStateData = { parentId: parent, loaderType: "test" }//TODO: add LOADING option here
+			alert(activeUIElement.id);
+			activeUIElement.updateSize(35,35);
+			var OPMStateData = { parentId: parent.id, loaderType: 'empty' }
 			var opmstt = new OPMState(OPMStateData);
+			UIStateData = new Object();
+			UIStateData.instId = opmstt.id;
+			UIStateData.parent = parent;
+
+			var stt = new UIState(UIStateData);
 			
-			var stt = new UIState(activeUIElement, opmstt);
 			activeUIElement.addState(stt);
+
 			stt.draw();
+			var msg = new Message("createUIState",stt, currentUser.id);
+			msg.send();
 		}			
 	}
 	catch(e) {
@@ -131,6 +155,8 @@ var addLink = function(src, dest) {
 				partyOrder.add(opmlink);
 				var msg = new Message('createStructuralLinkInstance', opmlink, currentUser.id);
 				msg.send();
+				var msg = new Message("createUILink",lnk, currentUser.id);
+				msg.send();
 				linkOn.off();
 			}
 			else {
@@ -156,6 +182,8 @@ var addLink = function(src, dest) {
 				opmlink.destination.addLink(opmlink);
 				partyOrder.add(opmlink);
 				var msg = new Message('createProceduralLinkInstance', opmlink, currentUser.id);
+				msg.send();
+				var msg = new Message("createUILink",lnk, currentUser.id);
 				msg.send();
 				linkOn.off();
 			}

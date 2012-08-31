@@ -1,8 +1,11 @@
 from google.appengine.ext import db
 import dbopm
+import jsonpickle
 
-def getModelObj(modelID):
-  q = db.GqlQuery("SELECT * FROM SRVOPMmodel WHERE modelID = :1",modelID,keys_only = True)
+def getModelObj(modelID,creatorID):
+
+  q = db.GqlQuery("SELECT * FROM SRVOPMmodel WHERE modelID = :1 AND creator = :2",
+                  modelID,creatorID,keys_only = True)  
   objects = q.run()
   objList = []
   for obj in objects:
@@ -199,4 +202,111 @@ def newState(stateClass):
                 inLinks = stateClass.inLinks,
                 outLinks = stateClass.outLinks
     )
+    nState.put()
+    
+def newUIObject(uiObj):
+    q = db.Query(dbopm.SRVOPMObject, keys_only = True)
+    q.filter("id = ",uiObj.id)
+    objKey = q.get()
+    nObj = dbopm.UIObject(
+                          key_name = str(uiObj["id"]),
+                          parent = objKey,
+                          objID = uiObj["id"],
+                          x = uiObj["x"],
+                          y = uiObj["y"],
+                          width = uiObj["width"],
+                          height = uiObj["height"],
+                          fill = uiObj["fill"],
+                          stroke = uiObj["stroke"],
+                          strokeWidth = uiObj["strokeWidth"],
+                          name = jsonpickle.encode(uiObj["name"]),
+                          states = uiObj["states"],
+                          sataesAmount = uiObj["statesAmount"],
+                          icon = uiObj["icon"],
+                          objType = uiObj["type"]
+                          )
+    nObj.put()
+
+def newUIDiag(uiDiag):
+    q = db.Query(dbopm.SRVOPMdiagram, keys_only = True)
+    q.filter("id = ",uiDiag["id"])
+    diagKey = q.get()
+    nDiag = dbopm.UIDiagram(
+                        key_name = str(uiDiag["id"]),
+                        parent = diagKey,
+                        diagramID = uiDiag["id"],
+                        active = uiDiag["active"],
+                        transform = uiDiag["transform"],
+                        elements = jsonpickle.encode(uiDiag["elements"]),
+                        diagramType = uiDiag["type"]
+                    )
+    nDiag.put()
+
+def newUIProc(uiProc):
+    q = db.Query(dbopm.SRVOPMPRocess, keys_only = True)
+    q.filter("id = ",uiProc["id"])
+    procKey = q.get()
+    nProc = dbopm.UIProcess(
+                        key_name = str(uiProc["id"]),
+                        parent = procKey,
+                        procID = uiProc["id"],
+                        x = uiProc["x"],
+                        y = uiProc["y"],
+                        rx = uiProc["rx"],
+                        ry = uiProc["ry"],
+                        fill = uiProc["fill"],
+                        stroke = uiProc["stroke"],
+                        strokeWidth = uiProc["strokeWidth"],
+                        name = jsonpickle.encode(uiProc["name"]),
+                        icon = uiProc["icon"],
+                        procType = uiProc["type"]
+                        )
+    nProc.put()
+
+def newUILink(uiLink):
+    q1 = db.Query(dbopm.SRVOPMStructuralLink, keys_only = True)
+    q1.filter("id = ",uiLink["id"])
+    slKey = q1.get()
+    q2 = db.Query(dbopm.SRVOPMProceduralLink, keys_only = True)
+    q2.filter("id = ",uiLink["id"])
+    prKey = q2.get()
+    if slKey != "":
+        lKey = slKey
+    if prKey != "":
+        lKey = prKey
+    nLink = dbopm.UILink(
+                        key_name = str(uiLink["id"]),
+                        parent = lKey,
+                        linkID = uiLink["id"],
+                        fill = uiLink["fill"],
+                        stroke = uiLink["stroke"],
+                        strokeWidth = uiLink["strokeWidth"],
+                        name = jsonpickle.encode(uiLink["name"]),
+                        linkType = uiLink["type"],
+                        d = uiLink.d
+                        )
+    nLink.put()
+
+def newUIState(uiState):
+    q = db.Query(dbopm.SRVOPMState, keys_only = True)
+    q.filter("id = ",uiState["id"])
+    stateKey = q.get()
+    nState = dbopm.UIState(
+                        key_name = str(uiState["id"]),
+                        parent = stateKey,
+                        stateID = uiState["id"],
+                        x = uiState["x"],
+                        y = uiState["y"],
+                        rx = uiState["rx"],
+                        ry = uiState["ry"],
+                        width = uiState["width"],
+                        height = uiState["height"],
+                        fill = uiState["fill"],
+                        stroke = uiState["stroke"],
+                        strokeWidth = uiState["strokeWidth"],
+                        name = jsonpickle.encode(uiState["name"]),
+                        stateParent = uiState["parent"],
+                        icon = uiState["icon"],
+                        stateType = uiState["type"]
+                    )
     nState.put()

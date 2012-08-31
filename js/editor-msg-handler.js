@@ -31,15 +31,55 @@ function msgHandler(msgChannel){
     			}
     		}
     		break;
-    	case "loadModel":
-    		alert("starting load");
-    		alert(this.data);
-    		//TODO: need to clear partyOrder before successfull load
-    		//for (var index in data){
-    		//	if(typeof(data["index"] === object)){
-    				
-    		//	}
-    		//}
+    	case "loadModel":    			
+    		for (var index in data){
+    			var cell = data[index];
+    			var cellVal = cell[0].toString();
+				var loader = cell[1];
+				loader.loaderType = "load";
+	    		var pageLoader = new Object();
+	    		pageLoader.type = "load";
+    			switch(cellVal){
+    			case 'createModelInstance':
+    	    		pageLoader.activeOPMModel = new OPMModel(loader);
+    				break;
+    			case 'createDiagramInstance':
+        			pageLoader.activeOPMDiagram = new OPMDiagram(loader);
+    				break;
+    			case 'createUIDiagram':
+    				pageLoader.activeUIDiagram = new UIDiagram(loader);
+    				alert("DIAGRAM "+loader);
+    				break;
+    			case 'createObjectInstance':
+    				new OPMObject(loader);
+    				break;
+    			case 'createUIObject':
+    				alert("OBJECT "+loader);
+    				break;
+    			case 'createProcessInstance':
+    				new OPMProcess(loader);
+    				break;
+    			case 'createUIProcess':
+    				alert("PROCESS "+loader);
+    				break;
+    			case 'createStateInstance':
+    				new OPMState(loader);
+    				break;
+    			case 'createUIState':
+    				alert("STATE "+loader);
+    				break;
+    			case 'createProceduralLinkInstance':
+    				new OPMProceduralLink(loader);
+    				break;
+    			case 'createStructuralLinkInstance':
+    				new OPMStructuralLink(loader);
+    				break;
+    			case 'createUILink':
+    				alert("LINK "+loader);
+    				break;
+    			}
+    		}
+    		loadMain(pageLoader);
     		break;
     	}
     }
