@@ -18,11 +18,14 @@ $(function()
 	    	    selector: '.context-menu-one', 
 	            callback: function(key, options) 
 				{
-					var m = "clicked: " + key;
-					alert(m); 
+					if (key == "Properties")
+					{
+					  $('#example').modal('show');
+					}
 				},
 				items: 
 				{
+					
 					
 					"Expand": {name: "Expand"},
 					"In-Zoom": {name: "In-Zoom"},
@@ -38,6 +41,7 @@ $(function()
 			});
 	    
 			$('.context-menu-one').on('click', function(e){
+			    
 				console.log('clicked', this);
 			})
 		})();
