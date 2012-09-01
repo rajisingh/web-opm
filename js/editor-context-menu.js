@@ -24,14 +24,15 @@ $(function()
 				items: 
 				{
 					
-					"Properties": {name: "Proprties", icon: "properties"},
-					"cut": {name: "Cut", icon: "cut"},
-					"copy": {name: "Copy", icon: "copy"},
+					"Expand": {name: "Expand"},
+					"In-Zoom": {name: "In-Zoom"},
 					"sep1": "---------",
-					"paste": {name: "Paste", icon: "paste"}
-					//"delete": {name: "Delete", icon: "delete"},
-					
-					//"quit": {name: "Quit", icon: "quit"}
+					"Unfold": {name: "Unfold"},
+					"Create": {name: "Create"},
+					"Show": {name: "Show"},
+					"Copy": {name: "Copy"},
+					"Cut": {name: "Cut"},
+					"Properties": {name: "Proprties"}
 				
 				}
 			});
