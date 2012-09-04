@@ -28,12 +28,25 @@
     		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   		})();
+  		// Create a new XMLHttpRequest object to communicate with the Web-server
+  		var http = createRequestObject();
+		function createRequestObject() {
+			var objAjax;
+			if(window.XMLHttpRequest){
+				objAjax = new XMLHttpRequest();
+			}else{
+				objAjax = new ActiveXObject("Microsoft.XMLHTTP");
+				
+			}
+			return objAjax;
+		}
 	</script>
+
 	
 	<body onload='channelOpen()'>
-
-	<div id="example" class="modal hide fade in" style="display: none; " >  
-				<div class="modal-header">    
+	<!-- Twitter Bootstrap Modal (properties window for objects,process,etc. .. You can open it from context menu) -->
+		<div id="properties_modal" class="modal hide fade in" style="display: none; " >  
+				<div class="modal-header" style="width:200; height:200>    
 				  
 						<row class="span8">  
 						<ul class="nav nav-tabs">  
@@ -45,41 +58,15 @@
 						</ul>  
 							
 				</div>
-	
-	<script type="text/javascript">
-	
-		var active_now_id=document.getElementById('General');
-		active_now_id.setAttribute("class", "active");
-		function changeClass(object_li){
-			var active_li=object_li.id;
-			object_li.setAttribute("class", "active");
-			active_now_id.setAttribute("class", "disabled");
-			active_now_id =object_li;
-			var information_value=document.getElementById('modal-body');
-			information_value.innerHTML = 'fgf';
-
-			}
-		
-	</script>
-
-				<div class="modal-body">  
-					  
-				 
-					<h4>Object Properties</h4>  
-					<p>some properties</p>                
-				</div>  
-				 
+				
+				<table class="table"  id="modal-body" style="width:100;">
+				</table>
+				
 				<div class="modal-footer">    
 					<a href="#" class="btn" data-dismiss="modal">Close</a>  
 				</div> 
 	</div>	
-	<div class="modal-body" style="visibility: hidden" id="Details">  
-					  
-				 
-					<h4>Details Object Properties other</h4>  
-					<p>Details some properties other</p>    
-				           
-				</div>		
+		
 		<div class="navbar navbar-fixed-top">
   			<div class="navbar-inner">
   				<div class="container-fluid">
@@ -343,6 +330,7 @@
     <script src="js/editor-comm-request.js"></script>
     <script src="js/editor-comm-channel.js"></script>
     	
+    	<script src="js/editor-context-menu-properties.js"></script>
     	<script src="js/editor-context-menu.js"></script>
 		<script src="js/editor-svg-class.js"></script>
 		<script src="js/editor-svg-util.js"></script>
