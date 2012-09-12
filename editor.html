@@ -15,7 +15,28 @@
     	<meta name="description" content="OPM conceptual modeling tool simulation" />
     	<meta name="author" content="Technion" />
     	<meta charset="utf-8">
-    	
+    	<style type="text/css">
+
+			#main_body_label.checkbox {
+			display:inline;
+			}
+			#textarea.input-xlarge{
+			display:inline;
+			}
+			#main_body_label.checkbox {
+			display:inline;
+			}
+			#textarea.input-xlarge{
+			display:inline;
+			}
+			#Resource_Type_Local.checkbox {
+			display:inline;
+			}
+			#Resource_Type_URL.checkbox {
+			display:inline;
+			}
+			
+	   </style>
 	</head>
 	
 	<script type="text/javascript">
@@ -44,9 +65,10 @@
 
 	
 	<body onload='channelOpen()'>
+	
 	<!-- Twitter Bootstrap Modal (properties window for objects,process,etc. .. You can open it from context menu) -->
-		<div id="properties_modal" class="modal hide fade in" style="display: none; " >  
-				<div class="modal-header" style="width:200; height:200>    
+		<div id="properties_modal" class="modal hide fade in" style="display: none;width:700px; height:200 " >  
+				<div class="modal-header" style="width:200; height:200">    
 				  
 						<row class="span8">  
 						<ul class="nav nav-tabs">  
@@ -58,12 +80,326 @@
 						</ul>  
 							
 				</div>
+				<!--  General Form   -->
+				<table class="table"  id="General-Form"  style="width:100;">
 				
-				<table class="table"  id="modal-body" style="width:100;">
+				<tr>
+					<td >	
+						 <strong>Object Name</strong>
+					</td>  
+					<td >
+					 <strong>Initial Value</strong> 
+					</td>
+					
+				</tr>  
+				<tr >            
+					<td >   
+						<div class="controls" >
+						<form  > 
+							<fieldset>
+								<textarea rows="3" ></textarea>
+							</fieldset>
+						</form>
+						</div>
+					</td>
+						<td >   
+						<div class="controls">
+						<form  > 
+							<fieldset>
+								<textarea rows="3" ></textarea>
+							</fieldset>
+							</form>
+						</div>
+					</td>
+				</tr>
+				
+				<tr>
+				
+					<td colspan="2">
+							<strong>Object Type</strong>
+					</td>
+				</tr>
+		
+			    <tr>
+					<td colspan="2" >
+						<form >
+							<fieldset>
+								   <label class="checkbox">
+									 <input type="checkbox" id="Compound.Object"  checked="checked"  /> Compound Object	
+									</label>
+									<br> &nbsp; 	&nbsp;  &nbsp; 	&nbsp;
+									<input type="radio" value="Basic" name="under-compound"/>
+								  	<label class="checkbox" id="main_body_label">Basic types</label> 	
+								  	&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
+								  	<input type="radio" name="Types" value="Advanced"/>
+								  	<label class="checkbox" id="main_body_label">Advanced Types</label>
+								  	&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
+								  	<input type="radio" name="Types" value="Custom"/>
+								  	<label class="checkbox" id="main_body_label">Custom Types</label>
+								  	<br><br>&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
+									<select id="type">
+						                <option>Boolean</option>
+						                <option>Char</option>
+						                <option>Short</option>
+						                <option>Integer</option>
+						                <option>Unsigned Integer</option>
+						                <option>Long</option>
+						                <option>Float</option>
+						                <option>Double</option>
+						            </select>
+
+							</fieldset>
+						</form>
+					</td>
+					
+				</tr>
+				<tr>
+					<td >	
+						<strong>Essence</strong>		  
+					</td>  
+					<td >
+					    <strong>Affilation</strong> 
+					   
+					</td>
+					
+				</tr> 
+				<tr>
+					<td >	
+					<form >
+							<input type="radio" name="Essence" value="Phisical"/>&nbsp;Phisical<br/>
+							<input type="radio" name="Essence" CHECKED value="Informatical"/>&nbsp;Informatical
+					</form>		 
+					</td>  
+					<td >
+					<form >
+						<input type="radio" name="Affilation" value="Environmental"/>&nbsp;Environmental<br/>
+						<input type="radio" name="Affilation" CHECKED value="Systemic"/>&nbsp;Systemic
+					</form>
+					</td>
+					
+				<tr>
+				
+					<td colspan="2">
+					<form >
+						Scope :
+						<select id="Scope">
+			                <option>Public</option>
+			                <option>Protected</option>
+			                <option>Private</option>
+					  </select>
+					</form>
+					</td>
+				</tr>
+				<tr>
+				
+					<td colspan="2">
+							<strong>Additional Helper</strong>
+					</td>
+				</tr>
+				<tr>
+				
+					<td colspan="2">
+					<form >
+						<input type="radio" name="Helper" CHECKED value="Enable"/>
+						<label class="checkbox" id="main_body_label" >Enable</label>
+						&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
+						<input type="radio" name="Helper" value="Disable"/>
+						<label class="checkbox" id="main_body_label">Disable</label>	
+					</form>
+					</td>
+				</tr>
+				
 				</table>
-				
+				<!-- Details form -->
+				<table class="table"  id="Details-Form"  style="width:100;">  
+			    <tr>
+					<td colspan="2" >
+						<strong>Description</strong>
+					</td>
+					
+				</tr>
+				<tr>
+					<td >	
+						<form>
+							<fieldset>
+								<textarea rows="5" class="input-xlarge">none</textarea>
+							</fieldset>
+						</form>	  
+					</td>  
+					<td >
+					</td>
+					
+				</tr> 
+				    <tr>
+					<td colspan="2" >
+						<strong>Notes</strong>
+					</td>
+					
+				</tr>
+				<tr>
+					<td >	
+						<form>
+							<fieldset>
+								<textarea rows="5" class="input-xlarge"></textarea>
+							</fieldset>
+						</form>	  
+					</td>  
+					<td >
+					</td>
+					
+				</tr> 
+				<tr>
+					<td >	
+						<strong>URL</strong>			 
+					</td>  
+					<td >
+					</td>
+				</tr>
+					<tr>
+					<td >	
+						<form >
+							<fieldset>
+							    <input type="text" id="url-text" >
+							    <button  class="btn btn-primary" type="button" id="url_btn" onclick="openUrlWindow()">URL</button>
+							</fieldset>
+						 </form>			 
+					</td>  
+					<td >
+					</td>
+				</tr>
+				</table>
+				<!-- Url form  -->
+				<table class="table"  id="Url-Form"  style="width:100;" style="display: none;">  
+			    <tr>
+					<td colspan="2" >
+						<form >
+							<fieldset>
+							 		<strong>Resource Type:</strong>
+									&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
+									<input type="radio" name="Resource-Type" id="Local" onclick="onclickLocation()"/>
+								  	<label class="checkbox" id="main_body_label" CHECKED>Local File</label> 	
+								  	&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
+								  	<input type="radio" name="Resource-Type" id="url" onclick="onclickUrl()"/>
+								  	<label class="checkbox" id="main_body_label">URL</label>
+							</fieldset>
+						</form>
+					</td>
+					
+				</tr>
+				<tr>
+					<td >	
+						<label class="control-label" for="fileInput">URL Or File Location :</label>		  
+					</td>  
+					<td >
+					</td>
+					
+				</tr> 
+				<tr>
+					<td >	
+						<input class="input-file" id="localInput" type="file">
+						<input type="text" id="urlInput" style="display: none;">		 
+					</td>  
+					<td >
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a class="btn" onclick="CloseUrlWindowByOk()">Ok</a>
+						<a class="btn" onclick="CloseUrlWindowByCancel()">Cancle</a> 
+					</td>
+					<td>
+					</td>
+				</tr>
+				</table>
+				<!-- States Form -->
+				<table class="table"  id="States-Form"  style="width:100;" style="display: none;">  
+			    <tr>
+					<td colspan="2" >
+					<form  >
+							<textarea rows="10" class="input-xlarge"></textarea>
+							
+					</form>
+					</td>
+					
+				</tr>
+				<tr>
+					<td >	
+						<button class="btn btn-primary" type="button">Add</button>
+						<button class="btn btn-primary" type="button">Remove</button>
+						<button class="btn btn-primary" type="button">Props</button>		  
+					</td>  
+					<td >
+					</td>
+					
+				</tr> 
+				<tr>
+					<td colspan="2" >	
+						View : 		 
+						<select id="view">
+					                <option >None</option>
+					                <option selected="selected">Implicit</option>
+					                <option >Explicit</option>
+				    	</select>
+				    	&nbsp&nbsp
+				    	<input type="checkbox" id="Autoarrange"  checked="checked"  /> Autoarrange
+					</td>  
+					
+				</tr>
+				<tr>
+					<td>
+						<a class="btn" onclick="CloseUrlWindow()">Ok</a>
+						<a class="btn" onclick="CloseUrlWindow()">Cancle</a> 
+					</td>
+					<td>
+					</td>
+				</tr>
+				</table>
+				<!-- Misc. Form -->
+					<table class="table"  id="Misc-Form"  style="width:100;" style="display: none;">  
+			    <tr>
+					<td colspan="2" >
+					<form  >
+							<textarea rows="10" class="input-xlarge"></textarea>
+					</form>
+					</td>
+					
+				</tr>
+				<tr>
+					<td >	
+						<button class="btn btn-primary" type="button">Add</button>
+						<button class="btn btn-primary" type="button">Remove</button>
+						<button class="btn btn-primary" type="button">Props</button>		  
+					</td>  
+					<td >
+					</td>
+					
+				</tr> 
+				<tr>
+					<td colspan="2" >	
+						View : 		 
+						<select id="view">
+					                <option >None</option>
+					                <option selected="selected">Implicit</option>
+					                <option >Explicit</option>
+				    	</select>
+				    	&nbsp&nbsp
+				    	<input type="checkbox" id="Autoarrange"  checked="checked"  /> Autoarrange
+					</td>  
+					
+				</tr>
+				<tr>
+					<td>
+						<a class="btn" onclick="CloseUrlWindow()">Ok</a>
+						<a class="btn" onclick="CloseUrlWindow()">Cancle</a> 
+					</td>
+					<td>
+					</td>
+				</tr>
+				</table>
 				<div class="modal-footer">    
-					<a href="#" class="btn" data-dismiss="modal">Close</a>  
+					<a href="#" class="btn" data-dismiss="modal">Apply</a> 
+					<a  class="btn" data-dismiss="modal">Cancle</a> 
+					<a  class="btn active" data-dismiss="modal">Ok</a>  
 				</div> 
 	</div>	
 		
@@ -298,6 +634,7 @@
 <!-- Placed at the end of the document so to increase loading the page -->	
 	<!-- 3rd party Libraries -->
 		<!-- jQuery -->
+		<script src="js/editor-context-menu-properties.js"></script>
 		<script src="js/jquery.min.js"></script>
 		<script src="js/jquery-ui.min.js"></script>
 		<!-- Bootstrap -->
@@ -330,8 +667,9 @@
     <script src="js/editor-comm-request.js"></script>
     <script src="js/editor-comm-channel.js"></script>
     	
-    	<script src="js/editor-context-menu-properties.js"></script>
+    	
     	<script src="js/editor-context-menu.js"></script>
+
 		<script src="js/editor-svg-class.js"></script>
 		<script src="js/editor-svg-util.js"></script>
 		<script src="js/editor-svg.js"></script>
