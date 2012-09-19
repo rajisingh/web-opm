@@ -2949,8 +2949,8 @@ button.btn.small, input[type="submit"].btn.small {
   clear: both;
 }
 .modal-footer .btn {
-  float: right;
-  margin-left: 5px;
+ float: right;
+ margin-left: 5px;
   margin-bottom: 0;
 }
 .tooltip {
