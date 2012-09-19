@@ -71,17 +71,23 @@
 				<div class="modal-header" style="width:200; height:200">    
 				  
 						<row class="span8">  
-						<ul class="nav nav-tabs">  
+						<ul class="nav nav-tabs" id="general-properties-tabs">  
 						<li id="General" onclick="changeClass(this)"><a href="#" >General</a></li>     
 						<li id="Details" onclick="changeClass(this)"><a href="#">Details</a></li>  
 						<li id="States" onclick="changeClass(this)"><a href="#">States</a></li>   
 						<li id="Misc" onclick="changeClass(this)"><a href="#">Misc.</a></li>   
 						<li id="Resources" onclick="changeClass(this)"><a href="#">Resources</a></li>   
 						</ul>  
+						
+						<ul class="nav nav-tabs" id="States-Add-Form" style="display: none;">
+					    <li id="states_general" class="active" onclick="changeStatesTab(this)"><a href="#">General</a></li>
+					    <li id="states_preferences" onclick="changeStatesTab(this)"><a href="#">Preferences</a></li>
+					    <li id="states_misc" onclick="changeStatesTab(this)"><a href="#">Misc.</a></li>
+					    </ul>
 							
 				</div>
 				<!--  General Form   -->
-				<table class="table"  id="General-Form"  style="width:100;">
+				<table class="table"  id="General-Form"  style="width:100;" >
 				
 				<tr>
 					<td >	
@@ -106,7 +112,7 @@
 						<div class="controls">
 						<form  > 
 							<fieldset>
-								<textarea rows="3" ></textarea>
+								<textarea rows="2" ></textarea>
 							</fieldset>
 							</form>
 						</div>
@@ -122,22 +128,22 @@
 		
 			    <tr>
 					<td colspan="2" >
-						<form >
+						<form class="form-horizontal">
 							<fieldset>
-								   <label class="checkbox">
-									 <input type="checkbox" id="Compound.Object"  checked="checked"  /> Compound Object	
+								   <label class="checkbox" onclick="Compound_activ()">
+									 <input type="checkbox" id="Compound.Object"  checked="checked" /> Compound Object	
 									</label>
 									<br> &nbsp; 	&nbsp;  &nbsp; 	&nbsp;
-									<input type="radio" value="Basic" name="under-compound"/>
+									<input type="radio" value="Basic" id="Basic_types" name="Types" disabled="disabled" checked="checked" onclick="Basic_types_active()"/>
 								  	<label class="checkbox" id="main_body_label">Basic types</label> 	
 								  	&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
-								  	<input type="radio" name="Types" value="Advanced"/>
+								  	<input type="radio" id="Advanced_Types" value="Advanced" name="Types" disabled="disabled" onclick="advanced_types_active()"/>
 								  	<label class="checkbox" id="main_body_label">Advanced Types</label>
 								  	&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
-								  	<input type="radio" name="Types" value="Custom"/>
+								  	<input type="radio" id="Custom_Types" value="Custom"  name="Types" disabled="disabled"/>
 								  	<label class="checkbox" id="main_body_label">Custom Types</label>
 								  	<br><br>&nbsp; 	&nbsp;  &nbsp; 	&nbsp;
-									<select id="type">
+									<select id="type_bs_select" disabled="disabled" style="width:150px;">
 						                <option>Boolean</option>
 						                <option>Char</option>
 						                <option>Short</option>
@@ -147,7 +153,15 @@
 						                <option>Float</option>
 						                <option>Double</option>
 						            </select>
-
+									<select id="type_adv_select" disabled="disabled" style="width:150px; display:none;  ">
+						                <option>Char[]</option>
+						                <option>Date</option>
+						                <option>Time</option>
+						                <option>Integer</option>
+						          
+						            </select>
+									<strong id="length_title" style=" display:none;">&nbsp; Length :</strong>  
+									<input type="text" id="length_adv" type="text" value="50" style="width:150px; display:none;"/>
 							</fieldset>
 						</form>
 					</td>
@@ -211,7 +225,7 @@
 				
 				</table>
 				<!-- Details form -->
-				<table class="table"  id="Details-Form"  style="width:100;">  
+				<table class="table"  id="Details-Form"  style="width:100;" style="display: none;">  
 			    <tr>
 					<td colspan="2" >
 						<strong>Description</strong>
@@ -311,10 +325,208 @@
 					</td>
 				</tr>
 				</table>
+				<!-- States Form Add-->
+			
+				<table class="table"  id="States-Add-Form-General"   style="display: none;">
+				<tr>
+					<td >	
+						 <strong>State name</strong>
+					</td>  
+				</tr> 
+				
+				<tr >            
+					<td >   
+						<div class="controls">
+							<form  >
+								<fieldset>
+									<textarea rows="5" class="input-xlarge" id="State-name"></textarea>
+								</fieldset>
+							</form>
+						</div>
+					</td>
+				</tr>
+				
+				<tr>
+				
+					<td>
+							<strong>Description<strong>
+					</td>
+				</tr>
+		
+			    <tr>
+					<td>
+					<div class="controls">
+						<form  >
+							<fieldset>
+								<textarea rows="5" class="input-xlarge" id="Description">none</textarea>
+							</fieldset>
+						</form>
+					</div>
+				</td>
+				</tr>
+				<tr>
+					<td>
+						<form>
+						<fieldset>
+							<label class="checkbox"></label>
+								<input type="checkbox" id="Initial" />Initial
+								&nbsp; 	&nbsp;	
+								<input type="checkbox" id="Final"  /> Final	
+								&nbsp; 	&nbsp;
+								<input type="checkbox" id="Default" /> Default
+							
+							
+						</fieldset>
+						</form>	
+					</td>
+				</tr>
+				</table>
+				<table class="table"  id="States-Add-Form-Preferences"   style="display: none;">
+		 
+				<tr>
+					<td >	
+						 <strong>Minimum Activation Time</strong>
+					</td>  
+				</tr> 
+				<tr>
+					<td>
+						<form>
+						<fieldset>
+								<input type="checkbox" id="Infinity_min" />Infinity
+									<table >
+								<tr>
+									<td>
+										<label>msec</label>
+									</td>
+									<td>
+										<label>sec</label>
+									</td>
+									<td>
+										<label>min</label>
+									</td>
+									<td>
+										<label>hours</label>
+									</td>
+									<td>
+										<label>days</label>
+									</td>
+									<td>
+										<label>months</label>
+									</td>
+									<td>
+										<label>years</label>
+									</td>
+								</tr>	
+								<tr>
+										<td>
+										 <input type="text" id="msec_min" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="sec_min" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="min_min" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="hours_min" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="days_min" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="months_min" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="years_min" value="0" style="width:50px;">
+									</td>
+								</tr>
+								</table>	
+						</fieldset>
+						</form>	
+					</td>
+				</tr>		<tr>
+					<td >	
+						 <strong>Maximum Activation Time</strong>
+					</td>  
+				</tr> 
+				<tr>
+					<td>
+						<form>
+						<fieldset>
+								<input type="checkbox" id="Infinity_max" checked="checked"/>Infinity
+											<table >
+								<tr>
+									<td>
+										<label>msec</label>
+									</td>
+									<td>
+										<label>sec</label>
+									</td>
+									<td>
+										<label>min</label>
+									</td>
+									<td>
+										<label>hours</label>
+									</td>
+									<td>
+										<label>days</label>
+									</td>
+									<td>
+										<label>months</label>
+									</td>
+									<td>
+										<label>years</label>
+									</td>
+								</tr>	
+								<tr>
+										<td>
+										 <input type="text"  id="msec_max" value="0" style="width:50px;"> 
+									</td>
+									<td>
+										<input type="text" id="sec_max" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="min_max" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="hours_max" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="days_max" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="months_max" value="0" style="width:50px;">
+									</td>
+									<td>
+										<input type="text" id="years_max" value="0" style="width:50px;">
+									</td>
+								</tr>
+								</table>
+						</fieldset>
+						</form>	
+					</td>
+				</tr>
+				
+				 
+				</table>
+				<table id="States-Add-Form-Buttons"   style="display: none; " >
+				<tr >
+					<td>
+						 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						 &nbsp;&nbsp;&nbsp;&nbsp;
+				   		 <button class="btn" type="button" onclick="close_add_window()">Ok</button>
+					</td>
+					<td>
+						
+						 <button class="btn" type="button" onclick="close_add_window()">Cancel</button>
+					</td>
+				</tr>
+				</table>
 				<!-- States Form -->
 				<table class="table"  id="States-Form"  style="width:100;" style="display: none;">  
 			    <tr>
-					<td colspan="2" >
+			    	
+					<td  colspan="2">
 					<form  >
 							<textarea rows="10" class="input-xlarge"></textarea>
 							
@@ -324,7 +536,7 @@
 				</tr>
 				<tr>
 					<td >	
-						<button class="btn btn-primary" type="button">Add</button>
+						<button class="btn btn-primary" type="button" onclick="open_add_window()">Add</button>
 						<button class="btn btn-primary" type="button">Remove</button>
 						<button class="btn btn-primary" type="button">Props</button>		  
 					</td>  
@@ -355,48 +567,108 @@
 				</tr>
 				</table>
 				<!-- Misc. Form -->
-					<table class="table"  id="Misc-Form"  style="width:100;" style="display: none;">  
-			    <tr>
+				<table class="table"  id="Misc-Form"  style="width:100;" >  
+			     <tr>
 					<td colspan="2" >
-					<form  >
-							<textarea rows="10" class="input-xlarge"></textarea>
-					</form>
+						<strong>Colors</strong>
 					</td>
 					
 				</tr>
 				<tr>
 					<td >	
-						<button class="btn btn-primary" type="button">Add</button>
-						<button class="btn btn-primary" type="button">Remove</button>
-						<button class="btn btn-primary" type="button">Props</button>		  
+						Background Color:<div style="background-color:white-space;width:50px;height:10px;border:1px solid #000"></div><br>
+						Text Color:<div style="background-color:black;width:50px;height:10px;border:1px solid #000"></div><br>
+						Border Color: <div style="background-color:green;width:50px;height:10px;border:1px solid #000"> </div>
+					</td>  
+					<td > 
+					</td>
+					
+				</tr> 
+				 <tr>
+					<td  >
+						<strong>Text position</strong>
+					</td>
+					<td>
+						<strong>Preview</strong>
+					</td>
+				</tr>
+				    <tr>
+					<td colspan="2" >
+						<strong>Icon</strong>
+					</td>
+					
+				</tr>
+				<tr>
+					<td >	
+						<form>
+							<fieldset>
+								<textarea rows="5" class="input-xlarge"></textarea>
+							</fieldset>
+							<label class="checkbox">
+								<input type="checkbox" CHECKED> Show Icon for this appearance
+							</label>
+						</form>	  
 					</td>  
 					<td >
 					</td>
 					
 				</tr> 
-				<tr>
-					<td colspan="2" >	
-						View : 		 
-						<select id="view">
-					                <option >None</option>
-					                <option selected="selected">Implicit</option>
-					                <option >Explicit</option>
-				    	</select>
-				    	&nbsp&nbsp
-				    	<input type="checkbox" id="Autoarrange"  checked="checked"  /> Autoarrange
-					</td>  
+		
+				</table>
+				<!-- Resources Form -->
+				<table class="table"  id="Resources-Form" style="display: none;">  
+			    <tr>
+					<td >
+						<strong>Measurement Unit & Measurement values</strong>
+					</td>
 					
 				</tr>
 				<tr>
-					<td>
-						<a class="btn" onclick="CloseUrlWindow()">Ok</a>
-						<a class="btn" onclick="CloseUrlWindow()">Cancle</a> 
+					<td >	
+						Value name:  
+						<select id="type_adv_select" disabled="disabled" >
+						<option></option>
+						</select><br><br><br>
+						Measurement Unit : 
+						 Empty
+						<br><br><br>
+						Initial Value : 
+						 Empty
+						<br>
+						Min Value:
+						 Empty
+						<br>
+						Max Value: 
+						 Empty
+						
+					</td>  
+				</tr> 
+				<tr>
+					<td >
+						<strong>fsg</strong>
 					</td>
-					<td>
-					</td>
+					
 				</tr>
+				<tr>
+					<td >	
+						
+						Measurement Unit : 
+						<br> 
+						Initial Value : 
+						 0.0
+						<br>
+						Min Value:
+						 -9.99999999E8
+						<br>
+						Max Value: 
+						 9.99999999E8
+						
+					</td>  
+				</tr> 
+		
+		
 				</table>
-				<div class="modal-footer">    
+				<div class="modal-footer" id="properties-window-button">    
 					<a href="#" class="btn" data-dismiss="modal">Apply</a> 
 					<a  class="btn" data-dismiss="modal">Cancle</a> 
 					<a  class="btn active" data-dismiss="modal">Ok</a>  
