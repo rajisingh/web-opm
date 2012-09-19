@@ -1,5 +1,6 @@
 /*	
  * 	Web OPM: online case tool for Object-Process Methodology
+
  * 	Copyright © 2012 Israel Institute of Technology - Technion
  * 	The code is licensed under GNU General Public License, v2
  * 
@@ -20,7 +21,7 @@ $(function()
 				{
 					if (key == "Properties")
 					{
-					  $('#example').modal('show');
+					  $('#properties_modal').modal('show');
 					}
 				},
 				items: 
@@ -28,20 +29,32 @@ $(function()
 					
 					
 					"Expand": {name: "Expand"},
-					"In-Zoom": {name: "In-Zoom"},
 					"sep1": "---------",
+					"In-Zoom": {name: "In-Zoom"},
 					"Unfold": {name: "Unfold"},
-					"Create": {name: "Create"},
-					"Show": {name: "Show"},
-					"Copy": {name: "Copy"},
-					"Cut": {name: "Cut"},
-					"Properties": {name: "Proprties"}
+					"Create View": {name: "Create"},
+					"sep2": "---------",
+					"Show all appearances": {name: "Show"},
+					"Insert property": {name: "Insert"},
+					"sep3": "---------",
+					"Complete Links": {name: "Complete"},
+					"sep4": "---------",
+			
+					
+					"sep5": "---------",
+					
+					"sep6": "---------",
+					"Consistency Helper": {name: "Helper"},
+					"Test Scenario": {name: "Test"},
+					"sep7": "---------",
+					"Properties": {name: "Properties"},
+					"Parameters": {name: "Parameters"}
 				
 				}
 			});
 	    
-			$('.context-menu-one').on('click', function(e){
-			    
-				console.log('clicked', this);
-			})
+			
 		})();
+
+
+
